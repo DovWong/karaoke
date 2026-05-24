@@ -1,0 +1,1481 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0a0a0f">
+<title>歌詞滾動 · Karaoke</title>
+<style>
+  /* ==========================================
+     字體匯入(本地會fallback到系統字體)
+     ========================================== */
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Zen+Maru+Gothic:wght@500;700&display=swap');
+
+  /* ==========================================
+     變數
+     ========================================== */
+  :root {
+    --bg-base: #0a0a0f;
+    --bg-panel: rgba(20, 20, 30, 0.85);
+    --bg-glass: rgba(255, 255, 255, 0.04);
+    --bg-glass-hover: rgba(255, 255, 255, 0.08);
+    --text-dim: rgba(255, 255, 255, 0.35);
+    --text-mid: rgba(255, 255, 255, 0.55);
+    --text-bright: rgba(255, 255, 255, 0.95);
+    --accent-pink: #ff3e7f;
+    --accent-cyan: #00e5ff;
+    --accent-purple: #b14fff;
+    --accent-yellow: #ffd84f;
+    --ruby-color: #ff9ec7;
+    --cn-color: #6dd5ed;
+    --border: rgba(255, 255, 255, 0.08);
+    --shadow-glow: 0 0 40px rgba(255, 62, 127, 0.15);
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
+  body {
+    background: var(--bg-base);
+    background-image:
+      radial-gradient(ellipse at top left, rgba(177, 79, 255, 0.15), transparent 60%),
+      radial-gradient(ellipse at bottom right, rgba(255, 62, 127, 0.12), transparent 60%),
+      radial-gradient(ellipse at center, rgba(0, 229, 255, 0.05), transparent 70%);
+    color: var(--text-bright);
+    font-family: 'Noto Sans JP', 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* 細微的雜訊紋理 */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.9' /%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* ==========================================
+     主容器
+     ========================================== */
+  .app {
+    position: relative;
+    z-index: 2;
+    height: 100vh;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ==========================================
+     起始畫面(載入歌詞)
+     ========================================== */
+  .start-screen {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    text-align: center;
+  }
+
+  .start-screen.hidden {
+    display: none;
+  }
+
+  .logo {
+    font-family: 'Zen Maru Gothic', serif;
+    font-size: clamp(40px, 12vw, 72px);
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple), var(--accent-cyan));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    letter-spacing: -2px;
+    margin-bottom: 8px;
+    animation: gradientShift 8s ease infinite;
+    background-size: 200% 200%;
+  }
+
+  @keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  .tagline {
+    font-size: 14px;
+    color: var(--text-mid);
+    margin-bottom: 48px;
+    letter-spacing: 4px;
+  }
+
+  .load-btn {
+    position: relative;
+    padding: 18px 48px;
+    border: 1px solid var(--border);
+    background: var(--bg-glass);
+    color: var(--text-bright);
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.3s;
+    overflow: hidden;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  .load-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple));
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: -1;
+  }
+
+  .load-btn:hover::before,
+  .load-btn:active::before {
+    opacity: 0.3;
+  }
+
+  .load-btn:active {
+    transform: scale(0.97);
+  }
+
+  .hidden-input {
+    display: none;
+  }
+
+  .preset-section {
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .preset-label {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--text-dim);
+    margin-bottom: 4px;
+  }
+
+  .preset-btn {
+    padding: 14px 20px;
+    background: var(--bg-glass);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    color: var(--text-bright);
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  .preset-btn:active {
+    background: var(--bg-glass-hover);
+    transform: scale(0.98);
+  }
+
+  .preset-title {
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 2px;
+  }
+
+  .preset-subtitle {
+    font-size: 12px;
+    color: var(--text-mid);
+  }
+
+  /* ==========================================
+     歌曲標頭
+     ========================================== */
+  .song-header {
+    padding: 16px 20px 12px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, rgba(20, 20, 30, 0.6), transparent);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    z-index: 10;
+  }
+
+  .song-title {
+    font-family: 'Zen Maru Gothic', serif;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+
+  .song-artist {
+    font-size: 12px;
+    color: var(--text-mid);
+  }
+
+  .header-controls {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    display: flex;
+    gap: 6px;
+  }
+
+  .icon-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--bg-glass);
+    border: 1px solid var(--border);
+    color: var(--text-bright);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    transition: all 0.2s;
+  }
+
+  .icon-btn:active {
+    background: var(--bg-glass-hover);
+    transform: scale(0.92);
+  }
+
+  /* ==========================================
+     歌詞區
+     ========================================== */
+  .lyrics-container {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 40vh 24px;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    mask-image: linear-gradient(180deg, transparent 0%, black 25%, black 75%, transparent 100%);
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, black 25%, black 75%, transparent 100%);
+  }
+
+  /* 隱藏scrollbar */
+  .lyrics-container::-webkit-scrollbar {
+    display: none;
+  }
+
+  .lyrics-container {
+    scrollbar-width: none;
+  }
+
+  .line {
+    padding: 22px 8px;
+    cursor: pointer;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0.22;
+    transform: scale(0.95);
+    transform-origin: left center;
+  }
+
+  .line:hover {
+    opacity: 0.5;
+  }
+
+  /* 下一句(預告) — 比一般亮,但比當前句暗 */
+  .line.next {
+    opacity: 0.6;
+    transform: scale(0.97);
+  }
+
+  .line.next .line-jp {
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .line.next .line-cn {
+    color: rgba(109, 213, 237, 0.55); /* 中文翻譯用淡藍色 */
+  }
+
+  .line.active {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .line.passed {
+    opacity: 0.18;
+  }
+
+  .line-jp {
+    font-family: 'Zen Maru Gothic', 'Noto Sans JP', sans-serif;
+    font-size: clamp(22px, 6.5vw, 32px);
+    font-weight: 500;
+    line-height: 2;
+    color: var(--text-bright);
+    transition: all 0.5s;
+  }
+
+  .line.active .line-jp {
+    color: white;
+    text-shadow:
+      0 0 20px rgba(255, 62, 127, 0.4),
+      0 0 40px rgba(177, 79, 255, 0.2);
+  }
+
+  /* 振假名(ruby)樣式 */
+  .line-jp ruby {
+    ruby-position: over;
+    ruby-align: center;
+  }
+
+  .line-jp rt {
+    font-size: 0.45em;
+    font-weight: 400;
+    color: var(--ruby-color);
+    letter-spacing: -0.05em;
+    line-height: 1.1;
+    margin-bottom: 3px;
+    text-align: center;
+    transition: color 0.5s;
+    /* 用 ruby-align: center 讓假名置中對齊到漢字 */
+  }
+
+  /* 漢字之間留一點空隙讓 ruby 不要擠 */
+  .line-jp ruby + ruby {
+    margin-left: 0.05em;
+  }
+
+  .line.active .line-jp rt {
+    color: var(--accent-pink);
+  }
+
+  .line-cn {
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: clamp(13px, 3.5vw, 16px);
+    color: var(--text-dim);
+    margin-top: 4px;
+    font-weight: 300;
+    letter-spacing: 1px;
+    transition: color 0.5s;
+  }
+
+  .line.active .line-cn {
+    color: var(--cn-color);
+  }
+
+  .line.continuation .line-cn {
+    color: var(--text-dim);
+    opacity: 0.5;
+  }
+
+  .line.active.continuation .line-cn {
+    color: var(--cn-color);
+    opacity: 0.7;
+  }
+
+  /* ==========================================
+     播放控制
+     ========================================== */
+  .controls {
+    padding: 16px 20px calc(20px + env(safe-area-inset-bottom));
+    background: linear-gradient(0deg, rgba(20, 20, 30, 0.95), rgba(20, 20, 30, 0.6));
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid var(--border);
+  }
+
+  .progress-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .time-text {
+    font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+    font-size: 11px;
+    color: var(--text-mid);
+    min-width: 38px;
+    text-align: center;
+  }
+
+  .progress-bar {
+    flex: 1;
+    height: 28px;
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+  }
+
+  .progress-track {
+    width: 100%;
+    height: 3px;
+    background: var(--bg-glass);
+    border-radius: 100px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-pink), var(--accent-purple), var(--accent-cyan));
+    border-radius: 100px;
+    width: 0%;
+    transition: width 0.1s linear;
+    box-shadow: 0 0 12px rgba(255, 62, 127, 0.6);
+  }
+
+  .progress-thumb {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background: white;
+    border-radius: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 2px 12px rgba(255, 62, 127, 0.6);
+    pointer-events: none;
+    transition: left 0.1s linear;
+    left: 0%;
+  }
+
+  .control-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+  }
+
+  .ctrl-btn {
+    background: var(--bg-glass);
+    border: 1px solid var(--border);
+    color: var(--text-bright);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .ctrl-btn:active {
+    transform: scale(0.92);
+    background: var(--bg-glass-hover);
+  }
+
+  .ctrl-secondary {
+    width: 44px;
+    height: 44px;
+    font-size: 14px;
+  }
+
+  .ctrl-primary {
+    width: 64px;
+    height: 64px;
+    font-size: 24px;
+    background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple));
+    border: none;
+    box-shadow: 0 4px 24px rgba(255, 62, 127, 0.4);
+  }
+
+  .ctrl-primary:active {
+    transform: scale(0.94);
+  }
+
+  .ctrl-tiny {
+    width: 32px;
+    height: 32px;
+    font-size: 11px;
+  }
+
+  .seek-label {
+    font-size: 10px;
+    color: var(--text-mid);
+    text-align: center;
+    margin-top: 0;
+    line-height: 1;
+    letter-spacing: 0.5px;
+  }
+
+  .seek-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* ==========================================
+     設定面板(底部抽屜)
+     ========================================== */
+  .settings-panel {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(15, 15, 25, 0.95);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    padding: 28px 24px calc(28px + env(safe-area-inset-bottom));
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 100;
+    border-top: 1px solid var(--border);
+    border-radius: 24px 24px 0 0;
+  }
+
+  .settings-panel.open {
+    transform: translateY(0);
+  }
+
+  .settings-handle {
+    width: 40px;
+    height: 4px;
+    background: var(--text-dim);
+    border-radius: 2px;
+    margin: -16px auto 20px;
+  }
+
+  .settings-title {
+    font-size: 13px;
+    letter-spacing: 3px;
+    color: var(--text-mid);
+    margin-bottom: 16px;
+    text-transform: uppercase;
+  }
+
+  .setting-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .setting-row:last-child {
+    border-bottom: none;
+  }
+
+  .setting-label {
+    font-size: 14px;
+    color: var(--text-bright);
+  }
+
+  .toggle-group {
+    display: flex;
+    gap: 4px;
+    background: var(--bg-glass);
+    padding: 3px;
+    border-radius: 10px;
+  }
+
+  .toggle-btn {
+    padding: 7px 14px;
+    background: transparent;
+    border: none;
+    color: var(--text-mid);
+    border-radius: 8px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+
+  .toggle-btn.active {
+    background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple));
+    color: white;
+  }
+
+  .offset-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .offset-value {
+    min-width: 50px;
+    text-align: center;
+    font-family: 'SF Mono', monospace;
+    font-size: 13px;
+    color: var(--accent-cyan);
+  }
+
+  /* 滑桿 */
+  .slider-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .slider-row .setting-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .slider-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .slider {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    background: var(--bg-glass);
+    border-radius: 100px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple));
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: 0 2px 8px rgba(255, 62, 127, 0.5);
+    transition: transform 0.15s;
+  }
+
+  .slider::-webkit-slider-thumb:active {
+    transform: scale(1.2);
+  }
+
+  .slider::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+    background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple));
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: 0 2px 8px rgba(255, 62, 127, 0.5);
+  }
+
+  .slider-value {
+    min-width: 42px;
+    text-align: right;
+    font-family: 'SF Mono', monospace;
+    font-size: 13px;
+    color: var(--accent-cyan);
+  }
+
+  .close-btn {
+    margin-top: 16px;
+    width: 100%;
+    padding: 14px;
+    background: var(--bg-glass);
+    border: 1px solid var(--border);
+    color: var(--text-bright);
+    border-radius: 12px;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  /* ==========================================
+     遮罩
+     ========================================== */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    z-index: 90;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+
+  .overlay.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  /* ==========================================
+     全螢幕模式
+     ========================================== */
+  .app.fullscreen .song-header,
+  .app.fullscreen .controls {
+    opacity: 0.3;
+  }
+
+  .app.fullscreen .lyrics-container {
+    padding-top: 30vh;
+    padding-bottom: 30vh;
+  }
+
+  /* ==========================================
+     橫向手機
+     ========================================== */
+  @media (orientation: landscape) and (max-height: 500px) {
+    .lyrics-container {
+      padding: 30vh 24px;
+    }
+    .line-jp {
+      font-size: clamp(20px, 5vw, 28px);
+    }
+    .controls {
+      padding: 10px 20px;
+    }
+    .song-header {
+      padding: 10px 20px 8px;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- 起始畫面 -->
+  <div class="start-screen" id="startScreen">
+    <div class="logo">歌詞</div>
+    <div class="tagline">KARAOKE LYRICS PLAYER</div>
+
+    <label for="lrcInput" class="load-btn">
+      📂 載入歌詞檔
+    </label>
+    <input type="file" id="lrcInput" class="hidden-input" accept=".json,.lrc,.txt">
+
+    <div class="preset-section">
+      <div class="preset-label">內建範例</div>
+      <button class="preset-btn" id="presetYakimochi">
+        <div class="preset-title">ヤキモチ</div>
+        <div class="preset-subtitle">高橋優 · 含振假名與中文翻譯</div>
+      </button>
+    </div>
+  </div>
+
+  <!-- 歌曲標頭(初始隱藏) -->
+  <div class="song-header" id="songHeader" style="display:none; position:relative;">
+    <div class="song-title" id="songTitle">—</div>
+    <div class="song-artist" id="songArtist">—</div>
+    <div class="header-controls">
+      <button class="icon-btn" id="settingsBtn" title="設定">⚙️</button>
+      <button class="icon-btn" id="reloadBtn" title="換歌">↻</button>
+    </div>
+  </div>
+
+  <!-- 歌詞區 -->
+  <div class="lyrics-container" id="lyricsContainer" style="display:none;"></div>
+
+  <!-- 控制列 -->
+  <div class="controls" id="controls" style="display:none;">
+    <div class="progress-row">
+      <div class="time-text" id="currentTime">0:00</div>
+      <div class="progress-bar" id="progressBar">
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-thumb" id="progressThumb"></div>
+      </div>
+      <div class="time-text" id="totalTime">0:00</div>
+    </div>
+
+    <div class="control-row">
+      <div class="seek-wrap">
+        <button class="ctrl-btn ctrl-secondary" id="back10">−10</button>
+        <div class="seek-label">秒</div>
+      </div>
+      <div class="seek-wrap">
+        <button class="ctrl-btn ctrl-secondary" id="back5">−5</button>
+        <div class="seek-label">秒</div>
+      </div>
+
+      <button class="ctrl-btn ctrl-primary" id="playPauseBtn">▶</button>
+
+      <div class="seek-wrap">
+        <button class="ctrl-btn ctrl-secondary" id="fwd5">+5</button>
+        <div class="seek-label">秒</div>
+      </div>
+      <div class="seek-wrap">
+        <button class="ctrl-btn ctrl-secondary" id="fwd10">+10</button>
+        <div class="seek-label">秒</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- 設定抽屜 -->
+<div class="overlay" id="overlay"></div>
+<div class="settings-panel" id="settingsPanel">
+  <div class="settings-handle"></div>
+  <div class="settings-title">顯示設定</div>
+
+  <div class="setting-row">
+    <div class="setting-label">振假名(漢字讀音)</div>
+    <div class="toggle-group">
+      <button class="toggle-btn active" data-setting="ruby" data-value="on">顯示</button>
+      <button class="toggle-btn" data-setting="ruby" data-value="off">隱藏</button>
+    </div>
+  </div>
+
+  <div class="setting-row">
+    <div class="setting-label">片假名也標假名</div>
+    <div class="toggle-group">
+      <button class="toggle-btn" data-setting="katakana" data-value="on">顯示</button>
+      <button class="toggle-btn active" data-setting="katakana" data-value="off">隱藏</button>
+    </div>
+  </div>
+
+  <div class="setting-row">
+    <div class="setting-label">中文翻譯</div>
+    <div class="toggle-group">
+      <button class="toggle-btn active" data-setting="cn" data-value="on">顯示</button>
+      <button class="toggle-btn" data-setting="cn" data-value="off">隱藏</button>
+    </div>
+  </div>
+
+  <div class="setting-row slider-row">
+    <div class="setting-label">日文字體</div>
+    <div class="slider-wrap">
+      <input type="range" class="slider" id="sizeMain" min="18" max="60" step="1" value="28">
+      <div class="slider-value" id="sizeMainValue">28</div>
+    </div>
+  </div>
+
+  <div class="setting-row slider-row">
+    <div class="setting-label">振假名大小</div>
+    <div class="slider-wrap">
+      <input type="range" class="slider" id="sizeRuby" min="30" max="70" step="1" value="45">
+      <div class="slider-value" id="sizeRubyValue">45%</div>
+    </div>
+  </div>
+
+  <div class="setting-row slider-row">
+    <div class="setting-label">中文字體</div>
+    <div class="slider-wrap">
+      <input type="range" class="slider" id="sizeCn" min="10" max="30" step="1" value="15">
+      <div class="slider-value" id="sizeCnValue">15</div>
+    </div>
+  </div>
+
+  <div class="setting-row">
+    <div class="setting-label">時間微調</div>
+    <div class="offset-row">
+      <button class="ctrl-btn ctrl-tiny" id="offsetMinus">−</button>
+      <div class="offset-value" id="offsetValue">0.0s</div>
+      <button class="ctrl-btn ctrl-tiny" id="offsetPlus">+</button>
+    </div>
+  </div>
+
+  <button class="close-btn" id="closeSettings">完成</button>
+</div>
+
+<script>
+/* ============================================================
+   內建歌曲資料(ヤキモチ - 高橋優)
+   ============================================================ */
+const YAKIMOCHI_DATA = {
+  title: "ヤキモチ",
+  artist: "高橋優",
+  duration: 290, // 大約4:50
+  lines: [{"time":25.61,"jp_plain":"君が前に","jp_ruby":"君(きみ)が前(まえ)に","cn":"你之前交往過的人的事情","marumaru_jp":"君が前に付き合っていた人のこと","is_continuation":false},{"time":27.88,"jp_plain":"付き合っていた人のこと","jp_ruby":"付(つ)き合(あ)っていた人(ひと)のこと","cn":"你之前交往過的人的事情","marumaru_jp":"君が前に付き合っていた人のこと","is_continuation":true},{"time":31.72,"jp_plain":"僕に打ち明けてくれたとき","jp_ruby":"僕(ぼく)に打(う)ち明(あ)けてくれたとき","cn":"在你對我全盤傾訴的時刻","marumaru_jp":"僕に打ち明けてくれたとき","is_continuation":false},{"time":37.98,"jp_plain":"素直に聴いてあげられずに","jp_ruby":"素直(すなお)に聴(き)いてあげられずに","cn":"我未能坦率地靜靜聆聽","marumaru_jp":"素直に聴いてあげられずに","is_continuation":false},{"time":43.61,"jp_plain":"寂しい思いを","jp_ruby":"寂(さび)しい思(おも)いを","cn":"讓你感覺到寂寞了吧","marumaru_jp":"寂しい思いをさせてしまったね","is_continuation":false},{"time":45.58,"jp_plain":"させてしまったね","jp_ruby":"させてしまったね","cn":"讓你感覺到寂寞了吧","marumaru_jp":"寂しい思いをさせてしまったね","is_continuation":true},{"time":48.97,"jp_plain":"すぐにヤキモチ焼くのが","jp_ruby":"すぐにヤキ(やき)モチ(もち)焼(や)くのが","cn":"總是馬上就會吃醋","marumaru_jp":"すぐにヤキモチ焼くのが僕の悪い癖だって","is_continuation":false},{"time":53.62,"jp_plain":"僕の悪い癖だって","jp_ruby":"僕(ぼく)の悪(わる)い癖(くせ)だって","cn":"總是馬上就會吃醋","marumaru_jp":"すぐにヤキモチ焼くのが僕の悪い癖だって","is_continuation":true},{"time":56.87,"jp_plain":"分かっていた筈なのに","jp_ruby":"分(わ)かっていた筈(はず)なのに","cn":"明明知道這是我的壞習慣","marumaru_jp":"分かっていた筈なのに","is_continuation":false},{"time":61.48,"jp_plain":"自分勝手な想いが","jp_ruby":"自分勝手(じぶんかって)な想(おも)いが","cn":"可任性的想法卻化作殘酷的話語","marumaru_jp":"自分勝手な想いが残酷な言葉になって","is_continuation":false},{"time":66.07,"jp_plain":"残酷な言葉になって","jp_ruby":"残酷(ざんこく)な言葉(ことば)になって","cn":"可任性的想法卻化作殘酷的話語","marumaru_jp":"自分勝手な想いが残酷な言葉になって","is_continuation":true},{"time":69.21000000000001,"jp_plain":"君を傷付けてた","jp_ruby":"君(きみ)を傷付(きずつ)けてた","cn":"傷害到了你","marumaru_jp":"君を傷付けてた","is_continuation":false},{"time":74.66,"jp_plain":"一緒に居られるだけで","jp_ruby":"一緒(いっしょ)に居(い)られるだけで","cn":"僅僅是兩個人在一起","marumaru_jp":"一緒に居られるだけで","is_continuation":false},{"time":78.85,"jp_plain":"手と手を重ね合えるだけで","jp_ruby":"手(て)と手(て)を重(かさ)ね合(あ)えるだけで","cn":"僅僅是兩個人牽着手就足夠","marumaru_jp":"手と手を重ね合えるだけで良かったね","is_continuation":false},{"time":83.9,"jp_plain":"良かったね","jp_ruby":"良(よ)かったね","cn":"僅僅是兩個人牽着手就足夠","marumaru_jp":"手と手を重ね合えるだけで良かったね","is_continuation":true},{"time":87.08,"jp_plain":"大切な事ほど","jp_ruby":"大切(たいせつ)な事(こと)ほど","cn":"越是重要的事情也許就藏在熟悉的地方","marumaru_jp":"大切な事ほど見慣れた場所で","is_continuation":false},{"time":90.73,"jp_plain":"見慣れた場所で","jp_ruby":"見慣(みな)れた場所(ばしょ)で","cn":"越是重要的事情也許就藏在熟悉的地方","marumaru_jp":"大切な事ほど見慣れた場所で","is_continuation":true},{"time":93.25,"jp_plain":"輝くのかもしれない","jp_ruby":"輝(かがや)くのかもしれない","cn":"暗地閃耀着光芒","marumaru_jp":"輝くのかもしれない","is_continuation":false},{"time":99.50999999999999,"jp_plain":"君を強く抱きしめたい","jp_ruby":"君(きみ)を強(つよ)く抱(だ)きしめたい","cn":"想要緊緊抱住你","marumaru_jp":"君を強く抱きしめたい","is_continuation":false},{"time":115.95,"jp_plain":"自分のためだけに","jp_ruby":"自分(じぶん)のためだけに","cn":"只為自己而活的人","marumaru_jp":"自分のためだけに生きている人が","is_continuation":false},{"time":119.68,"jp_plain":"生きている人が","jp_ruby":"生(い)きている人(ひと)が","cn":"只為自己而活的人","marumaru_jp":"自分のためだけに生きている人が","is_continuation":true},{"time":122.21,"jp_plain":"集められたようなこの街で","jp_ruby":"集(あつ)められたようなこの街(まち)で","cn":"彷彿全部聚集在這條街道","marumaru_jp":"集められたようなこの街で","is_continuation":false},{"time":128.37,"jp_plain":"誰かを心から想える幸せを","jp_ruby":"誰(だれ)かを心(こころ)から想(おも)える幸(しあわ)せを","cn":"發自心底思唸著一個人的幸福","marumaru_jp":"誰かを心から想える幸せを","is_continuation":false},{"time":135.52,"jp_plain":"いつまでも忘れたくない","jp_ruby":"いつまでも忘(わす)れたくない","cn":"這份心情直到永久都不想忘記","marumaru_jp":"いつまでも忘れたくない","is_continuation":false},{"time":139.3,"jp_plain":"すぐにヤキモチ焼くとこも","jp_ruby":"すぐにヤキ(やき)モチ(もち)焼(や)くとこも","cn":"你這種馬上就吃醋的地方我也喜歡","marumaru_jp":"すぐにヤキモチ焼くとこも好きだよって","is_continuation":false},{"time":143.95,"jp_plain":"好きだよってからかって","jp_ruby":"好きだよってからかって","cn":""},{"time":146.77,"jp_plain":"笑う君に甘えていた","jp_ruby":"笑(わら)う君(きみ)に甘(あま)えていた","cn":"喜歡調侃我的你 我想我是不經意間向你撒嬌了吧","marumaru_jp":"からかって笑う君に甘えていた","is_continuation":false},{"time":151.77,"jp_plain":"愛していることを","jp_ruby":"愛(あい)していることを","cn":"現在馬上想要用話語以外的方法","marumaru_jp":"愛していることを言葉以外の方法で","is_continuation":false},{"time":155.27,"jp_plain":"言葉以外の方法で","jp_ruby":"言葉(ことば)以外(いがい)の方法(ほうほう)で","cn":"現在馬上想要用話語以外的方法","marumaru_jp":"愛していることを言葉以外の方法で","is_continuation":true},{"time":159.16,"jp_plain":"今すぐに伝えたい","jp_ruby":"今(いま)すぐに伝(つた)えたい","cn":"將我愛你的心情傳達給你","marumaru_jp":"今すぐに伝えたい","is_continuation":false},{"time":165.02,"jp_plain":"微笑んでくれた顔も","jp_ruby":"微笑(ほほえ)んでくれた顔(かお)も","cn":"你微笑的面容","marumaru_jp":"微笑んでくれた顔も","is_continuation":false},{"time":169.53,"jp_plain":"怒った顔も愛しくて","jp_ruby":"怒(おこ)った顔(かお)も愛(いと)しくて","cn":"生氣的樣子 都可愛得無可救藥","marumaru_jp":"怒った顔も愛しくて仕方なかったよ","is_continuation":false},{"time":173.48,"jp_plain":"仕方なかったよ","jp_ruby":"仕方(しかた)なかったよ","cn":"生氣的樣子 都可愛得無可救藥","marumaru_jp":"怒った顔も愛しくて仕方なかったよ","is_continuation":true},{"time":177.51,"jp_plain":"打ち明けてくれた過去も","jp_ruby":"打(う)ち明(あ)けてくれた過去(かこ)も","cn":"你向我坦白的過去也好","marumaru_jp":"打ち明けてくれた過去も","is_continuation":false},{"time":181.76,"jp_plain":"二人が見た青空も忘れない","jp_ruby":"二人(ふたり)が見(み)た青空(あおぞら)も忘(わす)れない","cn":"我們共同仰望過的藍天也罷 我都不會忘記","marumaru_jp":"二人が見た青空も忘れない","is_continuation":false},{"time":214.97,"jp_plain":"一緒に居られるだけで","jp_ruby":"一緒(いっしょ)に居(い)られるだけで","cn":"僅僅是兩個人在一起","marumaru_jp":"一緒に居られるだけで","is_continuation":true},{"time":219.16,"jp_plain":"手と手を重ね合えるだけで","jp_ruby":"手(て)と手(て)を重(かさ)ね合(あ)えるだけで","cn":"僅僅是兩個人牽着手就足夠","marumaru_jp":"手と手を重ね合えるだけで良かったね","is_continuation":true},{"time":224.1,"jp_plain":"良かったね","jp_ruby":"良(よ)かったね","cn":"僅僅是兩個人牽着手就足夠","marumaru_jp":"手と手を重ね合えるだけで良かったね","is_continuation":true},{"time":227.34,"jp_plain":"大切な事ほど","jp_ruby":"大切(たいせつ)な事(こと)ほど","cn":"越是重要的事情也許就藏在熟悉的地方","marumaru_jp":"大切な事ほど見慣れた場所で","is_continuation":true},{"time":230.82999999999998,"jp_plain":"見慣れた場所で","jp_ruby":"見慣(みな)れた場所(ばしょ)で","cn":"越是重要的事情也許就藏在熟悉的地方","marumaru_jp":"大切な事ほど見慣れた場所で","is_continuation":true},{"time":233.51,"jp_plain":"輝くのかもしれない","jp_ruby":"輝(かがや)くのかもしれない","cn":"暗地閃耀着光芒","marumaru_jp":"輝くのかもしれない","is_continuation":true},{"time":239.82,"jp_plain":"微笑んでくれた顔も","jp_ruby":"微笑(ほほえ)んでくれた顔(かお)も","cn":"你微笑的面容","marumaru_jp":"微笑んでくれた顔も","is_continuation":true},{"time":244.07,"jp_plain":"怒った顔も愛しくて","jp_ruby":"怒(おこ)った顔(かお)も愛(いと)しくて","cn":"生氣的樣子 都可愛得無可救藥","marumaru_jp":"怒った顔も愛しくて仕方なかったよ","is_continuation":true},{"time":248.36,"jp_plain":"仕方なかったよ","jp_ruby":"仕方(しかた)なかったよ","cn":"生氣的樣子 都可愛得無可救藥","marumaru_jp":"怒った顔も愛しくて仕方なかったよ","is_continuation":true},{"time":252.33,"jp_plain":"君の事が好きだよ","jp_ruby":"君(きみ)の事(こと)が好(す)きだよ","cn":"我喜歡你","marumaru_jp":"君の事が好きだよ","is_continuation":false},{"time":256.13,"jp_plain":"これからもずっと","jp_ruby":"これからもずっと","cn":"從今以後也想永遠緊緊抱住你","marumaru_jp":"これからもずっと君を抱きしめたい","is_continuation":false},{"time":259.26,"jp_plain":"君を抱きしめたい","jp_ruby":"君(きみ)を抱(だ)きしめたい","cn":"從今以後也想永遠緊緊抱住你","marumaru_jp":"これからもずっと君を抱きしめたい","is_continuation":true},{"time":264.67,"jp_plain":"君を強く抱きしめたい","jp_ruby":"君(きみ)を強(つよ)く抱(だ)きしめたい","cn":"想要緊緊抱住你","marumaru_jp":"君を強く抱きしめたい","is_continuation":true}]
+};
+
+/* ============================================================
+   狀態
+   ============================================================ */
+const state = {
+  song: null,
+  currentTime: 0,
+  isPlaying: false,
+  timerInterval: null,
+  startWallTime: 0,
+  startSongTime: 0,
+  offset: 0, // 時間微調(秒)
+  settings: {
+    ruby: 'on',
+    katakana: 'off', // 片假名是否標假名:預設不標
+    cn: 'on',
+    sizeMain: 28,  // 日文主字 px
+    sizeRuby: 45,  // 振假名相對主字的 % (例如45表示0.45em)
+    sizeCn: 15     // 中文翻譯 px
+  },
+  activeLineIdx: -1
+};
+
+/* ============================================================
+   DOM 引用
+   ============================================================ */
+const $ = id => document.getElementById(id);
+const app = $('app');
+const startScreen = $('startScreen');
+const songHeader = $('songHeader');
+const lyricsContainer = $('lyricsContainer');
+const controls = $('controls');
+const songTitle = $('songTitle');
+const songArtist = $('songArtist');
+const currentTimeEl = $('currentTime');
+const totalTimeEl = $('totalTime');
+const progressFill = $('progressFill');
+const progressThumb = $('progressThumb');
+const progressBar = $('progressBar');
+const playPauseBtn = $('playPauseBtn');
+const settingsPanel = $('settingsPanel');
+const overlay = $('overlay');
+const offsetValueEl = $('offsetValue');
+
+/* ============================================================
+   工具函式
+   ============================================================ */
+function formatTime(sec) {
+  if (isNaN(sec) || sec < 0) sec = 0;
+  const m = Math.floor(sec / 60);
+  const s = Math.floor(sec % 60);
+  return `${m}:${s.toString().padStart(2, '0')}`;
+}
+
+// 把 "君(きみ)が前(まえ)に" 轉成 HTML <ruby> 標籤
+// 規則:從 ( 往前找,只抓緊鄰的「漢字或片假名」,遇到平假名等就停
+// 例如 "分(わ)かっていた筈(はず)" → "分" 配「わ」,"筈" 配「はず」
+// 不會把整段「かっていた筈」當作漢字
+function renderRuby(text, skipKatakana = false) {
+  const result = [];
+  let i = 0;
+
+  while (i < text.length) {
+    const parenStart = text.indexOf('(', i);
+    if (parenStart === -1) {
+      result.push(text.substring(i));
+      break;
+    }
+
+    const parenEnd = text.indexOf(')', parenStart);
+    if (parenEnd === -1) {
+      result.push(text.substring(i));
+      break;
+    }
+
+    const reading = text.substring(parenStart + 1, parenEnd);
+
+    // 從 parenStart-1 往前找:連續的「漢字或片假名」
+    let kanjiStart = parenStart;
+    for (let j = parenStart - 1; j >= i; j--) {
+      const ch = text.charAt(j);
+      const code = ch.charCodeAt(0);
+      // 漢字 (CJK): U+4E00 ~ U+9FFF
+      // 片假名: U+30A0 ~ U+30FF
+      const isKanji = code >= 0x4E00 && code <= 0x9FFF;
+      const isKatakana = code >= 0x30A0 && code <= 0x30FF;
+      if (isKanji || isKatakana) {
+        kanjiStart = j;
+      } else {
+        break;
+      }
+    }
+
+    // 先放 kanjiStart 之前的文字(平假名等)
+    if (kanjiStart > i) {
+      result.push(text.substring(i, kanjiStart));
+    }
+
+    const kanjiPart = text.substring(kanjiStart, parenStart);
+
+    // 判斷是純片假名還是含漢字
+    let allKatakana = true;
+    for (const ch of kanjiPart) {
+      const code = ch.charCodeAt(0);
+      if (!(code >= 0x30A0 && code <= 0x30FF)) {
+        allKatakana = false;
+        break;
+      }
+    }
+
+    if (skipKatakana && allKatakana) {
+      // 純片假名 + 用戶選擇不標假名 → 直接顯示片假名
+      result.push(kanjiPart);
+    } else {
+      result.push(`<ruby>${kanjiPart}<rt>${reading}</rt></ruby>`);
+    }
+
+    i = parenEnd + 1;
+  }
+
+  return result.join('');
+}
+
+// 把 "君(きみ)が前(まえ)に" 移除假名 -> "君が前に"
+function stripRuby(text) {
+  return text.replace(/\(([^)]+)\)/g, '');
+}
+
+/* ============================================================
+   載入歌曲
+   ============================================================ */
+function loadSong(song) {
+  state.song = song;
+  state.currentTime = 0;
+  state.isPlaying = false;
+  state.activeLineIdx = -1;
+
+  songTitle.textContent = song.title || '未知歌曲';
+  songArtist.textContent = song.artist || '';
+
+  renderLyrics();
+  updateTotalTime();
+  resetPlayer();
+
+  startScreen.classList.add('hidden');
+  songHeader.style.display = 'block';
+  lyricsContainer.style.display = 'block';
+  controls.style.display = 'block';
+}
+
+function updateTotalTime() {
+  let dur = state.song.duration || 0;
+  if (!dur && state.song.lines.length) {
+    // 沒給總長度,用最後一句時間 + 5秒當作預設
+    dur = state.song.lines[state.song.lines.length - 1].time + 5;
+  }
+  state.song.duration = dur;
+  totalTimeEl.textContent = formatTime(dur);
+}
+
+/* ============================================================
+   歌詞渲染
+   ============================================================ */
+function renderLyrics() {
+  lyricsContainer.innerHTML = '';
+
+  state.song.lines.forEach((line, idx) => {
+    const div = document.createElement('div');
+    div.className = 'line';
+    div.dataset.idx = idx;
+    div.dataset.time = line.time;
+    if (line.is_continuation) div.classList.add('continuation');
+
+    // 日文(可能有振假名)
+    const jpDiv = document.createElement('div');
+    jpDiv.className = 'line-jp';
+
+    const rubyText = line.jp_ruby || line.jp_plain || '';
+    if (state.settings.ruby === 'on' && rubyText.includes('(')) {
+      // skipKatakana = true 表示「不標片假名讀音」
+      const skipKatakana = state.settings.katakana === 'off';
+      jpDiv.innerHTML = renderRuby(rubyText, skipKatakana);
+    } else {
+      jpDiv.textContent = stripRuby(rubyText);
+    }
+    div.appendChild(jpDiv);
+
+    // 中文翻譯
+    if (state.settings.cn === 'on' && line.cn) {
+      const cnDiv = document.createElement('div');
+      cnDiv.className = 'line-cn';
+      cnDiv.textContent = line.cn;
+      div.appendChild(cnDiv);
+    }
+
+    // 點擊跳轉
+    div.addEventListener('click', () => {
+      seekTo(line.time);
+    });
+
+    lyricsContainer.appendChild(div);
+  });
+
+  applyFontSize();
+}
+
+function applyFontSize() {
+  const main = state.settings.sizeMain;
+  const rubyRatio = state.settings.sizeRuby / 100;
+  const cn = state.settings.sizeCn;
+
+  document.querySelectorAll('.line-jp').forEach(el => {
+    el.style.fontSize = main + 'px';
+  });
+  document.querySelectorAll('.line-jp rt').forEach(el => {
+    el.style.fontSize = rubyRatio + 'em';
+  });
+  document.querySelectorAll('.line-cn').forEach(el => {
+    el.style.fontSize = cn + 'px';
+  });
+}
+
+/* ============================================================
+   播放邏輯(計時器,不需要音檔)
+   ============================================================ */
+function play() {
+  if (state.isPlaying) return;
+  state.isPlaying = true;
+  state.startWallTime = performance.now();
+  state.startSongTime = state.currentTime;
+
+  state.timerInterval = setInterval(tick, 50); // 每50ms更新
+  playPauseBtn.textContent = '⏸';
+}
+
+function pause() {
+  if (!state.isPlaying) return;
+  state.isPlaying = false;
+  clearInterval(state.timerInterval);
+  playPauseBtn.textContent = '▶';
+}
+
+function togglePlay() {
+  if (state.isPlaying) pause(); else play();
+}
+
+function tick() {
+  const elapsed = (performance.now() - state.startWallTime) / 1000;
+  state.currentTime = state.startSongTime + elapsed;
+
+  if (state.currentTime >= state.song.duration) {
+    state.currentTime = state.song.duration;
+    pause();
+  }
+
+  updateUI();
+}
+
+function resetPlayer() {
+  pause();
+  state.currentTime = 0;
+  updateUI();
+}
+
+function seekTo(t) {
+  state.currentTime = Math.max(0, Math.min(t, state.song.duration));
+  if (state.isPlaying) {
+    // 重設計時器基準
+    state.startWallTime = performance.now();
+    state.startSongTime = state.currentTime;
+  }
+  updateUI(true);
+}
+
+function seekBy(delta) {
+  seekTo(state.currentTime + delta);
+}
+
+/* ============================================================
+   UI 更新
+   ============================================================ */
+function updateUI(forceScroll = false) {
+  // 時間文字
+  currentTimeEl.textContent = formatTime(state.currentTime);
+
+  // 進度條
+  const pct = (state.currentTime / state.song.duration) * 100;
+  progressFill.style.width = pct + '%';
+  progressThumb.style.left = pct + '%';
+
+  // 找出當前句
+  const effectiveTime = state.currentTime + state.offset;
+  let newIdx = -1;
+  for (let i = 0; i < state.song.lines.length; i++) {
+    if (state.song.lines[i].time <= effectiveTime) {
+      newIdx = i;
+    } else {
+      break;
+    }
+  }
+
+  if (newIdx !== state.activeLineIdx) {
+    // 更新高亮
+    document.querySelectorAll('.line').forEach((el, i) => {
+      el.classList.remove('active', 'next');
+      if (i < newIdx) el.classList.add('passed');
+      else el.classList.remove('passed');
+    });
+
+    if (newIdx >= 0) {
+      const activeEl = lyricsContainer.querySelector(`[data-idx="${newIdx}"]`);
+      if (activeEl) {
+        activeEl.classList.add('active');
+        scrollToLine(activeEl);
+      }
+    }
+
+    // 標記下一句(預告)
+    const nextIdx = newIdx + 1;
+    if (nextIdx < state.song.lines.length) {
+      const nextEl = lyricsContainer.querySelector(`[data-idx="${nextIdx}"]`);
+      if (nextEl) nextEl.classList.add('next');
+    }
+
+    state.activeLineIdx = newIdx;
+  } else if (forceScroll && newIdx >= 0) {
+    const activeEl = lyricsContainer.querySelector(`[data-idx="${newIdx}"]`);
+    if (activeEl) scrollToLine(activeEl);
+  }
+}
+
+function scrollToLine(el) {
+  const containerRect = lyricsContainer.getBoundingClientRect();
+  const elRect = el.getBoundingClientRect();
+  const containerCenter = containerRect.height / 2;
+  const elCenter = elRect.top + elRect.height / 2 - containerRect.top;
+  const delta = elCenter - containerCenter;
+  lyricsContainer.scrollBy({ top: delta, behavior: 'smooth' });
+}
+
+/* ============================================================
+   進度條拖曳
+   ============================================================ */
+let isDragging = false;
+
+function handleProgressInteract(clientX) {
+  const rect = progressBar.getBoundingClientRect();
+  const x = clientX - rect.left;
+  const pct = Math.max(0, Math.min(1, x / rect.width));
+  seekTo(pct * state.song.duration);
+}
+
+progressBar.addEventListener('mousedown', e => {
+  isDragging = true;
+  handleProgressInteract(e.clientX);
+});
+
+document.addEventListener('mousemove', e => {
+  if (isDragging) handleProgressInteract(e.clientX);
+});
+
+document.addEventListener('mouseup', () => {
+  isDragging = false;
+});
+
+progressBar.addEventListener('touchstart', e => {
+  isDragging = true;
+  handleProgressInteract(e.touches[0].clientX);
+}, { passive: true });
+
+document.addEventListener('touchmove', e => {
+  if (isDragging) handleProgressInteract(e.touches[0].clientX);
+}, { passive: true });
+
+document.addEventListener('touchend', () => {
+  isDragging = false;
+});
+
+/* ============================================================
+   按鈕事件
+   ============================================================ */
+playPauseBtn.addEventListener('click', togglePlay);
+$('back5').addEventListener('click', () => seekBy(-5));
+$('back10').addEventListener('click', () => seekBy(-10));
+$('fwd5').addEventListener('click', () => seekBy(5));
+$('fwd10').addEventListener('click', () => seekBy(10));
+
+$('settingsBtn').addEventListener('click', () => {
+  settingsPanel.classList.add('open');
+  overlay.classList.add('active');
+});
+
+$('closeSettings').addEventListener('click', closeSettings);
+overlay.addEventListener('click', closeSettings);
+
+function closeSettings() {
+  settingsPanel.classList.remove('open');
+  overlay.classList.remove('active');
+}
+
+$('reloadBtn').addEventListener('click', () => {
+  if (confirm('返回主畫面換歌?')) {
+    pause();
+    startScreen.classList.remove('hidden');
+    songHeader.style.display = 'none';
+    lyricsContainer.style.display = 'none';
+    controls.style.display = 'none';
+  }
+});
+
+/* ============================================================
+   設定切換
+   ============================================================ */
+document.querySelectorAll('[data-setting]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const setting = btn.dataset.setting;
+    const value = btn.dataset.value;
+    state.settings[setting] = value;
+
+    // 切換高亮
+    document.querySelectorAll(`[data-setting="${setting}"]`).forEach(b => {
+      b.classList.toggle('active', b.dataset.value === value);
+    });
+
+    // 即時更新
+    if (setting === 'ruby' || setting === 'cn' || setting === 'katakana') {
+      renderLyrics();
+      state.activeLineIdx = -1;
+      updateUI(true);
+    } else if (setting === 'size') {
+      applyFontSize();
+    }
+  });
+});
+
+$('offsetMinus').addEventListener('click', () => {
+  state.offset = Math.round((state.offset - 0.5) * 10) / 10;
+  offsetValueEl.textContent = state.offset.toFixed(1) + 's';
+  state.activeLineIdx = -1;
+  updateUI(true);
+});
+
+$('offsetPlus').addEventListener('click', () => {
+  state.offset = Math.round((state.offset + 0.5) * 10) / 10;
+  offsetValueEl.textContent = state.offset.toFixed(1) + 's';
+  state.activeLineIdx = -1;
+  updateUI(true);
+});
+
+/* ============================================================
+   字體大小滑桿
+   ============================================================ */
+function setupSlider(sliderId, valueId, settingKey, suffix = '') {
+  const slider = $(sliderId);
+  const valueEl = $(valueId);
+
+  function update() {
+    state.settings[settingKey] = parseInt(slider.value);
+    valueEl.textContent = slider.value + suffix;
+    applyFontSize();
+  }
+
+  slider.addEventListener('input', update);
+  // 初始化顯示
+  valueEl.textContent = slider.value + suffix;
+}
+
+setupSlider('sizeMain', 'sizeMainValue', 'sizeMain', 'px');
+setupSlider('sizeRuby', 'sizeRubyValue', 'sizeRuby', '%');
+setupSlider('sizeCn', 'sizeCnValue', 'sizeCn', 'px');
+
+/* ============================================================
+   檔案載入
+   ============================================================ */
+$('presetYakimochi').addEventListener('click', () => {
+  loadSong(YAKIMOCHI_DATA);
+});
+
+$('lrcInput').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const text = ev.target.result;
+      let song;
+
+      if (file.name.endsWith('.json')) {
+        // JSON 格式
+        const data = JSON.parse(text);
+        if (Array.isArray(data)) {
+          song = {
+            title: file.name.replace('.json', ''),
+            artist: '',
+            lines: data
+          };
+        } else {
+          song = data;
+        }
+      } else {
+        // LRC 格式
+        song = parseLRC(text, file.name);
+      }
+
+      loadSong(song);
+    } catch (err) {
+      alert('檔案格式錯誤: ' + err.message);
+    }
+  };
+  reader.readAsText(file, 'UTF-8');
+});
+
+function parseLRC(text, filename) {
+  const lines = [];
+  let title = filename.replace(/\.[^.]+$/, '');
+  let artist = '';
+
+  text.split('\n').forEach(line => {
+    // 解析標題
+    const tiMatch = line.match(/\[ti:(.+?)\]/);
+    if (tiMatch) { title = tiMatch[1].trim(); return; }
+    const arMatch = line.match(/\[ar:(.+?)\]/);
+    if (arMatch) { artist = arMatch[1].trim(); return; }
+
+    // 解析時間軸
+    const timeMatch = line.match(/\[(\d+):(\d+\.?\d*)\](.*)/);
+    if (timeMatch) {
+      const mins = parseInt(timeMatch[1]);
+      const secs = parseFloat(timeMatch[2]);
+      const time = mins * 60 + secs;
+      const content = timeMatch[3].trim();
+      if (content && !content.match(/^(作[词詞曲]|編曲)/)) {
+        lines.push({
+          time: time,
+          jp_plain: content,
+          jp_ruby: content,
+          cn: ''
+        });
+      }
+    }
+  });
+
+  return { title, artist, lines };
+}
+
+/* ============================================================
+   鍵盤快捷鍵(電腦版)
+   ============================================================ */
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT') return;
+  if (state.song === null) return;
+
+  switch (e.key) {
+    case ' ':
+      e.preventDefault();
+      togglePlay();
+      break;
+    case 'ArrowLeft':
+      seekBy(-5);
+      break;
+    case 'ArrowRight':
+      seekBy(5);
+      break;
+  }
+});
+
+/* ============================================================
+   防止頁面被誤刷新 / 雙擊縮放
+   ============================================================ */
+let lastTouchEnd = 0;
+document.addEventListener('touchend', e => {
+  const now = Date.now();
+  if (now - lastTouchEnd <= 300) {
+    e.preventDefault();
+  }
+  lastTouchEnd = now;
+}, { passive: false });
+
+document.addEventListener('gesturestart', e => e.preventDefault());
+</script>
+</body>
+</html>
