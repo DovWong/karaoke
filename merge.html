@@ -1,0 +1,1671 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>歌詞合併工具 · Lyrics Merger</title>
+
+<!-- 共用 icon -->
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+<meta name="theme-color" content="#0a0a0f">
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+TC:wght@300;400;500;700&family=Zen+Maru+Gothic:wght@500;700&display=swap');
+
+:root {
+  --bg: #0a0a0f;
+  --bg-elev: #14141f;
+  --bg-card: #1a1a26;
+  --bg-input: #0d0d15;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.15);
+  --text: rgba(255, 255, 255, 0.92);
+  --text-mid: rgba(255, 255, 255, 0.6);
+  --text-dim: rgba(255, 255, 255, 0.35);
+  --accent: #ff3e7f;
+  --accent-cool: #00e5ff;
+  --accent-warm: #ffd84f;
+  --accent-purple: #b14fff;
+  --ok: #4ade80;
+  --warn: #fbbf24;
+  --error: #ef4444;
+  --ruby: #ff9ec7;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Noto Sans TC', -apple-system, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+/* 背景紋理 */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(ellipse at 20% 0%, rgba(177, 79, 255, 0.08), transparent 50%),
+    radial-gradient(ellipse at 80% 100%, rgba(255, 62, 127, 0.06), transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.container {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 24px 80px;
+}
+
+/* ========== Header ========== */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.header-title {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.header-logo {
+  font-family: 'Zen Maru Gothic', serif;
+  font-size: 28px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--accent), var(--accent-purple), var(--accent-cool));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  letter-spacing: -1px;
+}
+
+.header-subtitle {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.back-link {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text-mid);
+  text-decoration: none;
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.back-link:hover {
+  color: var(--text);
+  border-color: var(--border-strong);
+  background: var(--bg-elev);
+}
+
+/* ========== Step layout ========== */
+.step {
+  margin-bottom: 32px;
+}
+
+.step-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  background: var(--bg-elev);
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.step-title {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+}
+
+.step-hint {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-left: auto;
+}
+
+/* ========== Form / Inputs ========== */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-mid);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.input, .textarea {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.input:focus, .textarea:focus {
+  border-color: var(--accent);
+  background: var(--bg-elev);
+}
+
+.textarea {
+  font-family: 'JetBrains Mono', 'Noto Sans JP', monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  resize: vertical;
+  min-height: 180px;
+  white-space: pre;
+  overflow-x: auto;
+}
+
+/* ========== Tabs ========== */
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 12px;
+  background: var(--bg-elev);
+  padding: 4px;
+  border-radius: 10px;
+  width: fit-content;
+}
+
+.tab {
+  padding: 8px 16px;
+  background: transparent;
+  border: none;
+  color: var(--text-mid);
+  border-radius: 7px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+
+.tab:hover {
+  color: var(--text);
+}
+
+.tab.active {
+  background: var(--bg-card);
+  color: var(--text);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.tab-panel {
+  display: none;
+}
+
+.tab-panel.active {
+  display: block;
+  animation: fadeIn 0.2s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ========== Upload zone ========== */
+.dropzone {
+  background: var(--bg-input);
+  border: 2px dashed var(--border-strong);
+  border-radius: 12px;
+  padding: 40px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dropzone:hover, .dropzone.dragover {
+  border-color: var(--accent);
+  background: var(--bg-elev);
+}
+
+.dropzone-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+  opacity: 0.6;
+}
+
+.dropzone-text {
+  font-size: 13px;
+  color: var(--text-mid);
+}
+
+.dropzone-hint {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 4px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.file-input-hidden {
+  display: none;
+}
+
+/* ========== Manual entry table ========== */
+.manual-table {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.manual-row {
+  display: grid;
+  grid-template-columns: 30px 1fr 1fr 30px;
+  gap: 8px;
+  padding: 8px;
+  border-bottom: 1px solid var(--border);
+  align-items: center;
+}
+
+.manual-row:last-child { border-bottom: none; }
+
+.manual-row-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-dim);
+  text-align: center;
+}
+
+.manual-row input {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text);
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+}
+
+.manual-row input:focus {
+  border-color: var(--border-strong);
+  background: var(--bg);
+}
+
+.manual-row input.jp-input {
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+.manual-row-remove {
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.manual-row-remove:hover {
+  color: var(--error);
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.manual-add {
+  width: 100%;
+  padding: 10px;
+  background: var(--bg-elev);
+  border: 1px dashed var(--border-strong);
+  border-radius: 8px;
+  color: var(--text-mid);
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: all 0.2s;
+}
+
+.manual-add:hover {
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+/* ========== Merge button ========== */
+.merge-section {
+  display: flex;
+  justify-content: center;
+  margin: 40px 0;
+}
+
+.btn-merge {
+  position: relative;
+  padding: 16px 48px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-purple));
+  border: none;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 100px;
+  cursor: pointer;
+  box-shadow: 0 6px 24px rgba(255, 62, 127, 0.3);
+  transition: all 0.2s;
+  font-family: inherit;
+  letter-spacing: 0.5px;
+}
+
+.btn-merge:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(255, 62, 127, 0.4);
+}
+
+.btn-merge:active {
+  transform: translateY(0);
+}
+
+.btn-merge:disabled {
+  background: var(--bg-elev);
+  color: var(--text-dim);
+  box-shadow: none;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ========== Preview ========== */
+.preview-section {
+  display: none;
+}
+
+.preview-section.visible {
+  display: block;
+}
+
+.preview-stats {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  min-width: 120px;
+}
+
+.stat-label {
+  font-size: 10px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.stat-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 20px;
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+.stat.ok .stat-value { color: var(--ok); }
+.stat.warn .stat-value { color: var(--warn); }
+.stat.error .stat-value { color: var(--error); }
+
+.preview-list {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.preview-line {
+  display: grid;
+  grid-template-columns: 60px 1fr 1fr 30px;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  align-items: start;
+  transition: background 0.15s;
+}
+
+.preview-line:last-child { border-bottom: none; }
+
+.preview-line:hover {
+  background: var(--bg-elev);
+}
+
+.preview-line.warning {
+  background: rgba(251, 191, 36, 0.04);
+  border-left: 3px solid var(--warn);
+  padding-left: 13px;
+}
+
+.preview-line.error {
+  background: rgba(239, 68, 68, 0.04);
+  border-left: 3px solid var(--error);
+  padding-left: 13px;
+}
+
+.preview-time {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-dim);
+  padding-top: 4px;
+}
+
+.preview-jp {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.preview-jp ruby rt {
+  font-size: 0.5em;
+  color: var(--ruby);
+}
+
+.preview-cn {
+  font-size: 13px;
+  color: var(--accent-cool);
+  line-height: 1.5;
+}
+
+.preview-cn.empty {
+  color: var(--text-dim);
+  font-style: italic;
+}
+
+.preview-edit {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-mid);
+  border-radius: 4px;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  font-size: 11px;
+  transition: all 0.2s;
+}
+
+.preview-edit:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* 編輯模式 */
+.preview-jp-input, .preview-cn-input {
+  width: 100%;
+  background: var(--bg-input);
+  border: 1px solid var(--accent);
+  color: var(--text);
+  padding: 6px 8px;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+}
+
+.preview-jp-input {
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+/* ========== Output section ========== */
+.output-section {
+  display: none;
+  margin-top: 24px;
+}
+
+.output-section.visible {
+  display: block;
+}
+
+.output-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.btn {
+  padding: 10px 20px;
+  background: var(--bg-elev);
+  border: 1px solid var(--border-strong);
+  color: var(--text);
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn:hover {
+  background: var(--bg-card);
+  border-color: var(--accent);
+}
+
+.btn.primary {
+  background: linear-gradient(135deg, var(--accent), var(--accent-purple));
+  border-color: transparent;
+  color: white;
+}
+
+.btn.primary:hover {
+  filter: brightness(1.1);
+}
+
+.output-display {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  max-height: 400px;
+  overflow: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  color: var(--text);
+}
+
+/* ========== Toast ========== */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--bg-card);
+  border: 1px solid var(--border-strong);
+  color: var(--text);
+  padding: 12px 20px;
+  border-radius: 100px;
+  font-size: 13px;
+  z-index: 1000;
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.toast.ok { border-color: var(--ok); }
+.toast.error { border-color: var(--error); }
+
+/* ========== Helper info ========== */
+.help-box {
+  background: rgba(0, 229, 255, 0.04);
+  border: 1px solid rgba(0, 229, 255, 0.15);
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin: 16px 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-mid);
+}
+
+.help-box strong {
+  color: var(--accent-cool);
+  font-weight: 600;
+}
+
+.help-box code {
+  background: var(--bg-input);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+  color: var(--ruby);
+}
+
+details.help-details {
+  margin-top: 12px;
+}
+
+details.help-details summary {
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--text-mid);
+  padding: 6px 0;
+  user-select: none;
+}
+
+details.help-details summary:hover {
+  color: var(--text);
+}
+
+details.help-details[open] summary {
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+/* ========== Responsive ========== */
+@media (max-width: 768px) {
+  .container { padding: 20px 16px 60px; }
+  .header { flex-wrap: wrap; gap: 12px; }
+  .header-logo { font-size: 22px; }
+  .form-grid { grid-template-columns: 1fr; gap: 12px; }
+  .preview-line { grid-template-columns: 50px 1fr; gap: 8px; }
+  .preview-cn { grid-column: 2; }
+  .preview-edit { grid-column: 2; justify-self: end; }
+  .textarea { min-height: 140px; font-size: 12px; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-title">
+      <span class="header-logo">合併</span>
+      <span class="header-subtitle">LYRICS MERGER</span>
+    </div>
+    <a href="./karaoke.html" class="back-link">← 回播放器</a>
+  </div>
+
+  <!-- 基本資訊 -->
+  <div class="step">
+    <div class="step-header">
+      <span class="step-num">0</span>
+      <span class="step-title">歌曲基本資訊</span>
+    </div>
+    <div class="form-grid">
+      <div class="field">
+        <label class="field-label">歌名(必填)</label>
+        <input type="text" class="input" id="songTitle" placeholder="例如:ヤキモチ">
+      </div>
+      <div class="field">
+        <label class="field-label">歌手</label>
+        <input type="text" class="input" id="songArtist" placeholder="例如:高橋優">
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 1: Marumaru 歌詞 -->
+  <div class="step">
+    <div class="step-header">
+      <span class="step-num">1</span>
+      <span class="step-title">Marumaru 歌詞(振假名+翻譯)</span>
+      <span class="step-hint" id="marumaruStatus">尚未輸入</span>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="marumaru-text">📝 貼上文字</button>
+      <button class="tab" data-tab="marumaru-pdf">📎 上傳 PDF</button>
+      <button class="tab" data-tab="marumaru-manual">⌨️ 手動輸入</button>
+    </div>
+
+    <!-- Tab: 貼上文字 -->
+    <div class="tab-panel active" data-panel="marumaru-text">
+      <div class="help-box">
+        <strong>怎麼貼?</strong> 從 marumaru-x.com 打開歌詞頁面,**滾動整頁複製**(包括日文與中文),然後貼到下面。
+        系統會自動偵測格式,把<code>漢字(假名)</code>跟對應的中文翻譯配對。
+      </div>
+      <textarea
+        class="textarea"
+        id="marumaruText"
+        placeholder="貼上 marumaru 整頁複製的內容,類似:&#10;&#10;君(きみ)が前(まえ)に付(つ)き合(あ)っていた人(ひと)のこと&#10;你之前交往過的人的事情&#10;僕(ぼく)に打(う)ち明(あ)けてくれたとき&#10;在你對我全盤傾訴的時刻&#10;..."
+      ></textarea>
+    </div>
+
+    <!-- Tab: 上傳 PDF -->
+    <div class="tab-panel" data-panel="marumaru-pdf">
+      <div class="help-box">
+        <strong>怎麼用?</strong> 把從 marumaru 下載/列印的 PDF 拖進來,或點選上傳。系統會自動提取歌詞文字。
+      </div>
+      <div class="dropzone" id="pdfDropzone">
+        <div class="dropzone-icon">📄</div>
+        <div class="dropzone-text">拖曳 PDF 到這裡,或<u>點選上傳</u></div>
+        <div class="dropzone-hint">支援 marumaru 匯出的 PDF</div>
+        <input type="file" class="file-input-hidden" id="pdfInput" accept=".pdf">
+      </div>
+      <div id="pdfStatus" style="margin-top:12px;font-size:13px;color:var(--text-mid);"></div>
+    </div>
+
+    <!-- Tab: 手動輸入 -->
+    <div class="tab-panel" data-panel="marumaru-manual">
+      <div class="help-box">
+        <strong>格式:</strong> 一行<code>漢字(假名)</code>格式的日文,一行對應的中文翻譯。例如:
+        <br>第1欄填 <code>君(きみ)が前(まえ)に</code>,第2欄填 <code>你之前</code>。
+        <br>不需要振假名的句子直接寫日文即可。
+      </div>
+      <div class="manual-table" id="manualTable">
+        <!-- 動態產生 -->
+      </div>
+      <button class="manual-add" id="manualAdd">+ 新增一行</button>
+    </div>
+  </div>
+
+  <!-- Step 2: 時間軸 -->
+  <div class="step">
+    <div class="step-header">
+      <span class="step-num">2</span>
+      <span class="step-title">時間軸 LRC</span>
+      <span class="step-hint" id="lrcStatus">尚未輸入</span>
+    </div>
+
+    <div class="help-box">
+      <strong>支援來源:</strong> 酷歌詞(kugeci)、網易雲音樂、QQ 音樂、Syair 等
+      <details class="help-details">
+        <summary>支援的格式範例(點開看)</summary>
+        <strong>標準 LRC:</strong><br>
+        <code>[00:25.61]君が前に</code><br>
+        <code>[00:27.88]付き合っていた人のこと</code><br><br>
+        <strong>網易雲格式(含毫秒):</strong><br>
+        <code>[00:25.610]君が前に</code><br><br>
+        <strong>含標題標籤:</strong><br>
+        <code>[ti:ヤキモチ]</code><br>
+        <code>[ar:高橋優]</code><br>
+        <code>[00:25.61]君が前に</code>
+      </details>
+    </div>
+
+    <textarea
+      class="textarea"
+      id="lrcText"
+      placeholder="貼上 LRC 內容,系統會自動解析時間軸,類似:&#10;&#10;[ti:ヤキモチ]&#10;[ar:高橋優]&#10;[00:25.61]君が前に&#10;[00:27.88]付き合っていた人のこと&#10;[00:31.72]僕に打ち明けてくれたとき&#10;..."
+    ></textarea>
+  </div>
+
+  <!-- Merge button -->
+  <div class="merge-section">
+    <button class="btn-merge" id="mergeBtn">✨ 合併歌詞</button>
+  </div>
+
+  <!-- Preview -->
+  <div class="preview-section" id="previewSection">
+    <div class="step-header">
+      <span class="step-num">3</span>
+      <span class="step-title">預覽合併結果</span>
+      <span class="step-hint">點任何一句可編輯</span>
+    </div>
+
+    <div class="preview-stats" id="previewStats"></div>
+    <div class="preview-list" id="previewList"></div>
+
+    <!-- Output -->
+    <div class="output-section visible" id="outputSection">
+      <div class="output-actions">
+        <button class="btn primary" id="downloadJson">💾 下載 .json</button>
+        <button class="btn" id="downloadLrc">📜 下載 .lrc</button>
+        <button class="btn" id="copyJson">📋 複製 JSON</button>
+        <button class="btn" id="copyLrc">📋 複製 LRC</button>
+        <button class="btn" id="toggleOutput">👁️ 顯示/隱藏內容</button>
+      </div>
+      <div class="output-display" id="outputDisplay" style="display:none;"></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- 載入 PDF.js 用於 PDF 解析 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+<script>
+/* ========================================================
+   PDF.js 設定
+   ======================================================== */
+if (typeof pdfjsLib !== 'undefined') {
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+}
+
+/* ========================================================
+   全域狀態
+   ======================================================== */
+const state = {
+  marumaruData: [],   // [{ruby:"君(きみ)が前(まえ)に...", cn:"你之前..."}]
+  lrcData: [],         // [{time: 25.61, text: "君が前に..."}]
+  mergedData: [],      // 合併結果
+  songTitle: '',
+  songArtist: ''
+};
+
+/* ========================================================
+   工具函式
+   ======================================================== */
+const $ = id => document.getElementById(id);
+
+function showToast(msg, type = 'ok', duration = 2500) {
+  const toast = $('toast');
+  toast.textContent = msg;
+  toast.className = 'toast show ' + type;
+  setTimeout(() => {
+    toast.className = 'toast ' + type;
+  }, duration);
+}
+
+function copyToClipboard(text) {
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text)
+      .then(() => showToast('已複製到剪貼簿', 'ok'))
+      .catch(() => fallbackCopy(text));
+  } else {
+    fallbackCopy(text);
+  }
+}
+
+function fallbackCopy(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  document.body.appendChild(ta);
+  ta.select();
+  try {
+    document.execCommand('copy');
+    showToast('已複製到剪貼簿', 'ok');
+  } catch (e) {
+    showToast('複製失敗,請手動複製', 'error');
+  }
+  document.body.removeChild(ta);
+}
+
+function downloadFile(content, filename, mime = 'application/json') {
+  const blob = new Blob([content], { type: mime + ';charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 100);
+}
+
+// 把純漢字 + 假名格式還原成純漢字(用於文字比對)
+function stripRuby(text) {
+  return text.replace(/\(([^)]+)\)/g, '');
+}
+
+// 把「漢字(假名)」格式轉成 ruby 標籤(用於預覽顯示)
+function renderRuby(text) {
+  const result = [];
+  let i = 0;
+  while (i < text.length) {
+    const parenStart = text.indexOf('(', i);
+    if (parenStart === -1) {
+      result.push(escapeHtml(text.substring(i)));
+      break;
+    }
+    const parenEnd = text.indexOf(')', parenStart);
+    if (parenEnd === -1) {
+      result.push(escapeHtml(text.substring(i)));
+      break;
+    }
+    const reading = text.substring(parenStart + 1, parenEnd);
+    // 從 parenStart 往前找連續漢字/片假名
+    let kanjiStart = parenStart;
+    for (let j = parenStart - 1; j >= i; j--) {
+      const code = text.charCodeAt(j);
+      const isKanji = code >= 0x4E00 && code <= 0x9FFF;
+      const isKatakana = code >= 0x30A0 && code <= 0x30FF;
+      if (isKanji || isKatakana) {
+        kanjiStart = j;
+      } else {
+        break;
+      }
+    }
+    if (kanjiStart > i) {
+      result.push(escapeHtml(text.substring(i, kanjiStart)));
+    }
+    const kanji = text.substring(kanjiStart, parenStart);
+    result.push(`<ruby>${escapeHtml(kanji)}<rt>${escapeHtml(reading)}</rt></ruby>`);
+    i = parenEnd + 1;
+  }
+  return result.join('');
+}
+
+function escapeHtml(s) {
+  return s.replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  })[c]);
+}
+
+/* ========================================================
+   Tab 切換
+   ======================================================== */
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    const target = tab.dataset.tab;
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.querySelector(`[data-panel="${target}"]`).classList.add('active');
+  });
+});
+
+/* ========================================================
+   Marumaru 文字解析
+   ========================================================
+   marumaru 的格式通常是「日文行」+「中文行」交替,
+   日文中可能含有「漢字(假名)」標註
+   策略:
+   - 一行一行掃描
+   - 若該行含日文字符(漢字/平假名/片假名),視為日文行
+   - 若該行不含日文字符,但含中文字符,視為中文翻譯
+   - 配對相鄰的「日文行 + 中文行」
+   ======================================================== */
+function hasJapanese(text) {
+  // 平假名 (3040-309F) 或 片假名 (30A0-30FF) 或 漢字 (4E00-9FFF)
+  return /[\u3040-\u309F\u30A0-\u30FF]/.test(text) ||
+         (/[\u4E00-\u9FFF]/.test(text) && /[()]/.test(text)); // 帶括號的漢字也算日文
+}
+
+function hasChinese(text) {
+  // 含中文但不含日文假名
+  return /[\u4E00-\u9FFF]/.test(text) && !/[\u3040-\u30FF]/.test(text);
+}
+
+function parseMarumaruText(text) {
+  if (!text || !text.trim()) return [];
+
+  // 清理:把 PDF 提取後的常見雜訊濾掉
+  let lines = text.split('\n')
+    .map(l => l.trim())
+    .filter(l => l.length > 0)
+    .filter(l => !l.match(/^(MARUMARU|marumaru|©|Copyright)/i))
+    .filter(l => !l.match(/^第\s*\d+\s*頁$/))
+    .filter(l => !l.match(/^Page \d+/i));
+
+  const result = [];
+  let pendingJp = null;
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+
+    // 判斷是日文還是中文
+    const isJp = hasJapanese(line);
+    const isCn = hasChinese(line) && !isJp;
+
+    if (isJp) {
+      // 如果之前有未配對的日文,先存它
+      if (pendingJp) {
+        result.push({ ruby: pendingJp, cn: '' });
+      }
+      pendingJp = line;
+    } else if (isCn && pendingJp) {
+      // 配對到中文翻譯
+      result.push({ ruby: pendingJp, cn: line });
+      pendingJp = null;
+    } else if (!isJp && !isCn) {
+      // 純假名行?(極少見,但要處理)
+      if (/[\u3040-\u309F\u30A0-\u30FF]/.test(line)) {
+        if (pendingJp) {
+          result.push({ ruby: pendingJp, cn: '' });
+        }
+        pendingJp = line;
+      }
+    }
+  }
+
+  // 最後可能有未配對的日文
+  if (pendingJp) {
+    result.push({ ruby: pendingJp, cn: '' });
+  }
+
+  return result;
+}
+
+$('marumaruText').addEventListener('input', e => {
+  const text = e.target.value;
+  state.marumaruData = parseMarumaruText(text);
+  updateMarumaruStatus();
+});
+
+function updateMarumaruStatus() {
+  const el = $('marumaruStatus');
+  if (state.marumaruData.length === 0) {
+    el.textContent = '尚未輸入';
+    el.style.color = 'var(--text-dim)';
+  } else {
+    const withCn = state.marumaruData.filter(d => d.cn).length;
+    el.textContent = `✓ ${state.marumaruData.length} 句(${withCn} 句有翻譯)`;
+    el.style.color = 'var(--ok)';
+  }
+}
+
+/* ========================================================
+   PDF 處理
+   ======================================================== */
+const pdfDropzone = $('pdfDropzone');
+const pdfInput = $('pdfInput');
+
+pdfDropzone.addEventListener('click', () => pdfInput.click());
+
+pdfDropzone.addEventListener('dragover', e => {
+  e.preventDefault();
+  pdfDropzone.classList.add('dragover');
+});
+
+pdfDropzone.addEventListener('dragleave', () => {
+  pdfDropzone.classList.remove('dragover');
+});
+
+pdfDropzone.addEventListener('drop', e => {
+  e.preventDefault();
+  pdfDropzone.classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type === 'application/pdf') {
+    handlePdf(file);
+  } else {
+    showToast('請上傳 PDF 檔', 'error');
+  }
+});
+
+pdfInput.addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (file) handlePdf(file);
+});
+
+async function handlePdf(file) {
+  $('pdfStatus').textContent = '⏳ 解析中...';
+
+  try {
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+
+    let allText = '';
+
+    // 逐頁讀取
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const textContent = await page.getTextContent();
+      // 用 y 座標分行,因為 PDF 的文字物件不一定按閱讀順序
+      allText += extractTextFromPdfPage(textContent) + '\n';
+    }
+
+    // 用解析後的文字填到 textarea
+    $('marumaruText').value = allText;
+    state.marumaruData = parseMarumaruText(allText);
+    updateMarumaruStatus();
+
+    // 切回文字 tab,讓使用者能檢視/修正
+    document.querySelector('[data-tab="marumaru-text"]').click();
+
+    $('pdfStatus').textContent = `✓ 提取完成,共 ${state.marumaruData.length} 句歌詞`;
+    $('pdfStatus').style.color = 'var(--ok)';
+    showToast(`PDF 解析完成 (${state.marumaruData.length} 句)`, 'ok');
+  } catch (err) {
+    console.error(err);
+    $('pdfStatus').textContent = '❌ 解析失敗:' + err.message;
+    $('pdfStatus').style.color = 'var(--error)';
+    showToast('PDF 解析失敗', 'error');
+  }
+}
+
+function extractTextFromPdfPage(textContent) {
+  // PDF.js 的 items 是片段,我們需要還原成行
+  // 策略:用 y 座標分行(同一 y = 同一行)
+  const items = textContent.items;
+  if (items.length === 0) return '';
+
+  // 按 y 座標分組(y 在 PDF 是反向的,大值在上)
+  // 容差 3 像素內視為同一行
+  const lines = [];
+  const tolerance = 3;
+
+  items.forEach(item => {
+    const y = Math.round(item.transform[5]);
+    const x = item.transform[4];
+    const str = item.str;
+
+    // 找有沒有相同 y 的行
+    let line = lines.find(l => Math.abs(l.y - y) <= tolerance);
+    if (!line) {
+      line = { y, items: [] };
+      lines.push(line);
+    }
+    line.items.push({ x, str });
+  });
+
+  // y 由大到小排序(在 PDF 上是從上到下)
+  lines.sort((a, b) => b.y - a.y);
+
+  // 每行內按 x 排序
+  return lines.map(line => {
+    line.items.sort((a, b) => a.x - b.x);
+    return line.items.map(i => i.str).join('');
+  }).join('\n');
+}
+
+/* ========================================================
+   手動輸入表格
+   ======================================================== */
+function initManualTable() {
+  const table = $('manualTable');
+  table.innerHTML = '';
+  // 預設 3 行
+  for (let i = 0; i < 3; i++) addManualRow();
+}
+
+function addManualRow() {
+  const table = $('manualTable');
+  const rowIdx = table.children.length;
+  const row = document.createElement('div');
+  row.className = 'manual-row';
+  row.innerHTML = `
+    <div class="manual-row-num">${rowIdx + 1}</div>
+    <input type="text" class="jp-input" placeholder="漢字(假名) 例:君(きみ)が好(す)き" data-type="jp">
+    <input type="text" placeholder="中文翻譯" data-type="cn">
+    <button class="manual-row-remove" title="刪除">✕</button>
+  `;
+
+  row.querySelector('.manual-row-remove').addEventListener('click', () => {
+    row.remove();
+    updateManualNumbers();
+    syncManualData();
+  });
+
+  row.querySelectorAll('input').forEach(input => {
+    input.addEventListener('input', syncManualData);
+  });
+
+  table.appendChild(row);
+}
+
+function updateManualNumbers() {
+  const table = $('manualTable');
+  Array.from(table.children).forEach((row, i) => {
+    row.querySelector('.manual-row-num').textContent = i + 1;
+  });
+}
+
+function syncManualData() {
+  const table = $('manualTable');
+  const data = [];
+  Array.from(table.children).forEach(row => {
+    const jp = row.querySelector('[data-type="jp"]').value.trim();
+    const cn = row.querySelector('[data-type="cn"]').value.trim();
+    if (jp) data.push({ ruby: jp, cn });
+  });
+
+  // 只有在當前是手動 tab 時才覆蓋 state
+  const activeTab = document.querySelector('.tab.active').dataset.tab;
+  if (activeTab === 'marumaru-manual') {
+    state.marumaruData = data;
+    updateMarumaruStatus();
+  }
+}
+
+$('manualAdd').addEventListener('click', addManualRow);
+
+// 當切到手動 tab,從 state 還原(如果有資料)
+document.querySelector('[data-tab="marumaru-manual"]').addEventListener('click', () => {
+  setTimeout(() => {
+    if (state.marumaruData.length > 0 && state.marumaruData.length !== $('manualTable').children.length) {
+      const table = $('manualTable');
+      table.innerHTML = '';
+      state.marumaruData.forEach(d => {
+        addManualRow();
+        const lastRow = table.lastElementChild;
+        lastRow.querySelector('[data-type="jp"]').value = d.ruby;
+        lastRow.querySelector('[data-type="cn"]').value = d.cn;
+      });
+      // 加一個空白行
+      addManualRow();
+    }
+  }, 50);
+});
+
+initManualTable();
+
+/* ========================================================
+   LRC 解析
+   ======================================================== */
+function parseLRC(text) {
+  if (!text || !text.trim()) return { lines: [], title: '', artist: '' };
+
+  const result = { lines: [], title: '', artist: '' };
+  const lines = text.split('\n');
+
+  for (const line of lines) {
+    // 標題標籤
+    let m = line.match(/^\[ti:(.+?)\]/);
+    if (m) { result.title = m[1].trim(); continue; }
+    m = line.match(/^\[ar:(.+?)\]/);
+    if (m) { result.artist = m[1].trim(); continue; }
+    m = line.match(/^\[al:.+?\]/);
+    if (m) continue; // 專輯名,跳過
+    m = line.match(/^\[by:.+?\]/);
+    if (m) continue; // 上傳者,跳過
+
+    // 時間軸:[mm:ss.xx] 或 [mm:ss.xxx](網易雲) 或 [mm:ss] 
+    // 一行可能有多個時間軸(同一段文字在多個時間點出現)
+    const timeMatches = [...line.matchAll(/\[(\d+):(\d+(?:\.\d+)?)\]/g)];
+    if (timeMatches.length === 0) continue;
+
+    // 取最後一個時間軸之後的文字當作歌詞內容
+    const lastTime = timeMatches[timeMatches.length - 1];
+    const lastIdx = lastTime.index + lastTime[0].length;
+    const content = line.substring(lastIdx).trim();
+
+    // 跳過 metadata 樣式的行(作詞/作曲)
+    if (content.match(/^(作[詞词曲]|編曲|演唱|歌手|專輯|filename|by\s|provider)/i)) continue;
+    if (!content) continue;
+
+    // 每個時間軸都產生一個項目
+    for (const tm of timeMatches) {
+      const mins = parseInt(tm[1]);
+      const secs = parseFloat(tm[2]);
+      const time = mins * 60 + secs;
+      result.lines.push({ time, text: content });
+    }
+  }
+
+  // 按時間排序
+  result.lines.sort((a, b) => a.time - b.time);
+  return result;
+}
+
+$('lrcText').addEventListener('input', e => {
+  const text = e.target.value;
+  const parsed = parseLRC(text);
+  state.lrcData = parsed.lines;
+
+  // 自動填標題
+  if (parsed.title && !$('songTitle').value) {
+    $('songTitle').value = parsed.title;
+    state.songTitle = parsed.title;
+  }
+  if (parsed.artist && !$('songArtist').value) {
+    $('songArtist').value = parsed.artist;
+    state.songArtist = parsed.artist;
+  }
+
+  updateLrcStatus();
+});
+
+function updateLrcStatus() {
+  const el = $('lrcStatus');
+  if (state.lrcData.length === 0) {
+    el.textContent = '尚未輸入';
+    el.style.color = 'var(--text-dim)';
+  } else {
+    el.textContent = `✓ ${state.lrcData.length} 句時間軸`;
+    el.style.color = 'var(--ok)';
+  }
+}
+
+/* ========================================================
+   合併邏輯
+   ========================================================
+   LRC 通常切得更細(48 句),marumaru 切得粗(34 句)。
+   策略:
+   - 對每句 LRC,在 marumaru 中找出「包含這句」的條目
+   - 從 marumaru 條目的 ruby 中,擷取對應這句 LRC 的子片段
+   - 中文翻譯:第一個片段顯示,後續同 marumaru 條目的片段顯示空字串
+     (但為了唱K方便,我們選擇:全部都顯示,讓使用者看到完整翻譯)
+   ======================================================== */
+function extractRubySegment(fullRuby, plainText) {
+  // 從 fullRuby (像「君(きみ)が前(まえ)に」) 中,
+  // 擷取對應 plainText (像「君が前に」) 的子片段(含振假名)
+  const plain = stripRuby(fullRuby);
+  const idx = plain.indexOf(plainText);
+  if (idx < 0) return plainText; // 找不到就回傳純文字
+
+  // 從 fullRuby 中對應位置擷取
+  const out = [];
+  let pIdx = 0;  // plain index
+  let fIdx = 0;  // fullRuby index
+
+  while (fIdx < fullRuby.length && pIdx < idx + plainText.length) {
+    const ch = fullRuby[fIdx];
+    if (ch === '(') {
+      const close = fullRuby.indexOf(')', fIdx);
+      if (close === -1) break;
+      if (pIdx > idx) {
+        // 在目標範圍內,把括號內容也帶進去
+        out.push(fullRuby.substring(fIdx, close + 1));
+      }
+      fIdx = close + 1;
+    } else {
+      if (pIdx >= idx) {
+        out.push(ch);
+      }
+      pIdx++;
+      fIdx++;
+    }
+  }
+
+  return out.join('');
+}
+
+function mergeData(marumaru, lrc) {
+  const merged = [];
+  const marumaruPlains = marumaru.map(m => stripRuby(m.ruby));
+
+  for (let lIdx = 0; lIdx < lrc.length; lIdx++) {
+    const lText = lrc[lIdx].text;
+    const lTime = lrc[lIdx].time;
+
+    // 找出哪句 marumaru 包含這句 LRC
+    let matchIdx = -1;
+    for (let mIdx = 0; mIdx < marumaruPlains.length; mIdx++) {
+      if (marumaruPlains[mIdx].includes(lText)) {
+        matchIdx = mIdx;
+        break;
+      }
+    }
+
+    if (matchIdx === -1) {
+      // 找不到對應,標記為警告
+      merged.push({
+        time: lTime,
+        jp_plain: lText,
+        jp_ruby: lText,
+        cn: '',
+        marumaru_jp: null,
+        is_continuation: false,
+        warning: 'unmatched'  // 找不到 marumaru 對應
+      });
+    } else {
+      const m = marumaru[matchIdx];
+      // 擷取對應的振假名片段
+      const rubySegment = extractRubySegment(m.ruby, lText);
+
+      // 判斷是否為「同個 marumaru 條目的延續句」
+      const sameGroup = merged.filter(item =>
+        item.marumaru_jp === marumaruPlains[matchIdx]
+      );
+      const isContinuation = sameGroup.length > 0;
+
+      merged.push({
+        time: lTime,
+        jp_plain: lText,
+        jp_ruby: rubySegment,
+        cn: m.cn,
+        marumaru_jp: marumaruPlains[matchIdx],
+        is_continuation: isContinuation
+      });
+    }
+  }
+
+  return merged;
+}
+
+/* ========================================================
+   合併按鈕邏輯
+   ======================================================== */
+$('mergeBtn').addEventListener('click', () => {
+  // 收集當前狀態
+  state.songTitle = $('songTitle').value.trim();
+  state.songArtist = $('songArtist').value.trim();
+
+  // 驗證
+  if (!state.songTitle) {
+    showToast('請填寫歌名', 'error');
+    $('songTitle').focus();
+    return;
+  }
+  if (state.marumaruData.length === 0) {
+    showToast('請輸入 Marumaru 歌詞', 'error');
+    return;
+  }
+  if (state.lrcData.length === 0) {
+    showToast('請輸入時間軸 LRC', 'error');
+    return;
+  }
+
+  // 合併
+  state.mergedData = mergeData(state.marumaruData, state.lrcData);
+
+  // 顯示預覽
+  renderPreview();
+
+  // 滾到預覽區
+  $('previewSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  showToast(`合併完成!共 ${state.mergedData.length} 句`, 'ok');
+});
+
+/* ========================================================
+   預覽渲染
+   ======================================================== */
+function renderPreview() {
+  $('previewSection').classList.add('visible');
+
+  // 統計
+  const total = state.mergedData.length;
+  const matched = state.mergedData.filter(d => !d.warning).length;
+  const unmatched = total - matched;
+  const withCn = state.mergedData.filter(d => d.cn).length;
+
+  $('previewStats').innerHTML = `
+    <div class="stat ok">
+      <span class="stat-label">總句數</span>
+      <span class="stat-value">${total}</span>
+    </div>
+    <div class="stat ${matched === total ? 'ok' : 'warn'}">
+      <span class="stat-label">對齊成功</span>
+      <span class="stat-value">${matched}</span>
+    </div>
+    <div class="stat ${unmatched === 0 ? 'ok' : 'error'}">
+      <span class="stat-label">未對齊</span>
+      <span class="stat-value">${unmatched}</span>
+    </div>
+    <div class="stat ok">
+      <span class="stat-label">有翻譯</span>
+      <span class="stat-value">${withCn}</span>
+    </div>
+  `;
+
+  // 列表
+  const list = $('previewList');
+  list.innerHTML = '';
+  state.mergedData.forEach((item, idx) => {
+    const div = document.createElement('div');
+    div.className = 'preview-line';
+    if (item.warning) div.classList.add('warning');
+
+    const mins = Math.floor(item.time / 60);
+    const secs = (item.time % 60).toFixed(2).padStart(5, '0');
+
+    div.innerHTML = `
+      <div class="preview-time">${mins}:${secs}</div>
+      <div class="preview-jp" data-idx="${idx}" data-field="jp_ruby">${renderRuby(item.jp_ruby)}</div>
+      <div class="preview-cn ${item.cn ? '' : 'empty'}" data-idx="${idx}" data-field="cn">${escapeHtml(item.cn || '(無翻譯)')}</div>
+      <button class="preview-edit" title="編輯">✏️</button>
+    `;
+
+    div.querySelector('.preview-edit').addEventListener('click', () => {
+      enterEditMode(div, idx);
+    });
+
+    list.appendChild(div);
+  });
+}
+
+function enterEditMode(row, idx) {
+  const item = state.mergedData[idx];
+  const jpEl = row.querySelector('.preview-jp');
+  const cnEl = row.querySelector('.preview-cn');
+
+  const jpInput = document.createElement('input');
+  jpInput.className = 'preview-jp-input';
+  jpInput.value = item.jp_ruby;
+
+  const cnInput = document.createElement('input');
+  cnInput.className = 'preview-cn-input';
+  cnInput.value = item.cn;
+
+  jpEl.replaceWith(jpInput);
+  cnEl.replaceWith(cnInput);
+
+  const editBtn = row.querySelector('.preview-edit');
+  editBtn.textContent = '✓';
+  editBtn.title = '完成';
+
+  function commit() {
+    item.jp_ruby = jpInput.value.trim();
+    item.jp_plain = stripRuby(item.jp_ruby);
+    item.cn = cnInput.value.trim();
+    if (!item.cn) item.warning = item.warning || null;
+    renderPreview();
+  }
+
+  editBtn.onclick = commit;
+  jpInput.focus();
+
+  // Enter 提交
+  [jpInput, cnInput].forEach(el => {
+    el.addEventListener('keydown', e => {
+      if (e.key === 'Enter') commit();
+      if (e.key === 'Escape') renderPreview();
+    });
+  });
+}
+
+/* ========================================================
+   輸出
+   ======================================================== */
+function getCleanedData() {
+  // 移除內部欄位(warning),只保留 player 需要的
+  return state.mergedData.map(d => ({
+    time: d.time,
+    jp_plain: d.jp_plain,
+    jp_ruby: d.jp_ruby,
+    cn: d.cn || '',
+    is_continuation: d.is_continuation || false
+  }));
+}
+
+function makeJsonOutput() {
+  const data = {
+    title: state.songTitle,
+    artist: state.songArtist,
+    duration: state.mergedData.length > 0
+      ? Math.max(...state.mergedData.map(d => d.time)) + 5
+      : 0,
+    lines: getCleanedData()
+  };
+  return JSON.stringify(data, null, 2);
+}
+
+function makeLrcOutput() {
+  const lines = [];
+  if (state.songTitle) lines.push(`[ti:${state.songTitle}]`);
+  if (state.songArtist) lines.push(`[ar:${state.songArtist}]`);
+  lines.push('[by:Lyrics Merger Tool]');
+  lines.push('');
+
+  state.mergedData.forEach(d => {
+    const mins = Math.floor(d.time / 60);
+    const secs = (d.time % 60).toFixed(2).padStart(5, '0');
+    lines.push(`[${mins.toString().padStart(2, '0')}:${secs}]${d.jp_plain}`);
+  });
+
+  // 附加振假名 + 中文(自訂格式,非標準 LRC,但保留資料)
+  lines.push('');
+  lines.push('# Ruby & Translation (extended)');
+  state.mergedData.forEach((d, i) => {
+    if (d.jp_ruby !== d.jp_plain || d.cn) {
+      lines.push(`# ${i + 1}: ${d.jp_ruby} | ${d.cn}`);
+    }
+  });
+
+  return lines.join('\n');
+}
+
+function safeFilename(name) {
+  return name.replace(/[/\\?%*:|"<>]/g, '_').substring(0, 50) || 'lyrics';
+}
+
+$('downloadJson').addEventListener('click', () => {
+  const json = makeJsonOutput();
+  downloadFile(json, safeFilename(state.songTitle) + '.json', 'application/json');
+  showToast('已下載 .json', 'ok');
+});
+
+$('downloadLrc').addEventListener('click', () => {
+  const lrc = makeLrcOutput();
+  downloadFile(lrc, safeFilename(state.songTitle) + '.lrc', 'text/plain');
+  showToast('已下載 .lrc', 'ok');
+});
+
+$('copyJson').addEventListener('click', () => {
+  copyToClipboard(makeJsonOutput());
+});
+
+$('copyLrc').addEventListener('click', () => {
+  copyToClipboard(makeLrcOutput());
+});
+
+$('toggleOutput').addEventListener('click', () => {
+  const display = $('outputDisplay');
+  if (display.style.display === 'none') {
+    display.style.display = 'block';
+    display.textContent = makeJsonOutput();
+  } else {
+    display.style.display = 'none';
+  }
+});
+
+/* ========================================================
+   標題自動同步
+   ======================================================== */
+$('songTitle').addEventListener('input', e => {
+  state.songTitle = e.target.value.trim();
+});
+$('songArtist').addEventListener('input', e => {
+  state.songArtist = e.target.value.trim();
+});
+
+</script>
+
+</body>
+</html>
