@@ -120,28 +120,37 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
-    text-align: center;
+    padding: 32px 32px 40px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .start-screen.hidden {
     display: none;
   }
 
+  .songlist-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
   .logo {
     font-family: 'Zen Maru Gothic', serif;
-    font-size: clamp(40px, 12vw, 72px);
+    font-size: clamp(36px, 8vw, 56px);
     font-weight: 700;
     background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple), var(--accent-cyan));
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
     letter-spacing: -2px;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
     animation: gradientShift 8s ease infinite;
     background-size: 200% 200%;
+    line-height: 1;
   }
 
   @keyframes gradientShift {
@@ -150,94 +159,124 @@
   }
 
   .tagline {
-    font-size: 14px;
+    font-size: 12px;
     color: var(--text-mid);
-    margin-bottom: 48px;
     letter-spacing: 4px;
   }
 
-  .load-btn {
-    position: relative;
-    padding: 18px 48px;
-    border: 1px solid var(--border);
-    background: var(--bg-glass);
-    color: var(--text-bright);
-    font-size: 16px;
-    font-weight: 500;
-    border-radius: 100px;
-    cursor: pointer;
-    transition: all 0.3s;
-    overflow: hidden;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-  }
-
-  .load-btn::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple));
-    opacity: 0;
-    transition: opacity 0.3s;
-    z-index: -1;
-  }
-
-  .load-btn:hover::before,
-  .load-btn:active::before {
-    opacity: 0.3;
-  }
-
-  .load-btn:active {
-    transform: scale(0.97);
-  }
-
-  .hidden-input {
-    display: none;
-  }
-
-  .preset-section {
-    margin-top: 40px;
+  /* 排序控制 */
+  .sort-control {
     display: flex;
-    flex-direction: column;
-    gap: 10px;
-    width: 100%;
-    max-width: 320px;
+    align-items: center;
+    gap: 12px;
   }
 
-  .preset-label {
+  .sort-label {
     font-size: 11px;
-    letter-spacing: 3px;
+    letter-spacing: 2px;
     color: var(--text-dim);
-    margin-bottom: 4px;
+    text-transform: uppercase;
   }
 
-  .preset-btn {
-    padding: 14px 20px;
+  /* 歌單格子 */
+  .song-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+    width: 100%;
+  }
+
+  .song-card {
+    position: relative;
+    padding: 22px 20px;
     background: var(--bg-glass);
     border: 1px solid var(--border);
-    border-radius: 14px;
+    border-radius: 18px;
     color: var(--text-bright);
     cursor: pointer;
     text-align: left;
-    transition: all 0.2s;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
+    overflow: hidden;
+    font-family: inherit;
   }
 
-  .preset-btn:active {
-    background: var(--bg-glass-hover);
+  .song-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255, 62, 127, 0.08), rgba(0, 229, 255, 0.05));
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+
+  .song-card:hover::before,
+  .song-card:active::before {
+    opacity: 1;
+  }
+
+  .song-card:active {
     transform: scale(0.98);
   }
 
-  .preset-title {
-    font-size: 15px;
-    font-weight: 500;
-    margin-bottom: 2px;
+  .song-card-title {
+    font-family: 'Zen Maru Gothic', 'Noto Sans JP', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    letter-spacing: -0.3px;
+    position: relative;
   }
 
-  .preset-subtitle {
-    font-size: 12px;
+  .song-card-artist {
+    font-size: 13px;
     color: var(--text-mid);
+    margin-bottom: 12px;
+    position: relative;
+  }
+
+  .song-card-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text-dim);
+    font-family: 'SF Mono', 'Monaco', monospace;
+    letter-spacing: 0.5px;
+    position: relative;
+  }
+
+  .song-card-plays {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .song-card-plays.has-plays {
+    color: var(--accent-pink);
+  }
+
+  /* 中等螢幕:每排 2 首 */
+  @media (max-width: 900px) {
+    .song-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  /* 手機:每排 1 首 */
+  @media (max-width: 600px) {
+    .start-screen {
+      padding: 24px 20px 32px;
+    }
+    .songlist-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .song-grid {
+      grid-template-columns: 1fr;
+    }
   }
 
   /* ==========================================
@@ -780,22 +819,24 @@
 <body>
 <div class="app" id="app">
 
-  <!-- 起始畫面 -->
+  <!-- 起始畫面:歌單 -->
   <div class="start-screen" id="startScreen">
-    <div class="logo">歌詞</div>
-    <div class="tagline">KARAOKE LYRICS PLAYER</div>
+    <div class="songlist-header">
+      <div>
+        <div class="logo">歌詞</div>
+        <div class="tagline">KARAOKE LYRICS PLAYER</div>
+      </div>
+      <div class="sort-control">
+        <span class="sort-label">排序</span>
+        <div class="toggle-group">
+          <button class="toggle-btn active" data-sort="title">歌名</button>
+          <button class="toggle-btn" data-sort="plays">最常聽</button>
+        </div>
+      </div>
+    </div>
 
-    <label for="lrcInput" class="load-btn">
-      📂 載入歌詞檔
-    </label>
-    <input type="file" id="lrcInput" class="hidden-input" accept=".json,.lrc,.txt">
-
-    <div class="preset-section">
-      <div class="preset-label">內建範例</div>
-      <button class="preset-btn" id="presetYakimochi">
-        <div class="preset-title">ヤキモチ</div>
-        <div class="preset-subtitle">高橋優 · 含振假名與中文翻譯</div>
-      </button>
+    <div class="song-grid" id="songGrid">
+      <!-- 動態產生歌曲卡片 -->
     </div>
   </div>
 
@@ -927,6 +968,13 @@ const YAKIMOCHI_DATA = {
   lines: [{"time":25.61,"jp_plain":"君が前に","jp_ruby":"君(きみ)が前(まえ)に","cn":"你之前交往過的人的事情","marumaru_jp":"君が前に付き合っていた人のこと","is_continuation":false},{"time":27.88,"jp_plain":"付き合っていた人のこと","jp_ruby":"付(つ)き合(あ)っていた人(ひと)のこと","cn":"你之前交往過的人的事情","marumaru_jp":"君が前に付き合っていた人のこと","is_continuation":true},{"time":31.72,"jp_plain":"僕に打ち明けてくれたとき","jp_ruby":"僕(ぼく)に打(う)ち明(あ)けてくれたとき","cn":"在你對我全盤傾訴的時刻","marumaru_jp":"僕に打ち明けてくれたとき","is_continuation":false},{"time":37.98,"jp_plain":"素直に聴いてあげられずに","jp_ruby":"素直(すなお)に聴(き)いてあげられずに","cn":"我未能坦率地靜靜聆聽","marumaru_jp":"素直に聴いてあげられずに","is_continuation":false},{"time":43.61,"jp_plain":"寂しい思いを","jp_ruby":"寂(さび)しい思(おも)いを","cn":"讓你感覺到寂寞了吧","marumaru_jp":"寂しい思いをさせてしまったね","is_continuation":false},{"time":45.58,"jp_plain":"させてしまったね","jp_ruby":"させてしまったね","cn":"讓你感覺到寂寞了吧","marumaru_jp":"寂しい思いをさせてしまったね","is_continuation":true},{"time":48.97,"jp_plain":"すぐにヤキモチ焼くのが","jp_ruby":"すぐにヤキ(やき)モチ(もち)焼(や)くのが","cn":"總是馬上就會吃醋","marumaru_jp":"すぐにヤキモチ焼くのが僕の悪い癖だって","is_continuation":false},{"time":53.62,"jp_plain":"僕の悪い癖だって","jp_ruby":"僕(ぼく)の悪(わる)い癖(くせ)だって","cn":"總是馬上就會吃醋","marumaru_jp":"すぐにヤキモチ焼くのが僕の悪い癖だって","is_continuation":true},{"time":56.87,"jp_plain":"分かっていた筈なのに","jp_ruby":"分(わ)かっていた筈(はず)なのに","cn":"明明知道這是我的壞習慣","marumaru_jp":"分かっていた筈なのに","is_continuation":false},{"time":61.48,"jp_plain":"自分勝手な想いが","jp_ruby":"自分勝手(じぶんかって)な想(おも)いが","cn":"可任性的想法卻化作殘酷的話語","marumaru_jp":"自分勝手な想いが残酷な言葉になって","is_continuation":false},{"time":66.07,"jp_plain":"残酷な言葉になって","jp_ruby":"残酷(ざんこく)な言葉(ことば)になって","cn":"可任性的想法卻化作殘酷的話語","marumaru_jp":"自分勝手な想いが残酷な言葉になって","is_continuation":true},{"time":69.21000000000001,"jp_plain":"君を傷付けてた","jp_ruby":"君(きみ)を傷付(きずつ)けてた","cn":"傷害到了你","marumaru_jp":"君を傷付けてた","is_continuation":false},{"time":74.66,"jp_plain":"一緒に居られるだけで","jp_ruby":"一緒(いっしょ)に居(い)られるだけで","cn":"僅僅是兩個人在一起","marumaru_jp":"一緒に居られるだけで","is_continuation":false},{"time":78.85,"jp_plain":"手と手を重ね合えるだけで","jp_ruby":"手(て)と手(て)を重(かさ)ね合(あ)えるだけで","cn":"僅僅是兩個人牽着手就足夠","marumaru_jp":"手と手を重ね合えるだけで良かったね","is_continuation":false},{"time":83.9,"jp_plain":"良かったね","jp_ruby":"良(よ)かったね","cn":"僅僅是兩個人牽着手就足夠","marumaru_jp":"手と手を重ね合えるだけで良かったね","is_continuation":true},{"time":87.08,"jp_plain":"大切な事ほど","jp_ruby":"大切(たいせつ)な事(こと)ほど","cn":"越是重要的事情也許就藏在熟悉的地方","marumaru_jp":"大切な事ほど見慣れた場所で","is_continuation":false},{"time":90.73,"jp_plain":"見慣れた場所で","jp_ruby":"見慣(みな)れた場所(ばしょ)で","cn":"越是重要的事情也許就藏在熟悉的地方","marumaru_jp":"大切な事ほど見慣れた場所で","is_continuation":true},{"time":93.25,"jp_plain":"輝くのかもしれない","jp_ruby":"輝(かがや)くのかもしれない","cn":"暗地閃耀着光芒","marumaru_jp":"輝くのかもしれない","is_continuation":false},{"time":99.50999999999999,"jp_plain":"君を強く抱きしめたい","jp_ruby":"君(きみ)を強(つよ)く抱(だ)きしめたい","cn":"想要緊緊抱住你","marumaru_jp":"君を強く抱きしめたい","is_continuation":false},{"time":115.95,"jp_plain":"自分のためだけに","jp_ruby":"自分(じぶん)のためだけに","cn":"只為自己而活的人","marumaru_jp":"自分のためだけに生きている人が","is_continuation":false},{"time":119.68,"jp_plain":"生きている人が","jp_ruby":"生(い)きている人(ひと)が","cn":"只為自己而活的人","marumaru_jp":"自分のためだけに生きている人が","is_continuation":true},{"time":122.21,"jp_plain":"集められたようなこの街で","jp_ruby":"集(あつ)められたようなこの街(まち)で","cn":"彷彿全部聚集在這條街道","marumaru_jp":"集められたようなこの街で","is_continuation":false},{"time":128.37,"jp_plain":"誰かを心から想える幸せを","jp_ruby":"誰(だれ)かを心(こころ)から想(おも)える幸(しあわ)せを","cn":"發自心底思唸著一個人的幸福","marumaru_jp":"誰かを心から想える幸せを","is_continuation":false},{"time":135.52,"jp_plain":"いつまでも忘れたくない","jp_ruby":"いつまでも忘(わす)れたくない","cn":"這份心情直到永久都不想忘記","marumaru_jp":"いつまでも忘れたくない","is_continuation":false},{"time":139.3,"jp_plain":"すぐにヤキモチ焼くとこも","jp_ruby":"すぐにヤキ(やき)モチ(もち)焼(や)くとこも","cn":"你這種馬上就吃醋的地方我也喜歡","marumaru_jp":"すぐにヤキモチ焼くとこも好きだよって","is_continuation":false},{"time":143.95,"jp_plain":"好きだよってからかって","jp_ruby":"好きだよってからかって","cn":""},{"time":146.77,"jp_plain":"笑う君に甘えていた","jp_ruby":"笑(わら)う君(きみ)に甘(あま)えていた","cn":"喜歡調侃我的你 我想我是不經意間向你撒嬌了吧","marumaru_jp":"からかって笑う君に甘えていた","is_continuation":false},{"time":151.77,"jp_plain":"愛していることを","jp_ruby":"愛(あい)していることを","cn":"現在馬上想要用話語以外的方法","marumaru_jp":"愛していることを言葉以外の方法で","is_continuation":false},{"time":155.27,"jp_plain":"言葉以外の方法で","jp_ruby":"言葉(ことば)以外(いがい)の方法(ほうほう)で","cn":"現在馬上想要用話語以外的方法","marumaru_jp":"愛していることを言葉以外の方法で","is_continuation":true},{"time":159.16,"jp_plain":"今すぐに伝えたい","jp_ruby":"今(いま)すぐに伝(つた)えたい","cn":"將我愛你的心情傳達給你","marumaru_jp":"今すぐに伝えたい","is_continuation":false},{"time":165.02,"jp_plain":"微笑んでくれた顔も","jp_ruby":"微笑(ほほえ)んでくれた顔(かお)も","cn":"你微笑的面容","marumaru_jp":"微笑んでくれた顔も","is_continuation":false},{"time":169.53,"jp_plain":"怒った顔も愛しくて","jp_ruby":"怒(おこ)った顔(かお)も愛(いと)しくて","cn":"生氣的樣子 都可愛得無可救藥","marumaru_jp":"怒った顔も愛しくて仕方なかったよ","is_continuation":false},{"time":173.48,"jp_plain":"仕方なかったよ","jp_ruby":"仕方(しかた)なかったよ","cn":"生氣的樣子 都可愛得無可救藥","marumaru_jp":"怒った顔も愛しくて仕方なかったよ","is_continuation":true},{"time":177.51,"jp_plain":"打ち明けてくれた過去も","jp_ruby":"打(う)ち明(あ)けてくれた過去(かこ)も","cn":"你向我坦白的過去也好","marumaru_jp":"打ち明けてくれた過去も","is_continuation":false},{"time":181.76,"jp_plain":"二人が見た青空も忘れない","jp_ruby":"二人(ふたり)が見(み)た青空(あおぞら)も忘(わす)れない","cn":"我們共同仰望過的藍天也罷 我都不會忘記","marumaru_jp":"二人が見た青空も忘れない","is_continuation":false},{"time":214.97,"jp_plain":"一緒に居られるだけで","jp_ruby":"一緒(いっしょ)に居(い)られるだけで","cn":"僅僅是兩個人在一起","marumaru_jp":"一緒に居られるだけで","is_continuation":true},{"time":219.16,"jp_plain":"手と手を重ね合えるだけで","jp_ruby":"手(て)と手(て)を重(かさ)ね合(あ)えるだけで","cn":"僅僅是兩個人牽着手就足夠","marumaru_jp":"手と手を重ね合えるだけで良かったね","is_continuation":true},{"time":224.1,"jp_plain":"良かったね","jp_ruby":"良(よ)かったね","cn":"僅僅是兩個人牽着手就足夠","marumaru_jp":"手と手を重ね合えるだけで良かったね","is_continuation":true},{"time":227.34,"jp_plain":"大切な事ほど","jp_ruby":"大切(たいせつ)な事(こと)ほど","cn":"越是重要的事情也許就藏在熟悉的地方","marumaru_jp":"大切な事ほど見慣れた場所で","is_continuation":true},{"time":230.82999999999998,"jp_plain":"見慣れた場所で","jp_ruby":"見慣(みな)れた場所(ばしょ)で","cn":"越是重要的事情也許就藏在熟悉的地方","marumaru_jp":"大切な事ほど見慣れた場所で","is_continuation":true},{"time":233.51,"jp_plain":"輝くのかもしれない","jp_ruby":"輝(かがや)くのかもしれない","cn":"暗地閃耀着光芒","marumaru_jp":"輝くのかもしれない","is_continuation":true},{"time":239.82,"jp_plain":"微笑んでくれた顔も","jp_ruby":"微笑(ほほえ)んでくれた顔(かお)も","cn":"你微笑的面容","marumaru_jp":"微笑んでくれた顔も","is_continuation":true},{"time":244.07,"jp_plain":"怒った顔も愛しくて","jp_ruby":"怒(おこ)った顔(かお)も愛(いと)しくて","cn":"生氣的樣子 都可愛得無可救藥","marumaru_jp":"怒った顔も愛しくて仕方なかったよ","is_continuation":true},{"time":248.36,"jp_plain":"仕方なかったよ","jp_ruby":"仕方(しかた)なかったよ","cn":"生氣的樣子 都可愛得無可救藥","marumaru_jp":"怒った顔も愛しくて仕方なかったよ","is_continuation":true},{"time":252.33,"jp_plain":"君の事が好きだよ","jp_ruby":"君(きみ)の事(こと)が好(す)きだよ","cn":"我喜歡你","marumaru_jp":"君の事が好きだよ","is_continuation":false},{"time":256.13,"jp_plain":"これからもずっと","jp_ruby":"これからもずっと","cn":"從今以後也想永遠緊緊抱住你","marumaru_jp":"これからもずっと君を抱きしめたい","is_continuation":false},{"time":259.26,"jp_plain":"君を抱きしめたい","jp_ruby":"君(きみ)を抱(だ)きしめたい","cn":"從今以後也想永遠緊緊抱住你","marumaru_jp":"これからもずっと君を抱きしめたい","is_continuation":true},{"time":264.67,"jp_plain":"君を強く抱きしめたい","jp_ruby":"君(きみ)を強(つよ)く抱(だ)きしめたい","cn":"想要緊緊抱住你","marumaru_jp":"君を強く抱きしめたい","is_continuation":true}]
 };
 
+const SHUKUFUKU_DATA = {
+  title: "祝福",
+  artist: "YOASOBI",
+  duration: 196,
+  lines: [{"time":1,"jp_plain":"遥か遠くに浮かぶ星を","jp_ruby":"遥(はる)か遠(とお)くに浮(う)かぶ星(ほし)を","cn":"","is_continuation":false},{"time":3.82,"jp_plain":"想い眠りにつく君の","jp_ruby":"想(おも)い眠(ねむ)りにつく君(きみ)の","cn":"","is_continuation":false},{"time":6.65,"jp_plain":"選ぶ未来が望む道が","jp_ruby":"選(えら)ぶ未来(みらい)が望(のぞ)む道(みち)が","cn":"","is_continuation":false},{"time":9.4,"jp_plain":"何処へ続いていても","jp_ruby":"何処(どこ)へ続(つづ)いていても","cn":"","is_continuation":false},{"time":11.65,"jp_plain":"共に生きるから","jp_ruby":"共(とも)に生(い)きるから","cn":"","is_continuation":false},{"time":24.01,"jp_plain":"ずっと昔の記憶","jp_ruby":"ずっと昔(むかし)の記憶(きおく)","cn":"","is_continuation":false},{"time":28.8,"jp_plain":"連れられて来たこの星で君は","jp_ruby":"連(つ)れられて来(き)たこの星(ほし)で君(きみ)は","cn":"","is_continuation":false},{"time":33.58,"jp_plain":"願い続けてた","jp_ruby":"願(ねが)い続(つづ)けてた","cn":"","is_continuation":false},{"time":35.27,"jp_plain":"遠くで煌めく景色に","jp_ruby":"遠(とお)くで煌(きら)めく景色(けしき)に","cn":"","is_continuation":false},{"time":40.15,"jp_plain":"飛び込むことが出来たのなら","jp_ruby":"飛(と)び込(こ)むことが出来(でき)たのなら","cn":"","is_continuation":false},{"time":45.42,"jp_plain":"一人孤独な世界で","jp_ruby":"一人(ひとり)孤独(こどく)な世界(せかい)で","cn":"","is_continuation":false},{"time":47.47,"jp_plain":"祈り願う","jp_ruby":"祈(いの)り願(ねが)う","cn":"","is_continuation":true},{"time":48.97,"jp_plain":"夢を描き","jp_ruby":"夢(ゆめ)を描(えが)き","cn":"","is_continuation":false},{"time":50.3,"jp_plain":"未来を見る","jp_ruby":"未来(みらい)を見(み)る","cn":"","is_continuation":true},{"time":51.74,"jp_plain":"逃げ出すよりも進むことを","jp_ruby":"逃(に)げ出(だ)すよりも進(すす)むことを","cn":"","is_continuation":false},{"time":54.5,"jp_plain":"君が選んだのなら","jp_ruby":"君(きみ)が選(えら)んだのなら","cn":"","is_continuation":false},{"time":57.26,"jp_plain":"誰かが描いたイメージじゃなくて","jp_ruby":"誰(だれ)かが描(えが)いたイメージじゃなくて","cn":"","is_continuation":false},{"time":59.91,"jp_plain":"誰かが選んだステージじゃなくて","jp_ruby":"誰(だれ)かが選(えら)んだステージじゃなくて","cn":"","is_continuation":false},{"time":62.81,"jp_plain":"僕たちが作っていくストーリー","jp_ruby":"僕(ぼく)たちが作(つく)っていくストーリー","cn":"","is_continuation":false},{"time":65.57,"jp_plain":"決して一人にはさせないから","jp_ruby":"決(けっ)して一人(ひとり)にはさせないから","cn":"","is_continuation":false},{"time":68.47,"jp_plain":"いつかその胸に秘めた","jp_ruby":"いつかその胸(むね)に秘(ひ)めた","cn":"","is_continuation":false},{"time":71.2,"jp_plain":"刃が鎖を断ち切るまで","jp_ruby":"刃(やいば)が鎖(くさり)を断(た)ち切(き)るまで","cn":"","is_continuation":false},{"time":75.27,"jp_plain":"ずっと共に闘うよ","jp_ruby":"ずっと共(とも)に闘(たたか)うよ","cn":"","is_continuation":false},{"time":87.94,"jp_plain":"決め付けられた運命","jp_ruby":"決(き)め付(つ)けられた運命(うんめい)","cn":"","is_continuation":false},{"time":89.58,"jp_plain":"そんなの壊して","jp_ruby":"そんなの壊(こわ)して","cn":"","is_continuation":false},{"time":90.96000000000001,"jp_plain":"僕達は操り人形じゃない","jp_ruby":"僕(ぼく)達(たち)は操(あやつ)り人形(にんぎょう)じゃない","cn":"","is_continuation":false},{"time":93.81,"jp_plain":"君の世界だ 君の未来だ","jp_ruby":"君(きみ)の世界(せかい)だ 君(きみ)の未来(みらい)だ","cn":"","is_continuation":false},{"time":96.64,"jp_plain":"どんな物語にでも出来る","jp_ruby":"どんな物語(ものがたり)にでも出来(でき)る","cn":"","is_continuation":false},{"time":99.25,"jp_plain":"逃げる様に 隠れる様に","jp_ruby":"逃(に)げる様(よう)に 隠(かく)れる様(よう)に","cn":"","is_continuation":false},{"time":102.57,"jp_plain":"乗り込んで来たコクピットには","jp_ruby":"乗(の)り込(こ)んで来(き)たコクピットには","cn":"","is_continuation":false},{"time":105.44,"jp_plain":"泣き虫な君はもう居ない","jp_ruby":"泣(な)き虫(むし)な君(きみ)はもう居(い)ない","cn":"","is_continuation":false},{"time":108.21000000000001,"jp_plain":"いつの間にかこんなに強く","jp_ruby":"いつの間(ま)にかこんなに強(つよ)く","cn":"","is_continuation":false},{"time":112.31,"jp_plain":"これは君の人生","jp_ruby":"これは君(きみ)の人生(じんせい)","cn":"","is_continuation":false},{"time":117.83,"jp_plain":"それは答えなんて無い","jp_ruby":"それは答(こた)えなんて無(な)い","cn":"","is_continuation":false},{"time":120.91,"jp_plain":"(自分で選ぶ道)","jp_ruby":"(自分で選ぶ道)","cn":"","is_continuation":false},{"time":124.25,"jp_plain":"もう呪縛は解いて","jp_ruby":"もう呪縛(じゅばく)は解(と)いて","cn":"","is_continuation":false},{"time":126.21,"jp_plain":"定められたフィクションから今","jp_ruby":"定(さだ)められたフィクションから今(いま)","cn":"","is_continuation":false},{"time":130.55,"jp_plain":"飛び出すんだ","jp_ruby":"飛(と)び出(だ)すんだ","cn":"","is_continuation":false},{"time":131.87,"jp_plain":"飛び立つんだ","jp_ruby":"飛(と)び立(た)つんだ","cn":"","is_continuation":false},{"time":134.78,"jp_plain":"誰にも追いつけないスピードで","jp_ruby":"誰(だれ)にも追(お)いつけないスピードで","cn":"","is_continuation":false},{"time":137.63,"jp_plain":"地面蹴り上げ空を舞う","jp_ruby":"地面(じめん)蹴(け)り上(あ)げ空(そら)を舞(ま)う","cn":"","is_continuation":false},{"time":140.47,"jp_plain":"呪い呪われた未来は","jp_ruby":"呪(のろ)い呪(のろ)われた未来(みらい)は","cn":"","is_continuation":false},{"time":143.12,"jp_plain":"君がその手で変えていくんだ","jp_ruby":"君(きみ)がその手(て)で変(か)えていくんだ","cn":"","is_continuation":false},{"time":145.88,"jp_plain":"逃げずに進んだことできっと","jp_ruby":"逃(に)げずに進(すす)んだことできっと","cn":"","is_continuation":false},{"time":148.84,"jp_plain":"掴めるものが沢山あるよ","jp_ruby":"掴(つか)めるものが沢山(たくさん)あるよ","cn":"","is_continuation":false},{"time":153.06,"jp_plain":"もっと強くなれる","jp_ruby":"もっと強(つよ)くなれる","cn":"","is_continuation":false},{"time":165.82,"jp_plain":"この星に生まれたこと","jp_ruby":"この星(ほし)に生(う)まれたこと","cn":"","is_continuation":false},{"time":168.22,"jp_plain":"この世界で生き続けること","jp_ruby":"この世界(せかい)で生(い)き続(つづ)けること","cn":"","is_continuation":false},{"time":171.92000000000002,"jp_plain":"その全てを愛せる様に","jp_ruby":"その全(すべ)てを愛(あい)せる様(よう)に","cn":"","is_continuation":false},{"time":177.2,"jp_plain":"目一杯の祝福を君に","jp_ruby":"目一杯(めいっぱい)の祝福(しゅくふく)を君(きみ)に","cn":"","is_continuation":false}]
+};
+
 /* ============================================================
    狀態
    ============================================================ */
@@ -984,9 +1032,25 @@ function formatTime(sec) {
 // 規則:從 ( 往前找,只抓緊鄰的「漢字或片假名」,遇到平假名等就停
 // 例如 "分(わ)かっていた筈(はず)" → "分" 配「わ」,"筈" 配「はず」
 // 不會把整段「かっていた筈」當作漢字
+//
+// 括號規則:
+// - (純假名) 緊貼漢字 → 振假名
+// - 其他括號 → 和聲,整個括號(包括內部任何字符)當純文字顯示
 function renderRuby(text, skipKatakana = false) {
   const result = [];
   let i = 0;
+
+  // 純假名判斷
+  function isPureKana(s) {
+    if (!s) return false;
+    for (const ch of s) {
+      const code = ch.charCodeAt(0);
+      const isHira = code >= 0x3040 && code <= 0x309F;
+      const isKata = code >= 0x30A0 && code <= 0x30FF;
+      if (!isHira && !isKata && code !== 0x30FC /* ー */) return false;
+    }
+    return true;
+  }
 
   while (i < text.length) {
     const parenStart = text.indexOf('(', i);
@@ -1003,13 +1067,27 @@ function renderRuby(text, skipKatakana = false) {
 
     const reading = text.substring(parenStart + 1, parenEnd);
 
+    // 條件 1:括號內必須是純假名(才可能是振假名)
+    if (!isPureKana(reading)) {
+      // 和聲:整段括號當純文字
+      result.push(text.substring(i, parenEnd + 1));
+      i = parenEnd + 1;
+      continue;
+    }
+
+    // 條件 2:括號前必須緊接漢字/片假名(無空格)
+    if (parenStart === 0 || text[parenStart - 1] === ' ' || text[parenStart - 1] === '　') {
+      // 括號前是空格或在開頭,當和聲
+      result.push(text.substring(i, parenEnd + 1));
+      i = parenEnd + 1;
+      continue;
+    }
+
     // 從 parenStart-1 往前找:連續的「漢字或片假名」
     let kanjiStart = parenStart;
     for (let j = parenStart - 1; j >= i; j--) {
       const ch = text.charAt(j);
       const code = ch.charCodeAt(0);
-      // 漢字 (CJK): U+4E00 ~ U+9FFF
-      // 片假名: U+30A0 ~ U+30FF
       const isKanji = code >= 0x4E00 && code <= 0x9FFF;
       const isKatakana = code >= 0x30A0 && code <= 0x30FF;
       if (isKanji || isKatakana) {
@@ -1017,6 +1095,14 @@ function renderRuby(text, skipKatakana = false) {
       } else {
         break;
       }
+    }
+
+    // 條件 3:括號前必須真的有漢字/片假名
+    if (kanjiStart === parenStart) {
+      // 找不到漢字配對,當和聲
+      result.push(text.substring(i, parenEnd + 1));
+      i = parenEnd + 1;
+      continue;
     }
 
     // 先放 kanjiStart 之前的文字(平假名等)
@@ -1327,12 +1413,13 @@ function closeSettings() {
 }
 
 $('reloadBtn').addEventListener('click', () => {
-  if (confirm('返回主畫面換歌?')) {
+  if (confirm('返回歌單?')) {
     pause();
     startScreen.classList.remove('hidden');
     songHeader.style.display = 'none';
     lyricsContainer.style.display = 'none';
     controls.style.display = 'none';
+    renderSongList();  // 重新渲染歌單(更新點擊次數)
   }
 });
 
@@ -1400,44 +1487,139 @@ setupSlider('sizeCn', 'sizeCnValue', 'sizeCn', 'px');
 /* ============================================================
    檔案載入
    ============================================================ */
-$('presetYakimochi').addEventListener('click', () => {
-  loadSong(YAKIMOCHI_DATA);
-});
 
-$('lrcInput').addEventListener('change', e => {
-  const file = e.target.files[0];
-  if (!file) return;
+/* ============================================================
+   歌單系統
+   ============================================================
+   - SONGS_LIBRARY 陣列存放所有歌曲(內嵌在 HTML 裡,完全離線)
+   - 排序選項:
+     - title: 按歌名(Unicode 排序,日文+中文都能處理)
+     - plays: 按點擊次數(多優先)
+   - 點擊次數用 localStorage 累積,排序選項也記住
+   ============================================================ */
 
-  const reader = new FileReader();
-  reader.onload = ev => {
-    try {
-      const text = ev.target.result;
-      let song;
+const SONGS_LIBRARY = [
+  YAKIMOCHI_DATA,
+  SHUKUFUKU_DATA,
+];
 
-      if (file.name.endsWith('.json')) {
-        // JSON 格式
-        const data = JSON.parse(text);
-        if (Array.isArray(data)) {
-          song = {
-            title: file.name.replace('.json', ''),
-            artist: '',
-            lines: data
-          };
-        } else {
-          song = data;
-        }
-      } else {
-        // LRC 格式
-        song = parseLRC(text, file.name);
-      }
+// localStorage keys
+const LS_SORT_KEY = 'karaoke_sort_preference';
+const LS_PLAYS_KEY = 'karaoke_play_counts';
 
-      loadSong(song);
-    } catch (err) {
-      alert('檔案格式錯誤: ' + err.message);
+// 取得排序偏好
+function getSortPreference() {
+  try {
+    return localStorage.getItem(LS_SORT_KEY) || 'title';
+  } catch (e) {
+    return 'title';
+  }
+}
+
+// 設定排序偏好
+function setSortPreference(sort) {
+  try {
+    localStorage.setItem(LS_SORT_KEY, sort);
+  } catch (e) {}
+}
+
+// 取得點擊次數表
+function getPlayCounts() {
+  try {
+    const raw = localStorage.getItem(LS_PLAYS_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch (e) {
+    return {};
+  }
+}
+
+// 增加點擊次數
+function incrementPlayCount(songKey) {
+  const counts = getPlayCounts();
+  counts[songKey] = (counts[songKey] || 0) + 1;
+  try {
+    localStorage.setItem(LS_PLAYS_KEY, JSON.stringify(counts));
+  } catch (e) {}
+}
+
+// 唯一識別歌曲(用 title + artist)
+function getSongKey(song) {
+  return (song.title || '') + '|' + (song.artist || '');
+}
+
+// 渲染歌單
+function renderSongList() {
+  const sort = getSortPreference();
+  const counts = getPlayCounts();
+  const grid = $('songGrid');
+  grid.innerHTML = '';
+
+  // 排序
+  const sorted = [...SONGS_LIBRARY].sort((a, b) => {
+    if (sort === 'plays') {
+      const ca = counts[getSongKey(a)] || 0;
+      const cb = counts[getSongKey(b)] || 0;
+      if (cb !== ca) return cb - ca; // 多優先
+      // 同次數的按歌名
+      return (a.title || '').localeCompare(b.title || '', 'ja');
+    } else {
+      // 按歌名
+      return (a.title || '').localeCompare(b.title || '', 'ja');
     }
-  };
-  reader.readAsText(file, 'UTF-8');
+  });
+
+  sorted.forEach(song => {
+    const key = getSongKey(song);
+    const playCount = counts[key] || 0;
+
+    const card = document.createElement('button');
+    card.className = 'song-card';
+    card.innerHTML = `
+      <div class="song-card-title">${escapeHtml(song.title || '未命名')}</div>
+      <div class="song-card-artist">${escapeHtml(song.artist || '—')}</div>
+      <div class="song-card-meta">
+        <span>${formatDuration(song)}</span>
+        <span class="song-card-plays ${playCount > 0 ? 'has-plays' : ''}">
+          ${playCount > 0 ? '▶ ' + playCount : '·'}
+        </span>
+      </div>
+    `;
+    card.addEventListener('click', () => {
+      incrementPlayCount(key);
+      loadSong(song);
+    });
+    grid.appendChild(card);
+  });
+
+  // 更新排序按鈕高亮
+  document.querySelectorAll('[data-sort]').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.sort === sort);
+  });
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  })[c]);
+}
+
+function formatDuration(song) {
+  const dur = song.duration || (song.lines.length ? song.lines[song.lines.length-1].time + 5 : 0);
+  const m = Math.floor(dur / 60);
+  const s = Math.floor(dur % 60);
+  return `${m}:${s.toString().padStart(2, '0')}`;
+}
+
+// 排序按鈕事件
+document.querySelectorAll('[data-sort]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    setSortPreference(btn.dataset.sort);
+    renderSongList();
+  });
 });
+
+// 初始渲染歌單
+renderSongList();
 
 function parseLRC(text, filename) {
   const lines = [];

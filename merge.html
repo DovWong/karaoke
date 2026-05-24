@@ -191,6 +191,8 @@ body::before {
   font-size: 14px;
   outline: none;
   transition: border-color 0.2s, background 0.2s;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .input:focus, .textarea:focus {
@@ -201,12 +203,15 @@ body::before {
 .textarea {
   font-family: 'JetBrains Mono', 'Noto Sans JP', monospace;
   font-size: 14px;
-  line-height: 1.8;
+  line-height: 1.9;
   resize: vertical;
-  min-height: 280px;
+  min-height: 320px;
+  width: 100%;
+  display: block;
   white-space: pre;
   overflow-x: auto;
-  padding: 16px 18px;
+  padding: 18px 20px;
+  box-sizing: border-box;
 }
 
 .textarea:hover {
@@ -764,13 +769,30 @@ details.help-details[open] summary {
     <!-- Tab: 貼上文字 -->
     <div class="tab-panel active" data-panel="marumaru-text">
       <div class="help-box">
-        <strong>怎麼貼?</strong> 從 marumaru-x.com 打開歌詞頁面,**滾動整頁複製**(包括日文與中文),然後貼到下面。
-        系統會自動偵測格式,把<code>漢字(假名)</code>跟對應的中文翻譯配對。
+        <strong>格式:</strong>每段歌詞用空行分隔,每段的<strong>第一行</strong>會被當成日文歌詞,其餘行(中文翻譯、羅馬音)會被忽略。
+        <details class="help-details">
+          <summary>支援的範例(點開看)</summary>
+          <strong>典型格式(日文 + 中文 + 羅馬音,各段間空一行):</strong><br>
+          <code>君(きみ)が前(まえ)に</code><br>
+          <code>你之前</code><br>
+          <code>Kimi ga mae ni</code><br>
+          <code>(空行)</code><br>
+          <code>僕(ぼく)に打(う)ち明(あ)け</code><br>
+          <code>在你對我傾訴</code><br>
+          <code>Boku ni uchiakete</code><br><br>
+          <strong>只有日文也可以(每段中間有空行):</strong><br>
+          <code>君(きみ)が前(まえ)に</code><br>
+          <code>(空行)</code><br>
+          <code>僕(ぼく)に打(う)ち明(あ)け</code><br><br>
+          <strong>和聲歌詞:</strong>用括號包起來會自動偵測,內部的振假名會清掉<br>
+          <code>これは君(きみ)の人生 (誰のものでもない)</code><br>
+          <em>※ 中文翻譯不會保留(若需要,可在預覽區手動補)</em>
+        </details>
       </div>
       <textarea
         class="textarea"
         id="marumaruText"
-        placeholder="貼上 marumaru 整頁複製的內容,類似:&#10;&#10;君(きみ)が前(まえ)に付(つ)き合(あ)っていた人(ひと)のこと&#10;你之前交往過的人的事情&#10;僕(ぼく)に打(う)ち明(あ)けてくれたとき&#10;在你對我全盤傾訴的時刻&#10;..."
+        placeholder="貼上日文歌詞,每段用空行分隔(中文/羅馬音會自動忽略),例如:&#10;&#10;君(きみ)が前(まえ)に&#10;你之前&#10;Kimi ga mae ni&#10;&#10;僕(ぼく)に打(う)ち明(あ)け&#10;在你對我傾訴&#10;Boku ni uchiakete&#10;..."
       ></textarea>
     </div>
 
@@ -963,6 +985,18 @@ function stripRuby(text) {
 
 // 把「漢字(假名)」格式轉成 ruby 標籤(用於預覽顯示)
 function renderRuby(text) {
+  // 純假名判斷
+  function isPureKana(s) {
+    if (!s) return false;
+    for (const ch of s) {
+      const code = ch.charCodeAt(0);
+      const isHira = code >= 0x3040 && code <= 0x309F;
+      const isKata = code >= 0x30A0 && code <= 0x30FF;
+      if (!isHira && !isKata && code !== 0x30FC) return false;
+    }
+    return true;
+  }
+
   const result = [];
   let i = 0;
   while (i < text.length) {
@@ -977,7 +1011,22 @@ function renderRuby(text) {
       break;
     }
     const reading = text.substring(parenStart + 1, parenEnd);
-    // 從 parenStart 往前找連續漢字/片假名
+
+    // 和聲判斷 1:括號內不是純假名
+    if (!isPureKana(reading)) {
+      result.push(escapeHtml(text.substring(i, parenEnd + 1)));
+      i = parenEnd + 1;
+      continue;
+    }
+
+    // 和聲判斷 2:括號前是空格或在開頭
+    if (parenStart === 0 || text[parenStart - 1] === ' ' || text[parenStart - 1] === '　') {
+      result.push(escapeHtml(text.substring(i, parenEnd + 1)));
+      i = parenEnd + 1;
+      continue;
+    }
+
+    // 找前面連續漢字/片假名
     let kanjiStart = parenStart;
     for (let j = parenStart - 1; j >= i; j--) {
       const code = text.charCodeAt(j);
@@ -989,6 +1038,14 @@ function renderRuby(text) {
         break;
       }
     }
+
+    // 和聲判斷 3:括號前沒有漢字/片假名可配
+    if (kanjiStart === parenStart) {
+      result.push(escapeHtml(text.substring(i, parenEnd + 1)));
+      i = parenEnd + 1;
+      continue;
+    }
+
     if (kanjiStart > i) {
       result.push(escapeHtml(text.substring(i, kanjiStart)));
     }
@@ -1019,163 +1076,196 @@ document.querySelectorAll('.tab').forEach(tab => {
 });
 
 /* ========================================================
-   Marumaru 文字解析
+   Marumaru / 一般歌詞解析(v4 - 漢字(假名) 直接格式)
    ========================================================
-   marumaru 複製出來的格式:
-   - 漢字(或片假名)單獨一行
-   - 緊接著一行是其振假名(平假名)
-   - 中文翻譯是一整行純漢字
+   新策略:用戶提供的歌詞應該已經是「漢字(假名)」格式
+   每首歌的輸入可能是:
    
-   例如:
-     君           ← 漢字行
-     きみ          ← 振假名行(對應「君」)
-     が前          ← 漢字行(「前」需要振假名)
-     まえ          ← 振假名行(對應「前」)
-     ...
-     你之前...    ← 中文翻譯
+   格式 A:日文行 + 中文行(交替)
+     君(きみ)が前(まえ)に
+     你之前
    
-   解析策略:
-   1. 用「下一行是否為純平假名」判別:純漢字行的下一行是平假名 = 日文歌詞行
-   2. 純漢字行的下一行不是平假名 = 中文翻譯
-   3. 用中文行當分隔,把日文行分組成「一句歌詞」
-   4. 對每組,重組振假名:漢字行末尾的漢字/片假名 + 下一行的平假名
+   格式 B:日文行 + 中文行 + 羅馬音行
+     君(きみ)が前(まえ)に
+     你之前
+     Kimi ga mae ni
+   
+   格式 C:日文行 + 羅馬音行 + 中文行
+     君(きみ)が前(まえ)に
+     Kimi ga mae ni
+     你之前
+   
+   括號規則:
+   - (純假名) 緊貼漢字 → 振假名
+   - 其他 () → 和聲歌詞,整段純文字顯示
    ======================================================== */
 
-function isPureHiragana(s) {
-  return /^[\u3040-\u309Fー]+$/.test(s.trim());
+// Unicode 範圍判定
+function isKanjiCode(code) {
+  return (code >= 0x4E00 && code <= 0x9FFF) ||
+         (code >= 0x3400 && code <= 0x4DBF) ||
+         (code >= 0x2E80 && code <= 0x2FDF) ||
+         (code >= 0xF900 && code <= 0xFAFF);
+}
+
+function isKanaCode(code) {
+  return (code >= 0x3040 && code <= 0x309F) ||
+         (code >= 0x30A0 && code <= 0x30FF);
 }
 
 function hasKanjiCh(s) {
-  return /[\u4E00-\u9FFF]/.test(s);
+  for (const ch of s) if (isKanjiCode(ch.charCodeAt(0))) return true;
+  return false;
 }
 
-function hasKatakanaCh(s) {
-  return /[\u30A0-\u30FF]/.test(s);
+function hasKanaCh(s) {
+  for (const ch of s) if (isKanaCode(ch.charCodeAt(0))) return true;
+  return false;
 }
 
-function hasHiraganaCh(s) {
-  return /[\u3040-\u309F]/.test(s);
+// 判斷一行是不是羅馬音(英文字母為主,無日文字符)
+function isRomajiLine(s) {
+  const trimmed = s.trim();
+  if (!trimmed) return false;
+  // 含日文字符 → 不是羅馬音
+  if (hasKanaCh(trimmed) || hasKanjiCh(trimmed)) return false;
+  // 主要是英文字母
+  const letters = (trimmed.match(/[a-zA-Z]/g) || []).length;
+  return letters >= trimmed.length * 0.5;
+}
+
+// 日文歌詞行:含漢字+假名,或純假名(可能含括號振假名)
+function isJpLine(s) {
+  // 移除括號(可能是振假名),再判斷
+  const stripped = s.replace(/\([^)]*\)/g, '');
+  return hasKanaCh(stripped) || (hasKanjiCh(stripped) && hasKanaCh(s));
+}
+
+// 中文翻譯行:含漢字,無假名,非羅馬音
+function isChineseLine(s) {
+  return hasKanjiCh(s) && !hasKanaCh(s) && !isRomajiLine(s);
+}
+
+// 判斷括號內是不是純假名
+function _isPureKanaInner(s) {
+  if (!s) return false;
+  for (const ch of s) {
+    const code = ch.charCodeAt(0);
+    const isHira = code >= 0x3040 && code <= 0x309F;
+    const isKata = code >= 0x30A0 && code <= 0x30FF;
+    if (!isHira && !isKata && code !== 0x30FC) return false;
+  }
+  return true;
+}
+
+// 找出文字中所有「外層括號」範圍(用括號平衡)
+function _findOuterParens(text) {
+  const ranges = [];
+  let depth = 0;
+  let start = -1;
+  for (let i = 0; i < text.length; i++) {
+    if (text[i] === '(') {
+      if (depth === 0) start = i;
+      depth++;
+    } else if (text[i] === ')') {
+      depth--;
+      if (depth === 0 && start >= 0) {
+        ranges.push({ start, end: i });
+        start = -1;
+      } else if (depth < 0) {
+        depth = 0;
+        start = -1;
+      }
+    }
+  }
+  return ranges;
+}
+
+// 判斷一個外層括號是不是「和聲」
+function _isHarmonyParen(text, range) {
+  const inner = text.substring(range.start + 1, range.end);
+  if (inner.includes('(')) return true;   // 內含括號 = 和聲(振假名不會巢狀)
+  if (!_isPureKanaInner(inner)) return true;
+  if (range.start === 0 || text[range.start - 1] === ' ' || text[range.start - 1] === '　') return true;
+  const prevCode = text.charCodeAt(range.start - 1);
+  const isKanji = prevCode >= 0x4E00 && prevCode <= 0x9FFF;
+  const isKatakana = prevCode >= 0x30A0 && prevCode <= 0x30FF;
+  if (!isKanji && !isKatakana) return true;
+  return false;
+}
+
+/* 清掉和聲段內的振假名標註,讓顯示更乾淨
+   例如 (自分(じぶん)で選(えら)ぶ道(みち)) → (自分で選ぶ道) */
+function cleanHarmonyRuby(text) {
+  const outerRanges = _findOuterParens(text);
+  const harmonyRanges = outerRanges.filter(r => _isHarmonyParen(text, r));
+  if (harmonyRanges.length === 0) return text;
+
+  // 從後往前處理,避免位置偏移
+  harmonyRanges.sort((a, b) => b.start - a.start);
+
+  let result = text;
+  for (const h of harmonyRanges) {
+    const before = result.substring(0, h.start);
+    const outerLeft = result.substring(h.start, h.start + 1);
+    const inner = result.substring(h.start + 1, h.end);
+    const outerRight = result.substring(h.end, h.end + 1);
+    const after = result.substring(h.end + 1);
+
+    // 在和聲段內清掉所有「(純假名)」標註
+    const cleanedInner = inner.replace(/\(([^()]+)\)/g, (m, p1) => {
+      if (_isPureKanaInner(p1)) return '';
+      return m;
+    });
+
+    result = before + outerLeft + cleanedInner + outerRight + after;
+  }
+  return result;
 }
 
 function parseMarumaruText(text) {
   if (!text || !text.trim()) return [];
 
-  const allLines = text.split('\n')
-    .map(l => l.trim())
-    .filter(l => l.length > 0)
-    .filter(l => !l.match(/^(MARUMARU|marumaru|©|Copyright|提供)/i))
-    .filter(l => !l.match(/^第\s*\d+\s*頁$/))
-    .filter(l => !l.match(/^Page\s+\d+/i));
+  // 標準化全形括號 → 半形括號(中日韓網站常用全形)
+  text = text.split('\uFF08').join('(').split('\uFF09').join(')');
 
-  // 第一輪:基本分類
-  // 'kana':純平假名 (作為振假名)
-  // 'jp':含漢字或片假名,且也含平假名 → 絕對是日文歌詞行
-  // 'kanji_only':純漢字(可能是日文歌詞 OR 中文翻譯,要看下一行)
-  // 'kata_only':純片假名(日文歌詞行)
-  // 'other':其他
-  const lineTypes = allLines.map(line => {
-    if (isPureHiragana(line)) return 'kana';
-    if (hasKanjiCh(line) && hasHiraganaCh(line)) return 'jp';
-    if (hasKatakanaCh(line) && !hasKanjiCh(line)) {
-      // 純片假名 OR 片假名+平假名(已被上面捕獲)
-      if (hasHiraganaCh(line)) return 'jp';
-      return 'kata_only';
-    }
-    if (hasKanjiCh(line) && !hasHiraganaCh(line) && !hasKatakanaCh(line)) {
-      return 'kanji_only';
-    }
-    return 'other';
-  });
+  // 保留空行(空行是分段標記!)
+  const rawLines = text.split('\n').map(l => l.trim());
 
-  // 第二輪:判斷 kanji_only 和 kata_only 是日文還是中文
-  // 規則:下一行是 'kana' → 是日文歌詞行,否則是中文翻譯
-  const finalTypes = lineTypes.map((t, i) => {
-    if (t !== 'kanji_only') return t;
-    const next = lineTypes[i + 1];
-    if (next === 'kana') return 'jp';
-    return 'cn';
-  });
+  // 判斷是否為明顯雜訊(版權標記等)
+  function isJunk(s) {
+    if (!s) return false;  // 空行不是 junk
+    return /^(MARUMARU|marumaru|©|Copyright|提供)/i.test(s) ||
+           /^第\s*\d+\s*頁$/.test(s) ||
+           /^Page\s+\d+/i.test(s);
+  }
 
-  // 第三輪:用中文行當分隔,把日文行分組
+  const lines = rawLines.filter(l => !isJunk(l));
+
+  // 用「空行」分段
+  // 每段的「第一行」= 日文歌詞,其他全部忽略(中文翻譯、羅馬音都不要)
   const segments = [];
-  let currentJpLines = [];
-  
-  for (let i = 0; i < allLines.length; i++) {
-    const line = allLines[i];
-    const type = finalTypes[i];
-    
-    if (type === 'cn') {
-      if (currentJpLines.length > 0) {
-        segments.push({ jpLines: currentJpLines, cn: line });
-        currentJpLines = [];
-      }
-    } else if (type === 'jp' || type === 'kana' || type === 'kata_only') {
-      currentJpLines.push({ line, type });
-    }
-    // 'other' 忽略
-  }
-  
-  if (currentJpLines.length > 0) {
-    segments.push({ jpLines: currentJpLines, cn: '' });
-  }
+  let currentSeg = [];
 
-  // 第四輪:對每段重組振假名
+  for (const line of lines) {
+    if (line === '') {
+      if (currentSeg.length > 0) {
+        segments.push(currentSeg);
+        currentSeg = [];
+      }
+    } else {
+      currentSeg.push(line);
+    }
+  }
+  if (currentSeg.length > 0) segments.push(currentSeg);
+
+  // 每段第一行 = 日文歌詞,清和聲內的振假名
   return segments.map(seg => ({
-    ruby: recombineMarumaruSegment(seg.jpLines),
-    cn: seg.cn
+    ruby: cleanHarmonyRuby(seg[0]),
+    cn: ''
   }));
 }
 
-function recombineMarumaruSegment(jpLines) {
-  // jpLines 是 [{line, type}, ...] 的陣列
-  // 演算法:對每個非 kana 的行,如果下一行是 kana → 配對
-  const result = [];
-  let i = 0;
-  
-  while (i < jpLines.length) {
-    const cur = jpLines[i];
-    const next = i + 1 < jpLines.length ? jpLines[i + 1] : null;
-    
-    if (cur.type === 'kana') {
-      // 孤兒平假名,直接保留
-      result.push(cur.line);
-      i++;
-    } else {
-      // 含漢字或片假名的行
-      if (next && next.type === 'kana') {
-        // 找出 cur 末尾的「漢字+片假名」連續字串
-        const lineText = cur.line;
-        let endIdx = lineText.length;
-        let startIdx = endIdx;
-        for (let j = endIdx - 1; j >= 0; j--) {
-          const code = lineText.charCodeAt(j);
-          const isKanji = code >= 0x4E00 && code <= 0x9FFF;
-          const isKatakana = code >= 0x30A0 && code <= 0x30FF;
-          if (isKanji || isKatakana) {
-            startIdx = j;
-          } else {
-            break;
-          }
-        }
-        
-        if (startIdx < endIdx) {
-          const before = lineText.substring(0, startIdx);
-          const target = lineText.substring(startIdx, endIdx);
-          result.push(before + target + '(' + next.line + ')');
-          i += 2;  // 跳過假名行
-        } else {
-          result.push(lineText);
-          i++;
-        }
-      } else {
-        result.push(cur.line);
-        i++;
-      }
-    }
-  }
-  
-  return result.join('');
-}
 
 $('marumaruText').addEventListener('input', e => {
   const text = e.target.value;
@@ -1267,11 +1357,10 @@ async function handlePdf(file) {
 function extractTextFromPdfPage(textContent) {
   // PDF.js 的 items 是片段,我們需要還原成行
   // 策略:用 y 座標分行(同一 y = 同一行)
+  // 重要:相鄰 items 之間若 x 距離夠大,要補上空格(因為 PDF 的空格常是位移而非實際字元)
   const items = textContent.items;
   if (items.length === 0) return '';
 
-  // 按 y 座標分組(y 在 PDF 是反向的,大值在上)
-  // 容差 3 像素內視為同一行
   const lines = [];
   const tolerance = 3;
 
@@ -1279,23 +1368,45 @@ function extractTextFromPdfPage(textContent) {
     const y = Math.round(item.transform[5]);
     const x = item.transform[4];
     const str = item.str;
+    const width = item.width || 0;
 
-    // 找有沒有相同 y 的行
     let line = lines.find(l => Math.abs(l.y - y) <= tolerance);
     if (!line) {
       line = { y, items: [] };
       lines.push(line);
     }
-    line.items.push({ x, str });
+    line.items.push({ x, str, width });
   });
 
   // y 由大到小排序(在 PDF 上是從上到下)
   lines.sort((a, b) => b.y - a.y);
 
-  // 每行內按 x 排序
+  // 每行內按 x 排序,並補空格
   return lines.map(line => {
     line.items.sort((a, b) => a.x - b.x);
-    return line.items.map(i => i.str).join('');
+
+    // 估算這行的「平均字寬」當閾值
+    // 用實際的 item width 或字串長度估算
+    let result = '';
+    let lastEndX = null;
+
+    for (const item of line.items) {
+      if (lastEndX !== null) {
+        // 計算與上一個 item 的間距
+        const gap = item.x - lastEndX;
+        // 估算單字寬度 — 用 item 的 width / str.length(若無 width,用簡單估算)
+        const avgCharWidth = item.width && item.str.length > 0
+          ? item.width / item.str.length
+          : 10;
+        // 如果間距超過半個字寬,補空格
+        if (gap > avgCharWidth * 0.4) {
+          result += ' ';
+        }
+      }
+      result += item.str;
+      lastEndX = item.x + (item.width || item.str.length * 10);
+    }
+    return result;
   }).join('\n');
 }
 
