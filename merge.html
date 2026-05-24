@@ -200,12 +200,22 @@ body::before {
 
 .textarea {
   font-family: 'JetBrains Mono', 'Noto Sans JP', monospace;
-  font-size: 13px;
-  line-height: 1.6;
+  font-size: 14px;
+  line-height: 1.8;
   resize: vertical;
-  min-height: 180px;
+  min-height: 280px;
   white-space: pre;
   overflow-x: auto;
+  padding: 16px 18px;
+}
+
+.textarea:hover {
+  border-color: var(--border-strong);
+}
+
+.textarea::placeholder {
+  color: var(--text-dim);
+  line-height: 1.8;
 }
 
 /* ========== Tabs ========== */
@@ -702,7 +712,7 @@ details.help-details[open] summary {
   .preview-line { grid-template-columns: 50px 1fr; gap: 8px; }
   .preview-cn { grid-column: 2; }
   .preview-edit { grid-column: 2; justify-self: end; }
-  .textarea { min-height: 140px; font-size: 12px; }
+  .textarea { min-height: 200px; font-size: 13px; }
 }
 </style>
 </head>
@@ -816,11 +826,30 @@ details.help-details[open] summary {
       </details>
     </div>
 
-    <textarea
-      class="textarea"
-      id="lrcText"
-      placeholder="貼上 LRC 內容,系統會自動解析時間軸,類似:&#10;&#10;[ti:ヤキモチ]&#10;[ar:高橋優]&#10;[00:25.61]君が前に&#10;[00:27.88]付き合っていた人のこと&#10;[00:31.72]僕に打ち明けてくれたとき&#10;..."
-    ></textarea>
+    <div class="tabs">
+      <button class="tab active" data-tab="lrc-text">📝 貼上文字</button>
+      <button class="tab" data-tab="lrc-file">📎 上傳 LRC 檔</button>
+    </div>
+
+    <!-- Tab: 貼上文字 -->
+    <div class="tab-panel active" data-panel="lrc-text">
+      <textarea
+        class="textarea"
+        id="lrcText"
+        placeholder="貼上 LRC 內容,系統會自動解析時間軸,類似:&#10;&#10;[ti:ヤキモチ]&#10;[ar:高橋優]&#10;[00:25.61]君が前に&#10;[00:27.88]付き合っていた人のこと&#10;[00:31.72]僕に打ち明けてくれたとき&#10;..."
+      ></textarea>
+    </div>
+
+    <!-- Tab: 上傳檔案 -->
+    <div class="tab-panel" data-panel="lrc-file">
+      <div class="dropzone" id="lrcDropzone">
+        <div class="dropzone-icon">🎵</div>
+        <div class="dropzone-text">拖曳 .lrc / .txt 檔到這裡,或<u>點選上傳</u></div>
+        <div class="dropzone-hint">支援 LRC、TXT 等純文字格式</div>
+        <input type="file" class="file-input-hidden" id="lrcInput" accept=".lrc,.txt,.json">
+      </div>
+      <div id="lrcFileStatus" style="margin-top:12px;font-size:13px;color:var(--text-mid);"></div>
+    </div>
   </div>
 
   <!-- Merge button -->
@@ -992,73 +1021,160 @@ document.querySelectorAll('.tab').forEach(tab => {
 /* ========================================================
    Marumaru 文字解析
    ========================================================
-   marumaru 的格式通常是「日文行」+「中文行」交替,
-   日文中可能含有「漢字(假名)」標註
-   策略:
-   - 一行一行掃描
-   - 若該行含日文字符(漢字/平假名/片假名),視為日文行
-   - 若該行不含日文字符,但含中文字符,視為中文翻譯
-   - 配對相鄰的「日文行 + 中文行」
+   marumaru 複製出來的格式:
+   - 漢字(或片假名)單獨一行
+   - 緊接著一行是其振假名(平假名)
+   - 中文翻譯是一整行純漢字
+   
+   例如:
+     君           ← 漢字行
+     きみ          ← 振假名行(對應「君」)
+     が前          ← 漢字行(「前」需要振假名)
+     まえ          ← 振假名行(對應「前」)
+     ...
+     你之前...    ← 中文翻譯
+   
+   解析策略:
+   1. 用「下一行是否為純平假名」判別:純漢字行的下一行是平假名 = 日文歌詞行
+   2. 純漢字行的下一行不是平假名 = 中文翻譯
+   3. 用中文行當分隔,把日文行分組成「一句歌詞」
+   4. 對每組,重組振假名:漢字行末尾的漢字/片假名 + 下一行的平假名
    ======================================================== */
-function hasJapanese(text) {
-  // 平假名 (3040-309F) 或 片假名 (30A0-30FF) 或 漢字 (4E00-9FFF)
-  return /[\u3040-\u309F\u30A0-\u30FF]/.test(text) ||
-         (/[\u4E00-\u9FFF]/.test(text) && /[()]/.test(text)); // 帶括號的漢字也算日文
+
+function isPureHiragana(s) {
+  return /^[\u3040-\u309Fー]+$/.test(s.trim());
 }
 
-function hasChinese(text) {
-  // 含中文但不含日文假名
-  return /[\u4E00-\u9FFF]/.test(text) && !/[\u3040-\u30FF]/.test(text);
+function hasKanjiCh(s) {
+  return /[\u4E00-\u9FFF]/.test(s);
+}
+
+function hasKatakanaCh(s) {
+  return /[\u30A0-\u30FF]/.test(s);
+}
+
+function hasHiraganaCh(s) {
+  return /[\u3040-\u309F]/.test(s);
 }
 
 function parseMarumaruText(text) {
   if (!text || !text.trim()) return [];
 
-  // 清理:把 PDF 提取後的常見雜訊濾掉
-  let lines = text.split('\n')
+  const allLines = text.split('\n')
     .map(l => l.trim())
     .filter(l => l.length > 0)
-    .filter(l => !l.match(/^(MARUMARU|marumaru|©|Copyright)/i))
+    .filter(l => !l.match(/^(MARUMARU|marumaru|©|Copyright|提供)/i))
     .filter(l => !l.match(/^第\s*\d+\s*頁$/))
-    .filter(l => !l.match(/^Page \d+/i));
+    .filter(l => !l.match(/^Page\s+\d+/i));
 
-  const result = [];
-  let pendingJp = null;
+  // 第一輪:基本分類
+  // 'kana':純平假名 (作為振假名)
+  // 'jp':含漢字或片假名,且也含平假名 → 絕對是日文歌詞行
+  // 'kanji_only':純漢字(可能是日文歌詞 OR 中文翻譯,要看下一行)
+  // 'kata_only':純片假名(日文歌詞行)
+  // 'other':其他
+  const lineTypes = allLines.map(line => {
+    if (isPureHiragana(line)) return 'kana';
+    if (hasKanjiCh(line) && hasHiraganaCh(line)) return 'jp';
+    if (hasKatakanaCh(line) && !hasKanjiCh(line)) {
+      // 純片假名 OR 片假名+平假名(已被上面捕獲)
+      if (hasHiraganaCh(line)) return 'jp';
+      return 'kata_only';
+    }
+    if (hasKanjiCh(line) && !hasHiraganaCh(line) && !hasKatakanaCh(line)) {
+      return 'kanji_only';
+    }
+    return 'other';
+  });
 
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
+  // 第二輪:判斷 kanji_only 和 kata_only 是日文還是中文
+  // 規則:下一行是 'kana' → 是日文歌詞行,否則是中文翻譯
+  const finalTypes = lineTypes.map((t, i) => {
+    if (t !== 'kanji_only') return t;
+    const next = lineTypes[i + 1];
+    if (next === 'kana') return 'jp';
+    return 'cn';
+  });
 
-    // 判斷是日文還是中文
-    const isJp = hasJapanese(line);
-    const isCn = hasChinese(line) && !isJp;
-
-    if (isJp) {
-      // 如果之前有未配對的日文,先存它
-      if (pendingJp) {
-        result.push({ ruby: pendingJp, cn: '' });
+  // 第三輪:用中文行當分隔,把日文行分組
+  const segments = [];
+  let currentJpLines = [];
+  
+  for (let i = 0; i < allLines.length; i++) {
+    const line = allLines[i];
+    const type = finalTypes[i];
+    
+    if (type === 'cn') {
+      if (currentJpLines.length > 0) {
+        segments.push({ jpLines: currentJpLines, cn: line });
+        currentJpLines = [];
       }
-      pendingJp = line;
-    } else if (isCn && pendingJp) {
-      // 配對到中文翻譯
-      result.push({ ruby: pendingJp, cn: line });
-      pendingJp = null;
-    } else if (!isJp && !isCn) {
-      // 純假名行?(極少見,但要處理)
-      if (/[\u3040-\u309F\u30A0-\u30FF]/.test(line)) {
-        if (pendingJp) {
-          result.push({ ruby: pendingJp, cn: '' });
+    } else if (type === 'jp' || type === 'kana' || type === 'kata_only') {
+      currentJpLines.push({ line, type });
+    }
+    // 'other' 忽略
+  }
+  
+  if (currentJpLines.length > 0) {
+    segments.push({ jpLines: currentJpLines, cn: '' });
+  }
+
+  // 第四輪:對每段重組振假名
+  return segments.map(seg => ({
+    ruby: recombineMarumaruSegment(seg.jpLines),
+    cn: seg.cn
+  }));
+}
+
+function recombineMarumaruSegment(jpLines) {
+  // jpLines 是 [{line, type}, ...] 的陣列
+  // 演算法:對每個非 kana 的行,如果下一行是 kana → 配對
+  const result = [];
+  let i = 0;
+  
+  while (i < jpLines.length) {
+    const cur = jpLines[i];
+    const next = i + 1 < jpLines.length ? jpLines[i + 1] : null;
+    
+    if (cur.type === 'kana') {
+      // 孤兒平假名,直接保留
+      result.push(cur.line);
+      i++;
+    } else {
+      // 含漢字或片假名的行
+      if (next && next.type === 'kana') {
+        // 找出 cur 末尾的「漢字+片假名」連續字串
+        const lineText = cur.line;
+        let endIdx = lineText.length;
+        let startIdx = endIdx;
+        for (let j = endIdx - 1; j >= 0; j--) {
+          const code = lineText.charCodeAt(j);
+          const isKanji = code >= 0x4E00 && code <= 0x9FFF;
+          const isKatakana = code >= 0x30A0 && code <= 0x30FF;
+          if (isKanji || isKatakana) {
+            startIdx = j;
+          } else {
+            break;
+          }
         }
-        pendingJp = line;
+        
+        if (startIdx < endIdx) {
+          const before = lineText.substring(0, startIdx);
+          const target = lineText.substring(startIdx, endIdx);
+          result.push(before + target + '(' + next.line + ')');
+          i += 2;  // 跳過假名行
+        } else {
+          result.push(lineText);
+          i++;
+        }
+      } else {
+        result.push(cur.line);
+        i++;
       }
     }
   }
-
-  // 最後可能有未配對的日文
-  if (pendingJp) {
-    result.push({ ruby: pendingJp, cn: '' });
-  }
-
-  return result;
+  
+  return result.join('');
 }
 
 $('marumaruText').addEventListener('input', e => {
@@ -1314,6 +1430,10 @@ function parseLRC(text) {
 
 $('lrcText').addEventListener('input', e => {
   const text = e.target.value;
+  applyLrcText(text);
+});
+
+function applyLrcText(text) {
   const parsed = parseLRC(text);
   state.lrcData = parsed.lines;
 
@@ -1328,7 +1448,94 @@ $('lrcText').addEventListener('input', e => {
   }
 
   updateLrcStatus();
+}
+
+/* ========================================================
+   LRC 檔案上傳
+   ======================================================== */
+const lrcDropzone = $('lrcDropzone');
+const lrcInput = $('lrcInput');
+
+lrcDropzone.addEventListener('click', () => lrcInput.click());
+
+lrcDropzone.addEventListener('dragover', e => {
+  e.preventDefault();
+  lrcDropzone.classList.add('dragover');
 });
+
+lrcDropzone.addEventListener('dragleave', () => {
+  lrcDropzone.classList.remove('dragover');
+});
+
+lrcDropzone.addEventListener('drop', e => {
+  e.preventDefault();
+  lrcDropzone.classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if (file) handleLrcFile(file);
+});
+
+lrcInput.addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (file) handleLrcFile(file);
+});
+
+function handleLrcFile(file) {
+  $('lrcFileStatus').textContent = '⏳ 讀取中...';
+
+  const reader = new FileReader();
+
+  reader.onload = (ev) => {
+    try {
+      let text = ev.target.result;
+
+      // 如果是 JSON,試著轉成 LRC 文字
+      if (file.name.toLowerCase().endsWith('.json')) {
+        try {
+          const data = JSON.parse(text);
+          const lines = Array.isArray(data) ? data : (data.lines || []);
+          // 重組為 LRC 格式
+          const lrcLines = [];
+          if (data.title) lrcLines.push(`[ti:${data.title}]`);
+          if (data.artist) lrcLines.push(`[ar:${data.artist}]`);
+          lines.forEach(l => {
+            if (l.time !== undefined && (l.text || l.jp_plain)) {
+              const mins = Math.floor(l.time / 60);
+              const secs = (l.time % 60).toFixed(2).padStart(5, '0');
+              lrcLines.push(`[${mins.toString().padStart(2, '0')}:${secs}]${l.text || l.jp_plain}`);
+            }
+          });
+          text = lrcLines.join('\n');
+        } catch (e) {
+          // 非 JSON,當純文字處理
+        }
+      }
+
+      // 填入 textarea(讓使用者能編輯)
+      $('lrcText').value = text;
+      applyLrcText(text);
+
+      // 切回貼上文字 tab 讓使用者檢視
+      document.querySelector('[data-tab="lrc-text"]').click();
+
+      $('lrcFileStatus').textContent = `✓ 已讀取 ${file.name} (${state.lrcData.length} 句時間軸)`;
+      $('lrcFileStatus').style.color = 'var(--ok)';
+      showToast(`LRC 載入完成 (${state.lrcData.length} 句)`, 'ok');
+    } catch (err) {
+      console.error(err);
+      $('lrcFileStatus').textContent = '❌ 讀取失敗:' + err.message;
+      $('lrcFileStatus').style.color = 'var(--error)';
+      showToast('LRC 讀取失敗', 'error');
+    }
+  };
+
+  reader.onerror = () => {
+    $('lrcFileStatus').textContent = '❌ 檔案讀取錯誤';
+    $('lrcFileStatus').style.color = 'var(--error)';
+  };
+
+  // 嘗試以 UTF-8 讀取(LRC 常見編碼)
+  reader.readAsText(file, 'UTF-8');
+}
 
 function updateLrcStatus() {
   const el = $('lrcStatus');
