@@ -509,10 +509,12 @@ $('processBtn').addEventListener('click', () => {
 
 function generateVarName(title, existing, pending) {
   // 把 title 轉成合法 JS 變數名
-  // 取前幾個字母 + 隨機 hash
+  // JS 變數名規則:字母/底線/$ 開頭,不能以數字開頭
   let base = title.toUpperCase().replace(/[^A-Z0-9]/g, '');
   if (!base) base = 'SONG';
-  base = base.substring(0, 12);
+  // 開頭是數字就加 SONG_ 前綴
+  if (/^[0-9]/.test(base)) base = 'SONG_' + base;
+  base = base.substring(0, 16);
   
   let attempt = base + '_DATA';
   let counter = 1;
