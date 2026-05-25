@@ -120,6 +120,24 @@ body::before {
   background: var(--bg-elev);
 }
 
+/* 版權聲明 banner */
+.copyright-banner {
+  margin-bottom: 32px;
+  padding: 12px 18px;
+  background: rgba(251, 191, 36, 0.06);
+  border: 1px solid rgba(251, 191, 36, 0.25);
+  border-radius: 10px;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--text-mid);
+  letter-spacing: 0.2px;
+}
+
+.copyright-banner strong {
+  color: var(--warn);
+  font-weight: 600;
+}
+
 /* ========== Step layout ========== */
 .step {
   margin-bottom: 32px;
@@ -734,6 +752,11 @@ details.help-details[open] summary {
     <a href="./karaoke.html" class="back-link">← 回播放器</a>
   </div>
 
+  <!-- 版權聲明 -->
+  <div class="copyright-banner">
+    <strong>⚠️ 版權聲明:</strong> 本工具僅供個人學習日語使用,請勿用於商業用途。所有歌詞版權歸原作者及版權方所有,如有版權方要求,將於 24 小時內移除相關內容。
+  </div>
+
   <!-- 基本資訊 -->
   <div class="step">
     <div class="step-header">
@@ -761,13 +784,42 @@ details.help-details[open] summary {
     </div>
 
     <div class="tabs">
-      <button class="tab active" data-tab="marumaru-text">📝 貼上文字</button>
+      <button class="tab active" data-tab="marumaru-html">🎯 marumaru HTML</button>
+      <button class="tab" data-tab="marumaru-text">📝 貼上文字</button>
       <button class="tab" data-tab="marumaru-pdf">📎 上傳 PDF</button>
-      <button class="tab" data-tab="marumaru-manual">⌨️ 手動輸入</button>
+      <button class="tab" data-tab="marumaru-plain">📋 純歌詞</button>
+    </div>
+
+    <!-- Tab: marumaru HTML(最準確) -->
+    <div class="tab-panel active" data-panel="marumaru-html">
+      <div class="help-box">
+        <strong>最準確的方法:</strong>從 marumaru-x.com 開啟歌詞頁面,按 F12 / 開發者工具,複製整段 <code>&lt;ul&gt;</code> 或 <code>&lt;li&gt;</code> 區塊貼到這裡。
+        <details class="help-details">
+          <summary>使用步驟(點開看)</summary>
+          <ol style="margin: 8px 0; padding-left: 20px; line-height: 1.8;">
+            <li>打開 marumaru-x.com 的歌詞頁面</li>
+            <li>按 <code>F12</code>(電腦)或<code>長按頁面 → 檢查元素</code>(iPad 較難)</li>
+            <li>找到歌詞容器 <code>&lt;ul class="..."&gt;</code> 或一堆 <code>&lt;li id="lyrics-..."&gt;</code></li>
+            <li>右鍵 → 複製 → 複製外部 HTML</li>
+            <li>貼到下方</li>
+          </ol>
+          <strong>會自動提取:</strong>
+          <ul style="margin: 8px 0; padding-left: 20px; line-height: 1.8;">
+            <li>振假名(從 <code>&lt;ruby&gt;&lt;rb&gt;漢字&lt;/rb&gt;&lt;rt&gt;假名&lt;/rt&gt;&lt;/ruby&gt;</code> 轉成 <code>漢字(假名)</code>)</li>
+            <li>中文翻譯(從 <code>lyrics-translate-zh</code> 提取)</li>
+            <li>自動保留空格、清除前後雜訊</li>
+          </ul>
+        </details>
+      </div>
+      <textarea
+        class="textarea"
+        id="marumaruHtmlText"
+        placeholder="貼上從 marumaru-x.com 複製的 HTML,例如:&#10;&#10;<li id=&quot;lyrics-9982&quot;...>&#10;  <p lang=&quot;ja&quot; class=&quot;lyrics-source...&quot;>&#10;    <ruby><rb>朝</rb><rt>あさ</rt></ruby>の<ruby><rb>空</rb><rt>そら</rt></ruby>を...&#10;  </p>&#10;  <p lang=&quot;zh-Hant&quot; class=&quot;lyrics-translate-zh...&quot;>清晨我仰望著天空...</p>&#10;</li>&#10;..."
+      ></textarea>
     </div>
 
     <!-- Tab: 貼上文字 -->
-    <div class="tab-panel active" data-panel="marumaru-text">
+    <div class="tab-panel" data-panel="marumaru-text">
       <div class="help-box">
         <strong>格式:</strong>每段歌詞用空行分隔,每段的<strong>第一行</strong>會被當成日文歌詞,其餘行(中文翻譯、羅馬音)會被忽略。
         <details class="help-details">
@@ -810,17 +862,23 @@ details.help-details[open] summary {
       <div id="pdfStatus" style="margin-top:12px;font-size:13px;color:var(--text-mid);"></div>
     </div>
 
-    <!-- Tab: 手動輸入 -->
-    <div class="tab-panel" data-panel="marumaru-manual">
+    <!-- Tab: 純歌詞(每行都是歌詞,沒空行的格式) -->
+    <div class="tab-panel" data-panel="marumaru-plain">
       <div class="help-box">
-        <strong>格式:</strong> 一行<code>漢字(假名)</code>格式的日文,一行對應的中文翻譯。例如:
-        <br>第1欄填 <code>君(きみ)が前(まえ)に</code>,第2欄填 <code>你之前</code>。
-        <br>不需要振假名的句子直接寫日文即可。
+        <strong>適用情況:</strong>每行都是歌詞(沒空行分隔),沒有中文翻譯或羅馬音,只有日文歌詞(可能含振假名)。
+        <details class="help-details">
+          <summary>範例(點開看)</summary>
+          <code>君(きみ)が前(まえ)に</code><br>
+          <code>僕(ぼく)に打(う)ち明(あ)け</code><br>
+          <code>分(わ)かっていた筈(はず)なのに</code><br>
+          <em>※ 每一行都會被當成一句歌詞</em>
+        </details>
       </div>
-      <div class="manual-table" id="manualTable">
-        <!-- 動態產生 -->
-      </div>
-      <button class="manual-add" id="manualAdd">+ 新增一行</button>
+      <textarea
+        class="textarea"
+        id="marumaruPlainText"
+        placeholder="貼上純歌詞,每行一句,例如:&#10;&#10;君(きみ)が前(まえ)に&#10;僕(ぼく)に打(う)ち明(あ)け&#10;分(わ)かっていた筈(はず)なのに&#10;..."
+      ></textarea>
     </div>
   </div>
 
@@ -979,6 +1037,52 @@ function downloadFile(content, filename, mime = 'application/json') {
 }
 
 // 把純漢字 + 假名格式還原成純漢字(用於文字比對)
+/* ========================================================
+   繁體/舊字 → 日文新字 標準化
+   ========================================================
+   LRC 來源(酷歌詞等)常用繁體/舊字,marumaru 用日文新字。
+   比對時兩邊不一致會導致配對失敗。
+   解法:把 LRC 統一轉成新字後比對,輸出也用新字版本。
+   ======================================================== */
+const TRADITIONAL_TO_JP = {
+  '靜': '静', '來': '来', '溫': '温', '櫻': '桜', '澤': '沢',
+  '邊': '辺', '單': '単', '會': '会', '當': '当', '對': '対',
+  '應': '応', '學': '学', '實': '実', '寫': '写', '處': '処',
+  '黨': '党', '帶': '帯', '從': '従', '舊': '旧', '聲': '声',
+  '專': '専', '亂': '乱', '亞': '亜', '兒': '児', '兩': '両',
+  '冰': '氷', '勵': '励', '勸': '勧', '參': '参', '雙': '双',
+  '圍': '囲', '國': '国', '圖': '図', '團': '団', '壽': '寿',
+  '寬': '寛', '寶': '宝', '屆': '届', '廣': '広', '廳': '庁',
+  '懷': '懐', '戀': '恋', '戰': '戦', '戲': '戯', '拂': '払',
+  '擔': '担', '擇': '択', '據': '拠', '擧': '挙', '攝': '摂',
+  '收': '収', '數': '数', '斷': '断', '晝': '昼', '條': '条',
+  '榮': '栄', '樂': '楽', '樞': '枢', '橫': '横', '檢': '検',
+  '歐': '欧', '歡': '歓', '歲': '歳', '歷': '歴', '殘': '残',
+  '氣': '気', '濱': '浜', '燒': '焼', '營': '営', '爲': '為',
+  '獨': '独', '獻': '献', '畫': '画', '疊': '畳', '癡': '痴',
+  '發': '発', '盡': '尽', '眞': '真', '碎': '砕', '禪': '禅',
+  '禮': '礼', '萬': '万', '稻': '稲', '穩': '穏', '繡': '繍',
+  '繼': '継', '續': '続', '聽': '聴', '臟': '臓', '艷': '艶',
+  '藝': '芸', '虛': '虚', '蟲': '虫', '裝': '装', '覺': '覚',
+  '觀': '観', '譯': '訳', '證': '証', '譽': '誉', '讀': '読',
+  '變': '変', '豐': '豊', '貳': '弐', '賣': '売', '賴': '頼',
+  '贊': '賛', '辭': '辞', '辯': '弁', '遞': '逓', '遲': '遅',
+  '醫': '医', '釋': '釈', '錢': '銭', '鎭': '鎮', '關': '関',
+  '隸': '隷', '雜': '雑', '霸': '覇', '靈': '霊', '顏': '顔',
+  '顯': '顕', '驅': '駆', '驗': '験', '體': '体', '髮': '髪',
+  '鬪': '闘', '齊': '斉', '齋': '斎', '齒': '歯', '龍': '竜',
+  '與': '与', '舉': '挙', '勵': '励',
+};
+
+function normalizeJpChars(s) {
+  if (!s) return s;
+  let result = '';
+  for (const ch of s) {
+    result += TRADITIONAL_TO_JP[ch] || ch;
+  }
+  return result;
+}
+
 function stripRuby(text) {
   return text.replace(/\(([^)]+)\)/g, '');
 }
@@ -1226,8 +1330,8 @@ function cleanHarmonyRuby(text) {
 function parseMarumaruText(text) {
   if (!text || !text.trim()) return [];
 
-  // 標準化全形括號 → 半形括號(中日韓網站常用全形)
-  text = text.split('\uFF08').join('(').split('\uFF09').join(')');
+  // 標準化全形括號/空格 → 半形(中日韓網站常用全形)
+  text = text.split('\uFF08').join('(').split('\uFF09').join(')').split('\u3000').join(' ');
 
   // 保留空行(空行是分段標記!)
   const rawLines = text.split('\n').map(l => l.trim());
@@ -1411,85 +1515,146 @@ function extractTextFromPdfPage(textContent) {
 }
 
 /* ========================================================
-   手動輸入表格
+   純歌詞解析 - 每行都是歌詞,沒空行分隔
    ======================================================== */
-function initManualTable() {
-  const table = $('manualTable');
-  table.innerHTML = '';
-  // 預設 3 行
-  for (let i = 0; i < 3; i++) addManualRow();
+function parsePlainLyrics(text) {
+  if (!text || !text.trim()) return [];
+
+  // 標準化全形括號/空格 → 半形(中日韓網站常用全形)
+  text = text.split('\uFF08').join('(').split('\uFF09').join(')').split('\u3000').join(' ');
+
+  // 每行都是一句歌詞,跳過空行和雜訊
+  const lines = text.split('\n')
+    .map(l => l.trim())
+    .filter(l => l.length > 0)
+    .filter(l => !l.match(/^(MARUMARU|marumaru|©|Copyright|提供)/i))
+    .filter(l => !l.match(/^第\s*\d+\s*頁$/))
+    .filter(l => !l.match(/^Page\s+\d+/i));
+
+  return lines.map(line => ({
+    ruby: cleanHarmonyRuby(line),
+    cn: ''
+  }));
 }
 
-function addManualRow() {
-  const table = $('manualTable');
-  const rowIdx = table.children.length;
-  const row = document.createElement('div');
-  row.className = 'manual-row';
-  row.innerHTML = `
-    <div class="manual-row-num">${rowIdx + 1}</div>
-    <input type="text" class="jp-input" placeholder="漢字(假名) 例:君(きみ)が好(す)き" data-type="jp">
-    <input type="text" placeholder="中文翻譯" data-type="cn">
-    <button class="manual-row-remove" title="刪除">✕</button>
-  `;
-
-  row.querySelector('.manual-row-remove').addEventListener('click', () => {
-    row.remove();
-    updateManualNumbers();
-    syncManualData();
-  });
-
-  row.querySelectorAll('input').forEach(input => {
-    input.addEventListener('input', syncManualData);
-  });
-
-  table.appendChild(row);
-}
-
-function updateManualNumbers() {
-  const table = $('manualTable');
-  Array.from(table.children).forEach((row, i) => {
-    row.querySelector('.manual-row-num').textContent = i + 1;
-  });
-}
-
-function syncManualData() {
-  const table = $('manualTable');
-  const data = [];
-  Array.from(table.children).forEach(row => {
-    const jp = row.querySelector('[data-type="jp"]').value.trim();
-    const cn = row.querySelector('[data-type="cn"]').value.trim();
-    if (jp) data.push({ ruby: jp, cn });
-  });
-
-  // 只有在當前是手動 tab 時才覆蓋 state
-  const activeTab = document.querySelector('.tab.active').dataset.tab;
-  if (activeTab === 'marumaru-manual') {
-    state.marumaruData = data;
-    updateMarumaruStatus();
-  }
-}
-
-$('manualAdd').addEventListener('click', addManualRow);
-
-// 當切到手動 tab,從 state 還原(如果有資料)
-document.querySelector('[data-tab="marumaru-manual"]').addEventListener('click', () => {
-  setTimeout(() => {
-    if (state.marumaruData.length > 0 && state.marumaruData.length !== $('manualTable').children.length) {
-      const table = $('manualTable');
-      table.innerHTML = '';
-      state.marumaruData.forEach(d => {
-        addManualRow();
-        const lastRow = table.lastElementChild;
-        lastRow.querySelector('[data-type="jp"]').value = d.ruby;
-        lastRow.querySelector('[data-type="cn"]').value = d.cn;
-      });
-      // 加一個空白行
-      addManualRow();
-    }
-  }, 50);
+$('marumaruPlainText').addEventListener('input', e => {
+  const text = e.target.value;
+  state.marumaruData = parsePlainLyrics(text);
+  updateMarumaruStatus();
 });
 
-initManualTable();
+/* ========================================================
+   Marumaru HTML 解析(最準確的方法)
+   ========================================================
+   從 marumaru-x.com 複製的 HTML 區塊中提取:
+   - <ruby><rb>漢字</rb><rt>假名</rt></ruby> → 漢字(假名)
+   - <p class="lyrics-source ...">日文歌詞</p>
+   - <p class="lyrics-translate-zh ...">中文翻譯</p>
+   ======================================================== */
+function parseMarumaruHtml(html) {
+  if (!html || !html.trim()) return [];
+
+  // 找所有 lyrics-source <p>(日文行)
+  const jpRegex = /<p[^>]*class="[^"]*lyrics-source[^"]*"[^>]*>([\s\S]*?)<\/p>/g;
+  // 找所有 lyrics-translate-zh <p>(中文行)
+  const cnRegex = /<p[^>]*class="[^"]*lyrics-translate-zh[^"]*"[^>]*>([\s\S]*?)<\/p>/g;
+
+  const jpMatches = [];
+  let m;
+  while ((m = jpRegex.exec(html)) !== null) {
+    jpMatches.push({ idx: m.index, content: m[1] });
+  }
+
+  const cnMatches = [];
+  while ((m = cnRegex.exec(html)) !== null) {
+    cnMatches.push({ idx: m.index, content: m[1] });
+  }
+
+  // 為每個日文行,找下一個最近的中文行
+  const result = [];
+  jpMatches.forEach((jp, i) => {
+    const ruby = convertRubyToBracket(jp.content);
+
+    // 找最近的下一個 cn(在 jp 之後且在下一個 jp 之前)
+    const nextJpIdx = i + 1 < jpMatches.length ? jpMatches[i + 1].idx : Infinity;
+    let cn = '';
+    for (const c of cnMatches) {
+      if (c.idx > jp.idx && c.idx < nextJpIdx) {
+        cn = stripHtmlTags(c.content).trim();
+        break;
+      }
+    }
+
+    // 套用 cleanHarmonyRuby 確保和聲句也乾淨
+    const cleanRuby = cleanHarmonyRuby(ruby.trim());
+
+    result.push({ ruby: cleanRuby, cn });
+  });
+
+  return result;
+}
+
+function convertRubyToBracket(html) {
+  // <ruby><rb>漢字</rb><rt>假名</rt></ruby> → 漢字(假名)
+  let result = html.replace(
+    /<ruby[^>]*>\s*<rb[^>]*>([\s\S]*?)<\/rb>\s*<rt[^>]*>([\s\S]*?)<\/rt>\s*<\/ruby>/g,
+    (match, rb, rt) => `${rb.trim()}(${rt.trim()})`
+  );
+  // 變體:沒有 <rb> 標籤(<ruby>漢字<rt>假名</rt></ruby>)
+  result = result.replace(
+    /<ruby[^>]*>([\s\S]*?)<rt[^>]*>([\s\S]*?)<\/rt>(?:<rp>[\s\S]*?<\/rp>)?\s*<\/ruby>/g,
+    (match, base, rt) => `${stripHtmlTags(base).trim()}(${rt.trim()})`
+  );
+  // 移除剩餘 HTML tags(class、style 等)
+  result = stripHtmlTags(result);
+  // HTML entity 解碼
+  result = decodeHtmlEntities(result);
+  return result;
+}
+
+function stripHtmlTags(s) {
+  return s.replace(/<[^>]+>/g, '');
+}
+
+function decodeHtmlEntities(s) {
+  return s.replace(/&amp;/g, '&')
+          .replace(/&lt;/g, '<')
+          .replace(/&gt;/g, '>')
+          .replace(/&quot;/g, '"')
+          .replace(/&#39;/g, "'")
+          .replace(/&nbsp;/g, ' ');
+}
+
+$('marumaruHtmlText').addEventListener('input', e => {
+  const text = e.target.value;
+  state.marumaruData = parseMarumaruHtml(text);
+  updateMarumaruStatus();
+});
+
+// 切換 tab 時,根據當前 tab 重新解析(這樣切過去看當前資料)
+document.querySelector('[data-tab="marumaru-text"]').addEventListener('click', () => {
+  const text = $('marumaruText').value;
+  if (text) {
+    state.marumaruData = parseMarumaruText(text);
+    updateMarumaruStatus();
+  }
+});
+
+document.querySelector('[data-tab="marumaru-plain"]').addEventListener('click', () => {
+  const text = $('marumaruPlainText').value;
+  if (text) {
+    state.marumaruData = parsePlainLyrics(text);
+    updateMarumaruStatus();
+  }
+});
+
+document.querySelector('[data-tab="marumaru-html"]').addEventListener('click', () => {
+  const text = $('marumaruHtmlText').value;
+  if (text) {
+    state.marumaruData = parseMarumaruHtml(text);
+    updateMarumaruStatus();
+  }
+});
 
 /* ========================================================
    LRC 解析
@@ -1680,8 +1845,9 @@ function extractRubySegment(fullRuby, plainText) {
   const out = [];
   let pIdx = 0;  // plain index
   let fIdx = 0;  // fullRuby index
+  const targetEnd = idx + plainText.length;
 
-  while (fIdx < fullRuby.length && pIdx < idx + plainText.length) {
+  while (fIdx < fullRuby.length && pIdx < targetEnd) {
     const ch = fullRuby[fIdx];
     if (ch === '(') {
       const close = fullRuby.indexOf(')', fIdx);
@@ -1700,21 +1866,39 @@ function extractRubySegment(fullRuby, plainText) {
     }
   }
 
+  // 重要!吃完 plainText 後,可能緊接著還有 (假名) 標註目標範圍最後一個漢字
+  // 例如:fullRuby="まるで御伽(おとぎ)の話(はなし)", plainText="まるで御伽の話"
+  // 吃完「話」後,後面還有 (はなし) 要納入
+  if (pIdx === targetEnd && fIdx < fullRuby.length && fullRuby[fIdx] === '(') {
+    const close = fullRuby.indexOf(')', fIdx);
+    if (close !== -1) {
+      const reading = fullRuby.substring(fIdx + 1, close);
+      // 只在內容是純假名時才納入(才是振假名,而不是和聲)
+      if (/^[\u3040-\u309F\u30A0-\u30FFー]+$/.test(reading)) {
+        out.push(fullRuby.substring(fIdx, close + 1));
+      }
+    }
+  }
+
   return out.join('');
 }
 
 function mergeData(marumaru, lrc) {
   const merged = [];
   const marumaruPlains = marumaru.map(m => stripRuby(m.ruby));
+  // 同步建立標準化版本用來比對
+  const marumaruPlainsNorm = marumaruPlains.map(s => normalizeJpChars(s));
 
   for (let lIdx = 0; lIdx < lrc.length; lIdx++) {
     const lText = lrc[lIdx].text;
     const lTime = lrc[lIdx].time;
+    // 標準化 LRC 文字(把繁體/舊字轉日文新字)
+    const lTextNorm = normalizeJpChars(lText);
 
-    // 找出哪句 marumaru 包含這句 LRC
+    // 用「標準化版」比對 marumaru
     let matchIdx = -1;
-    for (let mIdx = 0; mIdx < marumaruPlains.length; mIdx++) {
-      if (marumaruPlains[mIdx].includes(lText)) {
+    for (let mIdx = 0; mIdx < marumaruPlainsNorm.length; mIdx++) {
+      if (marumaruPlainsNorm[mIdx].includes(lTextNorm)) {
         matchIdx = mIdx;
         break;
       }
@@ -1733,8 +1917,9 @@ function mergeData(marumaru, lrc) {
       });
     } else {
       const m = marumaru[matchIdx];
-      // 擷取對應的振假名片段
-      const rubySegment = extractRubySegment(m.ruby, lText);
+      // 用「標準化版的 LRC 文字」去 marumaru 擷取對應的振假名片段
+      // 這樣輸出的 jp_plain 和 jp_ruby 都是日文新字版本,字形一致
+      const rubySegment = extractRubySegment(m.ruby, lTextNorm);
 
       // 判斷是否為「同個 marumaru 條目的延續句」
       const sameGroup = merged.filter(item =>
@@ -1744,7 +1929,7 @@ function mergeData(marumaru, lrc) {
 
       merged.push({
         time: lTime,
-        jp_plain: lText,
+        jp_plain: lTextNorm,  // 用標準化後的版本(日文新字)
         jp_ruby: rubySegment,
         cn: m.cn,
         marumaru_jp: marumaruPlains[matchIdx],

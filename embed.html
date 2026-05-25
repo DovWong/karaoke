@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>嵌入工具 · KARAOKE EMBED</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+:root {
+  --bg: #0a0a0f;
+  --bg-elev: #14141a;
+  --bg-glass: rgba(255, 255, 255, 0.03);
+  --bg-input: #0f0f15;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.15);
+  --text: #d4d4dc;
+  --text-bright: #ffffff;
+  --text-mid: #8b8b95;
+  --text-dim: #5a5a64;
+  --accent: #ff3e7f;
+  --accent-cyan: #00e5ff;
+  --ok: #4ade80;
+  --warn: #fbbf24;
+  --error: #f87171;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(120, 50, 200, 0.12), transparent),
+    radial-gradient(ellipse 60% 40% at 0% 100%, rgba(255, 62, 127, 0.08), transparent);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+}
+
+.header {
+  margin-bottom: 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.header-title { display: flex; align-items: baseline; gap: 12px; }
+.header-logo {
+  font-family: 'Zen Maru Gothic', serif;
+  font-size: 28px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--accent), var(--accent-cyan));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  letter-spacing: -1px;
+}
+.header-subtitle { font-size: 11px; letter-spacing: 3px; color: var(--text-dim); }
+.back-link {
+  font-size: 13px; color: var(--text-mid); text-decoration: none;
+  padding: 8px 14px; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--bg-glass);
+  transition: all 0.2s;
+}
+.back-link:hover { color: var(--text-bright); border-color: var(--border-strong); }
+
+.copyright-banner {
+  margin-bottom: 32px;
+  padding: 12px 18px;
+  background: rgba(251, 191, 36, 0.06);
+  border: 1px solid rgba(251, 191, 36, 0.25);
+  border-radius: 10px;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--text-mid);
+}
+.copyright-banner strong { color: var(--warn); font-weight: 600; }
+
+.step {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.step-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.step-num {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent-cyan));
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-bright); font-weight: 700; font-size: 14px;
+}
+.step-title { font-size: 16px; font-weight: 600; color: var(--text-bright); }
+.step-hint { font-size: 12px; color: var(--text-dim); margin-left: auto; }
+
+.dropzone {
+  border: 2px dashed var(--border-strong);
+  border-radius: 12px;
+  padding: 36px 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--bg-input);
+}
+.dropzone:hover, .dropzone.dragover {
+  border-color: var(--accent);
+  background: rgba(255, 62, 127, 0.04);
+}
+.dropzone-icon { font-size: 32px; margin-bottom: 8px; }
+.dropzone-text { color: var(--text-bright); font-size: 14px; margin-bottom: 4px; }
+.dropzone-hint { font-size: 11px; color: var(--text-dim); }
+.file-input-hidden { display: none; }
+
+.file-status {
+  margin-top: 12px;
+  padding: 12px 14px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.file-status .ok { color: var(--ok); }
+.file-status .warn { color: var(--warn); }
+.file-status .error { color: var(--error); }
+
+.option-row {
+  display: flex; align-items: center; gap: 10px;
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.option-row input[type="checkbox"] {
+  width: 16px; height: 16px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+.option-row label { font-size: 13px; color: var(--text); cursor: pointer; }
+.option-row .hint { font-size: 11px; color: var(--text-dim); margin-left: 26px; display: block; }
+
+.process-btn {
+  display: block; width: 100%;
+  margin-top: 16px;
+  padding: 14px 24px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-cyan));
+  color: var(--text-bright);
+  font-size: 15px; font-weight: 600;
+  border: none; border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.process-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(255,62,127,0.3); }
+.process-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.report {
+  margin-top: 12px;
+  padding: 16px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.report-line {
+  display: flex; align-items: center; gap: 10px;
+  padding: 6px 0;
+  font-size: 13px;
+  border-bottom: 1px solid var(--border);
+}
+.report-line:last-child { border: none; }
+.report-line .badge {
+  font-size: 10px; padding: 2px 8px; border-radius: 4px;
+  font-weight: 600; letter-spacing: 0.5px;
+}
+.badge-add { background: rgba(74,222,128,0.15); color: var(--ok); }
+.badge-skip { background: rgba(139,139,149,0.15); color: var(--text-mid); }
+.badge-replace { background: rgba(251,191,36,0.15); color: var(--warn); }
+.badge-error { background: rgba(248,113,113,0.15); color: var(--error); }
+.report-line .name { color: var(--text-bright); flex: 1; }
+.report-line .meta { font-size: 11px; color: var(--text-dim); }
+
+.summary {
+  margin-top: 12px;
+  padding: 12px 16px;
+  background: rgba(0, 229, 255, 0.05);
+  border: 1px solid rgba(0, 229, 255, 0.2);
+  border-radius: 10px;
+  font-size: 13px;
+}
+
+.download-btn {
+  display: block; width: 100%;
+  margin-top: 12px;
+  padding: 12px 18px;
+  background: var(--bg-elev);
+  color: var(--text-bright);
+  font-size: 14px; font-weight: 500;
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.download-btn:hover { background: var(--accent); border-color: var(--accent); }
+
+.hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="header-title">
+      <span class="header-logo">嵌入</span>
+      <span class="header-subtitle">KARAOKE EMBED</span>
+    </div>
+    <a href="./karaoke.html" class="back-link">← 回播放器</a>
+  </div>
+
+  <div class="copyright-banner">
+    <strong>⚠️ 版權聲明:</strong> 本工具僅供個人學習日語使用,請勿用於商業用途。所有歌詞版權歸原作者及版權方所有。
+  </div>
+
+  <!-- Step 1: 上傳 karaoke.html -->
+  <div class="step">
+    <div class="step-header">
+      <span class="step-num">1</span>
+      <span class="step-title">上傳現有的 karaoke.html</span>
+      <span class="step-hint" id="htmlStatus">尚未上傳</span>
+    </div>
+    <div class="dropzone" id="htmlDropzone">
+      <div class="dropzone-icon">📄</div>
+      <div class="dropzone-text">拖曳 karaoke.html 到這裡,或<u>點選上傳</u></div>
+      <div class="dropzone-hint">會自動偵測已內嵌的歌曲</div>
+      <input type="file" class="file-input-hidden" id="htmlInput" accept=".html">
+    </div>
+    <div class="file-status hidden" id="htmlFileStatus"></div>
+  </div>
+
+  <!-- Step 2: 上傳 JSON -->
+  <div class="step">
+    <div class="step-header">
+      <span class="step-num">2</span>
+      <span class="step-title">上傳要嵌入的歌詞 JSON</span>
+      <span class="step-hint" id="jsonStatus">尚未上傳</span>
+    </div>
+    <div class="dropzone" id="jsonDropzone">
+      <div class="dropzone-icon">🎵</div>
+      <div class="dropzone-text">拖曳一個或多個 .json 檔到這裡,或<u>點選上傳</u></div>
+      <div class="dropzone-hint">可一次選多個檔案(Ctrl/Cmd + 點選)</div>
+      <input type="file" class="file-input-hidden" id="jsonInput" accept=".json" multiple>
+    </div>
+    <div class="file-status hidden" id="jsonFileStatus"></div>
+
+    <div class="option-row">
+      <input type="checkbox" id="overwriteToggle">
+      <div>
+        <label for="overwriteToggle">允許覆蓋同名歌曲</label>
+        <span class="hint">關閉(預設):同名歌曲會被跳過。開啟:用新 JSON 取代舊版本(歌詞修正用)。</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 3: 處理 -->
+  <div class="step">
+    <div class="step-header">
+      <span class="step-num">3</span>
+      <span class="step-title">執行嵌入</span>
+    </div>
+    <button class="process-btn" id="processBtn" disabled>✨ 開始嵌入</button>
+    <div id="reportArea" class="hidden"></div>
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+
+const state = {
+  htmlContent: null,        // 現有 karaoke.html 內容
+  existingSongs: [],        // 已存在的歌曲列表 [{varName, title, artist}]
+  jsonFiles: [],            // [{filename, data, title, artist}]
+};
+
+/* ========================================================
+   檔案上傳處理
+   ======================================================== */
+function setupDropzone(dropzoneId, inputId, handler) {
+  const dz = $(dropzoneId);
+  const inp = $(inputId);
+  dz.addEventListener('click', () => inp.click());
+  dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('dragover'); });
+  dz.addEventListener('dragleave', () => dz.classList.remove('dragover'));
+  dz.addEventListener('drop', e => {
+    e.preventDefault();
+    dz.classList.remove('dragover');
+    handler(e.dataTransfer.files);
+  });
+  inp.addEventListener('change', e => handler(e.target.files));
+}
+
+setupDropzone('htmlDropzone', 'htmlInput', handleHtmlFile);
+setupDropzone('jsonDropzone', 'jsonInput', handleJsonFiles);
+
+function handleHtmlFile(files) {
+  const file = files[0];
+  if (!file) return;
+  if (!file.name.endsWith('.html')) {
+    showHtmlStatus('error', '❌ 請上傳 .html 檔');
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = e => {
+    const text = e.target.result;
+    state.htmlContent = text;
+    
+    // 解析已內嵌的歌曲
+    state.existingSongs = parseExistingSongs(text);
+    
+    if (state.existingSongs.length === 0) {
+      showHtmlStatus('warn', `⚠️ 未在 ${file.name} 找到 SONGS_LIBRARY,可能不是支援的格式`);
+    } else {
+      const songList = state.existingSongs.map(s => `${s.title} (${s.artist})`).join(', ');
+      showHtmlStatus('ok', `✓ ${file.name}:已偵測 ${state.existingSongs.length} 首已內嵌的歌曲`);
+      $('htmlStatus').textContent = `${state.existingSongs.length} 首已存在`;
+    }
+    updateProcessBtn();
+  };
+  reader.readAsText(file, 'UTF-8');
+}
+
+function handleJsonFiles(files) {
+  if (!files || files.length === 0) return;
+  state.jsonFiles = [];
+  const validFiles = Array.from(files).filter(f => f.name.endsWith('.json'));
+  
+  if (validFiles.length === 0) {
+    showJsonStatus('error', '❌ 請上傳 .json 檔');
+    return;
+  }
+  
+  let loaded = 0;
+  validFiles.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      try {
+        const data = JSON.parse(e.target.result);
+        if (!data.title || !Array.isArray(data.lines)) {
+          throw new Error('缺少 title 或 lines 欄位');
+        }
+        state.jsonFiles.push({
+          filename: file.name,
+          data: data,
+          title: data.title || '?',
+          artist: data.artist || '',
+        });
+      } catch (err) {
+        state.jsonFiles.push({
+          filename: file.name,
+          error: err.message,
+        });
+      }
+      loaded++;
+      if (loaded === validFiles.length) {
+        const ok = state.jsonFiles.filter(f => !f.error).length;
+        const fail = state.jsonFiles.length - ok;
+        const msg = `✓ 已讀取 ${ok} 個 JSON${fail > 0 ? `, ${fail} 個失敗` : ''}`;
+        showJsonStatus(fail > 0 ? 'warn' : 'ok', msg);
+        $('jsonStatus').textContent = `${ok} 個 JSON`;
+        updateProcessBtn();
+      }
+    };
+    reader.readAsText(file, 'UTF-8');
+  });
+}
+
+function showHtmlStatus(level, msg) {
+  const el = $('htmlFileStatus');
+  el.classList.remove('hidden');
+  el.innerHTML = `<span class="${level}">${msg}</span>`;
+}
+
+function showJsonStatus(level, msg) {
+  const el = $('jsonFileStatus');
+  el.classList.remove('hidden');
+  el.innerHTML = `<span class="${level}">${msg}</span>`;
+}
+
+function updateProcessBtn() {
+  $('processBtn').disabled = !state.htmlContent || state.jsonFiles.filter(f => !f.error).length === 0;
+}
+
+/* ========================================================
+   解析現有 karaoke.html 找出已內嵌歌曲
+   ======================================================== */
+function parseExistingSongs(html) {
+  const songs = [];
+  
+  // 找 SONGS_LIBRARY = [...] 區塊
+  const libMatch = html.match(/const SONGS_LIBRARY = \[([\s\S]*?)\];/);
+  if (!libMatch) return [];
+  
+  const libContent = libMatch[1];
+  // 找出所有變數名稱
+  const varNames = [];
+  libContent.split('\n').forEach(line => {
+    const m = line.match(/^\s*(\w+_DATA)\s*,?/);
+    if (m) varNames.push(m[1]);
+  });
+  
+  // 對每個變數,找它的定義 const XXX_DATA = { ... }
+  varNames.forEach(varName => {
+    // 簡單法:找 title 和 artist 屬性
+    // 用括號平衡找完整定義
+    const startIdx = html.indexOf(`const ${varName} = {`);
+    if (startIdx === -1) return;
+    
+    // 從 { 開始往後找對應 }
+    let braceDepth = 0;
+    let i = html.indexOf('{', startIdx);
+    let inString = false;
+    let stringChar = '';
+    let escapeNext = false;
+    const defStart = i;
+    while (i < html.length) {
+      const ch = html[i];
+      if (escapeNext) { escapeNext = false; i++; continue; }
+      if (ch === '\\') { escapeNext = true; i++; continue; }
+      if (inString) {
+        if (ch === stringChar) inString = false;
+        i++;
+        continue;
+      }
+      if (ch === '"' || ch === "'") { inString = true; stringChar = ch; i++; continue; }
+      if (ch === '{') braceDepth++;
+      else if (ch === '}') {
+        braceDepth--;
+        if (braceDepth === 0) {
+          const defContent = html.substring(defStart, i + 1);
+          // 提取 title 和 artist
+          const titleM = defContent.match(/title\s*:\s*"((?:[^"\\]|\\.)*)"/);
+          const artistM = defContent.match(/artist\s*:\s*"((?:[^"\\]|\\.)*)"/);
+          songs.push({
+            varName,
+            title: titleM ? titleM[1] : '?',
+            artist: artistM ? artistM[1] : '',
+          });
+          break;
+        }
+      }
+      i++;
+    }
+  });
+  
+  return songs;
+}
+
+/* ========================================================
+   嵌入處理
+   ======================================================== */
+$('processBtn').addEventListener('click', () => {
+  const overwrite = $('overwriteToggle').checked;
+  const validFiles = state.jsonFiles.filter(f => !f.error);
+  
+  const reports = [];
+  const songsToAdd = [];      // 要新增的 [{filename, data, varName}]
+  const songsToReplace = [];  // 要取代的 [{filename, data, existingVar}]
+  
+  // 判斷每個 JSON 該怎麼處理
+  validFiles.forEach(jf => {
+    const exists = state.existingSongs.find(s =>
+      s.title === jf.title && s.artist === jf.artist
+    );
+    
+    if (exists) {
+      if (overwrite) {
+        songsToReplace.push({ ...jf, existingVar: exists.varName });
+        reports.push({ type: 'replace', name: `${jf.title} - ${jf.artist}`, meta: `取代 ${exists.varName}` });
+      } else {
+        reports.push({ type: 'skip', name: `${jf.title} - ${jf.artist}`, meta: '已存在,略過' });
+      }
+    } else {
+      const varName = generateVarName(jf.title, state.existingSongs, songsToAdd);
+      songsToAdd.push({ ...jf, varName });
+      reports.push({ type: 'add', name: `${jf.title} - ${jf.artist}`, meta: `新增為 ${varName}` });
+    }
+  });
+  
+  // 加入 error
+  state.jsonFiles.filter(f => f.error).forEach(f => {
+    reports.push({ type: 'error', name: f.filename, meta: f.error });
+  });
+  
+  // 產生新 HTML
+  const newHtml = buildNewHtml(state.htmlContent, songsToAdd, songsToReplace);
+  
+  // 顯示報告
+  renderReport(reports, newHtml, songsToAdd.length + songsToReplace.length > 0);
+});
+
+function generateVarName(title, existing, pending) {
+  // 把 title 轉成合法 JS 變數名
+  // 取前幾個字母 + 隨機 hash
+  let base = title.toUpperCase().replace(/[^A-Z0-9]/g, '');
+  if (!base) base = 'SONG';
+  base = base.substring(0, 12);
+  
+  let attempt = base + '_DATA';
+  let counter = 1;
+  const used = new Set([
+    ...existing.map(s => s.varName),
+    ...pending.map(p => p.varName),
+  ]);
+  while (used.has(attempt)) {
+    attempt = `${base}_${counter}_DATA`;
+    counter++;
+  }
+  return attempt;
+}
+
+function buildNewHtml(html, songsToAdd, songsToReplace) {
+  // 1. 取代現有歌曲(覆蓋模式)
+  songsToReplace.forEach(s => {
+    const oldDefRegex = new RegExp(
+      `const ${s.existingVar} = \\{[\\s\\S]*?\\n\\};`
+    );
+    const newDef = generateSongJs(s.existingVar, s.data);
+    html = html.replace(oldDefRegex, newDef);
+  });
+  
+  // 2. 插入新歌的定義
+  if (songsToAdd.length > 0) {
+    // 找最後一個 _DATA = { ... }; 的結尾,在那之後插入
+    // 用更穩定的方法:找 SONGS_LIBRARY 之前的最後一個 };
+    const libIdx = html.indexOf('const SONGS_LIBRARY');
+    if (libIdx === -1) {
+      alert('找不到 SONGS_LIBRARY,無法嵌入');
+      return html;
+    }
+    // 往前找最後一個 };\n
+    const before = html.substring(0, libIdx);
+    const lastDefEnd = before.lastIndexOf('};\n');
+    const insertPos = lastDefEnd + 2; // 在 } 之後
+    
+    const newDefs = '\n\n' + songsToAdd.map(s => generateSongJs(s.varName, s.data)).join('\n\n');
+    html = html.substring(0, insertPos) + newDefs + html.substring(insertPos);
+  }
+  
+  // 3. 更新 SONGS_LIBRARY
+  if (songsToAdd.length > 0) {
+    const libMatch = html.match(/const SONGS_LIBRARY = \[([\s\S]*?)\];/);
+    if (libMatch) {
+      const newEntries = songsToAdd.map(s => `  ${s.varName},`).join('\n');
+      const newLib = libMatch[1].replace(/\n\];?\s*$/, '') + '\n' + newEntries + '\n';
+      html = html.replace(libMatch[0], `const SONGS_LIBRARY = [${newLib}];`);
+    }
+  }
+  
+  return html;
+}
+
+function generateSongJs(varName, data) {
+  const title = JSON.stringify(data.title || '');
+  const artist = JSON.stringify(data.artist || '');
+  const duration = data.duration || 0;
+  const lines = JSON.stringify(data.lines || []);
+  return `const ${varName} = {
+  title: ${title},
+  artist: ${artist},
+  duration: ${duration},
+  lines: ${lines}
+};`;
+}
+
+function renderReport(reports, newHtml, hasChanges) {
+  const area = $('reportArea');
+  area.classList.remove('hidden');
+  
+  const stats = { add: 0, skip: 0, replace: 0, error: 0 };
+  reports.forEach(r => stats[r.type]++);
+  
+  const badgeMap = {
+    add: { cls: 'badge-add', text: '新增' },
+    skip: { cls: 'badge-skip', text: '略過' },
+    replace: { cls: 'badge-replace', text: '取代' },
+    error: { cls: 'badge-error', text: '錯誤' },
+  };
+  
+  let html = '<div class="report">';
+  reports.forEach(r => {
+    const b = badgeMap[r.type];
+    html += `<div class="report-line">
+      <span class="badge ${b.cls}">${b.text}</span>
+      <span class="name">${escapeHtml(r.name)}</span>
+      <span class="meta">${escapeHtml(r.meta)}</span>
+    </div>`;
+  });
+  html += '</div>';
+  
+  // Summary
+  html += `<div class="summary">
+    <strong>結果:</strong>
+    新增 ${stats.add} 首,
+    取代 ${stats.replace} 首,
+    略過 ${stats.skip} 首${stats.error > 0 ? `,錯誤 ${stats.error} 個` : ''}
+  </div>`;
+  
+  if (hasChanges) {
+    html += `<button class="download-btn" id="downloadBtn">⬇️ 下載新版 karaoke.html</button>`;
+  }
+  
+  area.innerHTML = html;
+  
+  if (hasChanges) {
+    $('downloadBtn').addEventListener('click', () => {
+      const blob = new Blob([newHtml], { type: 'text/html;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'karaoke.html';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+  }
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  })[c]);
+}
+</script>
+</body>
+</html>

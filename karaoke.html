@@ -178,6 +178,41 @@
     text-transform: uppercase;
   }
 
+  .songlist-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .songlist-settings-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--bg-glass);
+    border: 1px solid var(--border);
+    color: var(--text-bright);
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: inherit;
+    padding: 0;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .songlist-settings-btn:hover {
+    background: var(--bg-glass-hover);
+    border-color: var(--border-strong);
+  }
+
+  .songlist-settings-btn:active {
+    transform: scale(0.95);
+  }
+
   /* 歌單格子 */
   .song-grid {
     display: grid;
@@ -256,6 +291,30 @@
 
   .song-card-plays.has-plays {
     color: var(--accent-pink);
+  }
+
+  /* 版權聲明 */
+  .copyright-notice {
+    margin-top: 40px;
+    padding: 20px 24px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    text-align: center;
+  }
+
+  .copyright-notice p {
+    margin: 4px 0;
+    font-size: 11px;
+    line-height: 1.6;
+    color: var(--text-dim);
+    letter-spacing: 0.3px;
+  }
+
+  .copyright-notice p:first-child {
+    color: var(--text-mid);
+    font-size: 12px;
+    margin-bottom: 6px;
   }
 
   /* 中等螢幕:每排 2 首 */
@@ -531,6 +590,77 @@
     gap: 14px;
   }
 
+  .font-adjust-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+  }
+
+  .font-adjust-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .font-adjust-label {
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    margin-right: 4px;
+  }
+
+  .font-adjust-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--bg-glass);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: inherit;
+    padding: 0;
+  }
+
+  .font-adjust-btn:active {
+    transform: scale(0.92);
+    background: var(--bg-glass-hover);
+    border-color: var(--border-strong);
+  }
+
+  .offset-group {
+    position: relative;
+  }
+
+  .offset-btn {
+    width: auto;
+    padding: 0 8px;
+    font-size: 10px;
+    min-width: 38px;
+  }
+
+  .offset-group .offset-value {
+    font-size: 11px;
+    color: var(--text);
+    min-width: 36px;
+    text-align: center;
+    font-family: 'SF Mono', 'Monaco', monospace;
+  }
+
+  .offset-group .offset-value.adjusted {
+    color: var(--accent-pink);
+    font-weight: 600;
+  }
+
   .ctrl-btn {
     background: var(--bg-glass);
     border: 1px solid var(--border);
@@ -764,6 +894,46 @@
     font-family: inherit;
   }
 
+  .setting-section-divider {
+    margin-top: 24px;
+    margin-bottom: 8px;
+    padding: 8px 0 4px;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    border-top: 1px solid var(--border);
+  }
+
+  .manage-btn {
+    width: 100%;
+    padding: 10px 14px;
+    background: var(--bg-glass);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 10px;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+    text-align: center;
+  }
+
+  .manage-btn:hover {
+    background: var(--bg-glass-hover);
+    border-color: var(--border-strong);
+  }
+
+  .manage-btn.danger {
+    color: #fbbf24;
+    border-color: rgba(251, 191, 36, 0.25);
+  }
+
+  .manage-btn.danger:hover {
+    background: rgba(251, 191, 36, 0.08);
+    border-color: rgba(251, 191, 36, 0.5);
+  }
+
   /* ==========================================
      遮罩
      ========================================== */
@@ -782,6 +952,165 @@
   .overlay.active {
     opacity: 1;
     pointer-events: all;
+  }
+
+  /* ==========================================
+     歌曲操作選單(長按出現)
+     ========================================== */
+  .song-menu-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    animation: fadeIn 0.2s ease;
+    padding: 20px;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .song-menu {
+    background: var(--bg-elev);
+    border: 1px solid var(--border-strong);
+    border-radius: 20px;
+    padding: 24px;
+    width: min(360px, 100%);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    animation: slideUp 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  .song-menu-title {
+    font-family: 'Zen Maru Gothic', 'Noto Sans JP', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-bright);
+    margin-bottom: 4px;
+    text-align: center;
+  }
+
+  .song-menu-subtitle {
+    font-size: 13px;
+    color: var(--text-mid);
+    text-align: center;
+    margin-bottom: 24px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .song-menu-btn {
+    display: block;
+    width: 100%;
+    padding: 14px 18px;
+    margin-bottom: 8px;
+    background: var(--bg-glass);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text-bright);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+    text-align: center;
+  }
+
+  .song-menu-btn:hover:not(:disabled) {
+    background: var(--bg-glass-hover);
+    border-color: var(--border-strong);
+  }
+
+  .song-menu-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .song-menu-btn.danger {
+    color: #f87171;
+    border-color: rgba(248, 113, 113, 0.2);
+  }
+
+  .song-menu-btn.danger:hover {
+    background: rgba(248, 113, 113, 0.1);
+    border-color: rgba(248, 113, 113, 0.4);
+  }
+
+  .song-menu-btn.cancel {
+    color: var(--text-mid);
+    margin-top: 4px;
+    margin-bottom: 0;
+  }
+
+  /* 復原選單 */
+  .restore-menu {
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .restore-list {
+    max-height: 50vh;
+    overflow-y: auto;
+    margin-bottom: 12px;
+    padding-right: 4px;
+  }
+
+  .restore-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 12px 14px;
+    margin-bottom: 6px;
+    background: var(--bg-glass);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+    text-align: left;
+    color: var(--text-bright);
+  }
+
+  .restore-item:hover {
+    background: var(--bg-glass-hover);
+    border-color: var(--border-strong);
+  }
+
+  .restore-item:active {
+    transform: scale(0.98);
+  }
+
+  .restore-item-text {
+    flex: 1;
+    pointer-events: none;
+  }
+
+  .restore-item-title {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 2px;
+  }
+
+  .restore-item-artist {
+    font-size: 12px;
+    color: var(--text-mid);
+  }
+
+  .restore-item-icon {
+    font-size: 16px;
+    pointer-events: none;
   }
 
   /* ==========================================
@@ -826,17 +1155,26 @@
         <div class="logo">歌詞</div>
         <div class="tagline">KARAOKE LYRICS PLAYER</div>
       </div>
-      <div class="sort-control">
-        <span class="sort-label">排序</span>
-        <div class="toggle-group">
-          <button class="toggle-btn active" data-sort="title">歌名</button>
-          <button class="toggle-btn" data-sort="plays">最常聽</button>
+      <div class="songlist-actions">
+        <div class="sort-control">
+          <span class="sort-label">排序</span>
+          <div class="toggle-group">
+            <button class="toggle-btn active" data-sort="title">歌名</button>
+            <button class="toggle-btn" data-sort="plays">最常聽</button>
+          </div>
         </div>
+        <button class="songlist-settings-btn" id="songlistSettingsBtn" title="設定">⚙️</button>
       </div>
     </div>
 
     <div class="song-grid" id="songGrid">
       <!-- 動態產生歌曲卡片 -->
+    </div>
+
+    <div class="copyright-notice">
+      <p>本應用僅供個人學習日語使用,所有歌詞版權歸原作者及版權方所有。</p>
+      <p>This app is for personal Japanese learning only. All lyrics are property of their respective copyright holders.</p>
+      <p>If you are a rights holder and wish content removed, please contact and it will be removed within 24 hours.</p>
     </div>
   </div>
 
@@ -887,6 +1225,25 @@
         <div class="seek-label">秒</div>
       </div>
     </div>
+
+    <div class="font-adjust-row">
+      <div class="font-adjust-group">
+        <span class="font-adjust-label">日文字</span>
+        <button class="font-adjust-btn" id="sizeMainMinus">−</button>
+        <button class="font-adjust-btn" id="sizeMainPlus">+</button>
+      </div>
+      <div class="font-adjust-group">
+        <span class="font-adjust-label">振假名</span>
+        <button class="font-adjust-btn" id="sizeRubyMinus">−</button>
+        <button class="font-adjust-btn" id="sizeRubyPlus">+</button>
+      </div>
+      <div class="font-adjust-group offset-group">
+        <span class="font-adjust-label">時間</span>
+        <button class="font-adjust-btn offset-btn" id="offsetMinus">−0.5s</button>
+        <div class="offset-value" id="offsetValue">0.0s</div>
+        <button class="font-adjust-btn offset-btn" id="offsetPlus">+0.5s</button>
+      </div>
+    </div>
   </div>
 
 </div>
@@ -895,7 +1252,7 @@
 <div class="overlay" id="overlay"></div>
 <div class="settings-panel" id="settingsPanel">
   <div class="settings-handle"></div>
-  <div class="settings-title">顯示設定</div>
+  <div class="settings-title">設定</div>
 
   <div class="setting-row">
     <div class="setting-label">振假名(漢字讀音)</div>
@@ -905,53 +1262,27 @@
     </div>
   </div>
 
+  <div class="setting-section-divider">歌單管理</div>
+
   <div class="setting-row">
-    <div class="setting-label">片假名也標假名</div>
+    <div class="setting-label">返回歌單時詢問</div>
     <div class="toggle-group">
-      <button class="toggle-btn" data-setting="katakana" data-value="on">顯示</button>
-      <button class="toggle-btn active" data-setting="katakana" data-value="off">隱藏</button>
+      <button class="toggle-btn" data-setting="confirmBack" data-value="on">是</button>
+      <button class="toggle-btn active" data-setting="confirmBack" data-value="off">否</button>
     </div>
   </div>
 
-  <div class="setting-row">
-    <div class="setting-label">中文翻譯</div>
-    <div class="toggle-group">
-      <button class="toggle-btn active" data-setting="cn" data-value="on">顯示</button>
-      <button class="toggle-btn" data-setting="cn" data-value="off">隱藏</button>
+  <div class="setting-row" style="flex-direction: column; align-items: stretch; gap: 8px;">
+    <div class="setting-label" style="display: flex; justify-content: space-between; align-items: center;">
+      <span>已刪除的歌曲</span>
+      <span id="deletedHint" style="font-size:11px;color:var(--text-dim);"></span>
     </div>
+    <button class="manage-btn" id="restoreAllBtn">↩️ 復原已刪除的歌...</button>
   </div>
 
-  <div class="setting-row slider-row">
-    <div class="setting-label">日文字體</div>
-    <div class="slider-wrap">
-      <input type="range" class="slider" id="sizeMain" min="18" max="60" step="1" value="28">
-      <div class="slider-value" id="sizeMainValue">28</div>
-    </div>
-  </div>
-
-  <div class="setting-row slider-row">
-    <div class="setting-label">振假名大小</div>
-    <div class="slider-wrap">
-      <input type="range" class="slider" id="sizeRuby" min="30" max="70" step="1" value="45">
-      <div class="slider-value" id="sizeRubyValue">45%</div>
-    </div>
-  </div>
-
-  <div class="setting-row slider-row">
-    <div class="setting-label">中文字體</div>
-    <div class="slider-wrap">
-      <input type="range" class="slider" id="sizeCn" min="10" max="30" step="1" value="15">
-      <div class="slider-value" id="sizeCnValue">15</div>
-    </div>
-  </div>
-
-  <div class="setting-row">
-    <div class="setting-label">時間微調</div>
-    <div class="offset-row">
-      <button class="ctrl-btn ctrl-tiny" id="offsetMinus">−</button>
-      <div class="offset-value" id="offsetValue">0.0s</div>
-      <button class="ctrl-btn ctrl-tiny" id="offsetPlus">+</button>
-    </div>
+  <div class="setting-row" style="flex-direction: column; align-items: stretch; gap: 8px;">
+    <div class="setting-label">播放次數</div>
+    <button class="manage-btn danger" id="resetPlaysBtn">🔄 重設所有歌的播放次數</button>
   </div>
 
   <button class="close-btn" id="closeSettings">完成</button>
@@ -973,6 +1304,62 @@ const SHUKUFUKU_DATA = {
   artist: "YOASOBI",
   duration: 196,
   lines: [{"time":1,"jp_plain":"遥か遠くに浮かぶ星を","jp_ruby":"遥(はる)か遠(とお)くに浮(う)かぶ星(ほし)を","cn":"","is_continuation":false},{"time":3.82,"jp_plain":"想い眠りにつく君の","jp_ruby":"想(おも)い眠(ねむ)りにつく君(きみ)の","cn":"","is_continuation":false},{"time":6.65,"jp_plain":"選ぶ未来が望む道が","jp_ruby":"選(えら)ぶ未来(みらい)が望(のぞ)む道(みち)が","cn":"","is_continuation":false},{"time":9.4,"jp_plain":"何処へ続いていても","jp_ruby":"何処(どこ)へ続(つづ)いていても","cn":"","is_continuation":false},{"time":11.65,"jp_plain":"共に生きるから","jp_ruby":"共(とも)に生(い)きるから","cn":"","is_continuation":false},{"time":24.01,"jp_plain":"ずっと昔の記憶","jp_ruby":"ずっと昔(むかし)の記憶(きおく)","cn":"","is_continuation":false},{"time":28.8,"jp_plain":"連れられて来たこの星で君は","jp_ruby":"連(つ)れられて来(き)たこの星(ほし)で君(きみ)は","cn":"","is_continuation":false},{"time":33.58,"jp_plain":"願い続けてた","jp_ruby":"願(ねが)い続(つづ)けてた","cn":"","is_continuation":false},{"time":35.27,"jp_plain":"遠くで煌めく景色に","jp_ruby":"遠(とお)くで煌(きら)めく景色(けしき)に","cn":"","is_continuation":false},{"time":40.15,"jp_plain":"飛び込むことが出来たのなら","jp_ruby":"飛(と)び込(こ)むことが出来(でき)たのなら","cn":"","is_continuation":false},{"time":45.42,"jp_plain":"一人孤独な世界で","jp_ruby":"一人(ひとり)孤独(こどく)な世界(せかい)で","cn":"","is_continuation":false},{"time":47.47,"jp_plain":"祈り願う","jp_ruby":"祈(いの)り願(ねが)う","cn":"","is_continuation":true},{"time":48.97,"jp_plain":"夢を描き","jp_ruby":"夢(ゆめ)を描(えが)き","cn":"","is_continuation":false},{"time":50.3,"jp_plain":"未来を見る","jp_ruby":"未来(みらい)を見(み)る","cn":"","is_continuation":true},{"time":51.74,"jp_plain":"逃げ出すよりも進むことを","jp_ruby":"逃(に)げ出(だ)すよりも進(すす)むことを","cn":"","is_continuation":false},{"time":54.5,"jp_plain":"君が選んだのなら","jp_ruby":"君(きみ)が選(えら)んだのなら","cn":"","is_continuation":false},{"time":57.26,"jp_plain":"誰かが描いたイメージじゃなくて","jp_ruby":"誰(だれ)かが描(えが)いたイメージじゃなくて","cn":"","is_continuation":false},{"time":59.91,"jp_plain":"誰かが選んだステージじゃなくて","jp_ruby":"誰(だれ)かが選(えら)んだステージじゃなくて","cn":"","is_continuation":false},{"time":62.81,"jp_plain":"僕たちが作っていくストーリー","jp_ruby":"僕(ぼく)たちが作(つく)っていくストーリー","cn":"","is_continuation":false},{"time":65.57,"jp_plain":"決して一人にはさせないから","jp_ruby":"決(けっ)して一人(ひとり)にはさせないから","cn":"","is_continuation":false},{"time":68.47,"jp_plain":"いつかその胸に秘めた","jp_ruby":"いつかその胸(むね)に秘(ひ)めた","cn":"","is_continuation":false},{"time":71.2,"jp_plain":"刃が鎖を断ち切るまで","jp_ruby":"刃(やいば)が鎖(くさり)を断(た)ち切(き)るまで","cn":"","is_continuation":false},{"time":75.27,"jp_plain":"ずっと共に闘うよ","jp_ruby":"ずっと共(とも)に闘(たたか)うよ","cn":"","is_continuation":false},{"time":87.94,"jp_plain":"決め付けられた運命","jp_ruby":"決(き)め付(つ)けられた運命(うんめい)","cn":"","is_continuation":false},{"time":89.58,"jp_plain":"そんなの壊して","jp_ruby":"そんなの壊(こわ)して","cn":"","is_continuation":false},{"time":90.96000000000001,"jp_plain":"僕達は操り人形じゃない","jp_ruby":"僕(ぼく)達(たち)は操(あやつ)り人形(にんぎょう)じゃない","cn":"","is_continuation":false},{"time":93.81,"jp_plain":"君の世界だ 君の未来だ","jp_ruby":"君(きみ)の世界(せかい)だ 君(きみ)の未来(みらい)だ","cn":"","is_continuation":false},{"time":96.64,"jp_plain":"どんな物語にでも出来る","jp_ruby":"どんな物語(ものがたり)にでも出来(でき)る","cn":"","is_continuation":false},{"time":99.25,"jp_plain":"逃げる様に 隠れる様に","jp_ruby":"逃(に)げる様(よう)に 隠(かく)れる様(よう)に","cn":"","is_continuation":false},{"time":102.57,"jp_plain":"乗り込んで来たコクピットには","jp_ruby":"乗(の)り込(こ)んで来(き)たコクピットには","cn":"","is_continuation":false},{"time":105.44,"jp_plain":"泣き虫な君はもう居ない","jp_ruby":"泣(な)き虫(むし)な君(きみ)はもう居(い)ない","cn":"","is_continuation":false},{"time":108.21000000000001,"jp_plain":"いつの間にかこんなに強く","jp_ruby":"いつの間(ま)にかこんなに強(つよ)く","cn":"","is_continuation":false},{"time":112.31,"jp_plain":"これは君の人生","jp_ruby":"これは君(きみ)の人生(じんせい)","cn":"","is_continuation":false},{"time":117.83,"jp_plain":"それは答えなんて無い","jp_ruby":"それは答(こた)えなんて無(な)い","cn":"","is_continuation":false},{"time":120.91,"jp_plain":"(自分で選ぶ道)","jp_ruby":"(自分で選ぶ道)","cn":"","is_continuation":false},{"time":124.25,"jp_plain":"もう呪縛は解いて","jp_ruby":"もう呪縛(じゅばく)は解(と)いて","cn":"","is_continuation":false},{"time":126.21,"jp_plain":"定められたフィクションから今","jp_ruby":"定(さだ)められたフィクションから今(いま)","cn":"","is_continuation":false},{"time":130.55,"jp_plain":"飛び出すんだ","jp_ruby":"飛(と)び出(だ)すんだ","cn":"","is_continuation":false},{"time":131.87,"jp_plain":"飛び立つんだ","jp_ruby":"飛(と)び立(た)つんだ","cn":"","is_continuation":false},{"time":134.78,"jp_plain":"誰にも追いつけないスピードで","jp_ruby":"誰(だれ)にも追(お)いつけないスピードで","cn":"","is_continuation":false},{"time":137.63,"jp_plain":"地面蹴り上げ空を舞う","jp_ruby":"地面(じめん)蹴(け)り上(あ)げ空(そら)を舞(ま)う","cn":"","is_continuation":false},{"time":140.47,"jp_plain":"呪い呪われた未来は","jp_ruby":"呪(のろ)い呪(のろ)われた未来(みらい)は","cn":"","is_continuation":false},{"time":143.12,"jp_plain":"君がその手で変えていくんだ","jp_ruby":"君(きみ)がその手(て)で変(か)えていくんだ","cn":"","is_continuation":false},{"time":145.88,"jp_plain":"逃げずに進んだことできっと","jp_ruby":"逃(に)げずに進(すす)んだことできっと","cn":"","is_continuation":false},{"time":148.84,"jp_plain":"掴めるものが沢山あるよ","jp_ruby":"掴(つか)めるものが沢山(たくさん)あるよ","cn":"","is_continuation":false},{"time":153.06,"jp_plain":"もっと強くなれる","jp_ruby":"もっと強(つよ)くなれる","cn":"","is_continuation":false},{"time":165.82,"jp_plain":"この星に生まれたこと","jp_ruby":"この星(ほし)に生(う)まれたこと","cn":"","is_continuation":false},{"time":168.22,"jp_plain":"この世界で生き続けること","jp_ruby":"この世界(せかい)で生(い)き続(つづ)けること","cn":"","is_continuation":false},{"time":171.92000000000002,"jp_plain":"その全てを愛せる様に","jp_ruby":"その全(すべ)てを愛(あい)せる様(よう)に","cn":"","is_continuation":false},{"time":177.2,"jp_plain":"目一杯の祝福を君に","jp_ruby":"目一杯(めいっぱい)の祝福(しゅくふく)を君(きみ)に","cn":"","is_continuation":false}]
+};
+
+const IKUOKU_KOUNEN_DATA = {
+  title: "幾億光年",
+  artist: "Omoinotake",
+  duration: 271.86,
+  lines: [{"time":1.36,"jp_plain":"もう一度さ 声を聴かせてよ","jp_ruby":"もう一(いち)度(ど)さ 声(こえ)を聴(き)かせてよ","cn":"","is_continuation":false},{"time":5.57,"jp_plain":"めくれないままでいる","jp_ruby":"めくれないままでいる","cn":"","is_continuation":false},{"time":8.37,"jp_plain":"夏の日のカレンダー","jp_ruby":"夏(なつ)の日(ひ)のカレンダー","cn":"","is_continuation":false},{"time":10.83,"jp_plain":"ただいまってさ 笑ってみせてよ","jp_ruby":"ただいまってさ 笑(わら)ってみせてよ","cn":"","is_continuation":false},{"time":15.2,"jp_plain":"送り先もわからない","jp_ruby":"送(おく)り先(さき)もわからない","cn":"","is_continuation":false},{"time":17.93,"jp_plain":"忘れものばかりだ","jp_ruby":"忘(わす)れものばかりだ","cn":"","is_continuation":false},{"time":20.6,"jp_plain":"ココロが壊れる音が聴こえて","jp_ruby":"ココロが壊(こわ)れる音(おと)が聴(き)こえて","cn":"","is_continuation":false},{"time":25.42,"jp_plain":"どれだけ君を愛していたか知って","jp_ruby":"どれだけ君(きみ)を愛(あい)していたか知(し)って","cn":"","is_continuation":false},{"time":31.23,"jp_plain":"もう二度とは増やせない","jp_ruby":"もう二(に)度(ど)とは増(ふ)やせない","cn":"","is_continuation":false},{"time":35.14,"jp_plain":"思い出を抱いて 生きて","jp_ruby":"思(おも)い出(で)を抱(いだ)いて 生(い)きて","cn":"","is_continuation":false},{"time":39.14,"jp_plain":"デイバイデイ","jp_ruby":"デイバイデイ","cn":"","is_continuation":false},{"time":40.42,"jp_plain":"どんなスピードで追いかけたら","jp_ruby":"どんなスピードで追(お)いかけたら","cn":"","is_continuation":false},{"time":45.46,"jp_plain":"また君と巡り逢えるだろう","jp_ruby":"また君(きみ)と巡(めぐ)り逢(あ)えるだろう","cn":"","is_continuation":false},{"time":50.58,"jp_plain":"寄り添った日々 生きている意味","jp_ruby":"寄(よ)り添(そ)った日々(ひび) 生(い)きている意味","cn":"","is_continuation":false},{"time":54.86,"jp_plain":"くれたのは君なんだよ","jp_ruby":"くれたのは君(きみ)なんだよ","cn":"","is_continuation":false},{"time":59.29,"jp_plain":"だから いつもココロで想い続けてる","jp_ruby":"だから いつもココロで想(おも)い続(つづ)けてる","cn":"","is_continuation":false},{"time":65.57,"jp_plain":"まだ僕の声は聴こえてる？","jp_ruby":"まだ僕(ぼく)の声(こえ)は聴(き)こえてる？","cn":"","is_continuation":false},{"time":70.65,"jp_plain":"止まらない日々 君に逢う旅","jp_ruby":"止(と)まらない日々(ひび) 君(きみ)に逢(あ)う旅(たび)","cn":"","is_continuation":false},{"time":74.99,"jp_plain":"よく似合う笑み浮かべて 待ってて","jp_ruby":"よく似合(にあ)う笑(え)み浮(う)かべて 待(ま)ってて","cn":"","is_continuation":false},{"time":80.94,"jp_plain":"言えなかった胸の奥の言葉","jp_ruby":"言(い)えなかった胸(むね)の奥(おく)の言葉(ことば)","cn":"","is_continuation":false},{"time":86.22,"jp_plain":"いまなら ありのまま君に渡せる","jp_ruby":"いまなら ありのまま君(きみ)に渡(わた)せる","cn":"","is_continuation":false},{"time":95.02000000000001,"jp_plain":"囁けばさ 届けられた距離","jp_ruby":"囁(ささや)けばさ 届(とど)けられた距離","cn":"","is_continuation":false},{"time":99.47999999999999,"jp_plain":"ゼロセンチの指先で","jp_ruby":"ゼロセンチの指先(ゆびさき)で","cn":"","is_continuation":false},{"time":102.17,"jp_plain":"渡せた気になってた","jp_ruby":"渡(わた)せた気(き)になってた","cn":"","is_continuation":false},{"time":104.94,"jp_plain":"どうしてかな 離れている方が","jp_ruby":"どうしてかな 離(はな)れている方(ほう)が","cn":"","is_continuation":false},{"time":109.06,"jp_plain":"言葉溢れだすのは","jp_ruby":"言葉(ことば)溢(あふ)れだすのは","cn":"","is_continuation":false},{"time":111.85,"jp_plain":"いまさらと笑って","jp_ruby":"いまさらと笑(わら)って","cn":"","is_continuation":false},{"time":114.53999999999999,"jp_plain":"君だけ見つけた いつかの流星","jp_ruby":"君(きみ)だけ見(み)つけた いつかの流星(りゅうせい)","cn":"","is_continuation":false},{"time":119.3,"jp_plain":"どんな願いを浮かべていたのかな","jp_ruby":"どんな願(ねが)いを浮(う)かべていたのかな","cn":"","is_continuation":false},{"time":125.16,"jp_plain":"あの日君が見上げてた","jp_ruby":"あの日(ひ)君(きみ)が見上(みあ)げてた","cn":"","is_continuation":false},{"time":129.11,"jp_plain":"藍色の先を見つめ","jp_ruby":"藍色(あいいろ)の先(さき)を見(み)つめ","cn":"","is_continuation":false},{"time":132.97,"jp_plain":"デイバイデイ","jp_ruby":"デイバイデイ","cn":"","is_continuation":true},{"time":134.33,"jp_plain":"幾億年の距離をこえて","jp_ruby":"幾(いく)億(おく)年(ねん)の距離(きょり)をこえて","cn":"","is_continuation":false},{"time":139.38,"jp_plain":"輝きを伝う星のように","jp_ruby":"輝(かがや)きを伝(つた)う星(ほし)のように","cn":"","is_continuation":false},{"time":144.31,"jp_plain":"変わらない愛 確かなヒカリ","jp_ruby":"変(か)わらない愛(あい) 確(たし)かなヒカリ","cn":"","is_continuation":false},{"time":148.74,"jp_plain":"届くまで願い続ける","jp_ruby":"届(とど)くまで願(ねが)い続(つづ)ける","cn":"","is_continuation":false},{"time":153.12,"jp_plain":"だから いつか僕ら巡り逢えたなら","jp_ruby":"だから いつか僕(ぼく)ら巡(めぐ)り逢(あ)えたなら","cn":"","is_continuation":false},{"time":159.41,"jp_plain":"輝きの中 待ち合わせよう","jp_ruby":"輝(かがや)きの中(なか) 待(ま)ち合(あ)わせよう","cn":"","is_continuation":false},{"time":164.46,"jp_plain":"君が迷子にならないように","jp_ruby":"君(きみ)が迷子(まいご)にならないように","cn":"","is_continuation":false},{"time":168.96,"jp_plain":"瞬きもせず 照らして待ってる","jp_ruby":"瞬(まばた)きもせず 照(て)らして待(ま)ってる","cn":"","is_continuation":false},{"time":174.85,"jp_plain":"消えやしない 君がくれた温もり","jp_ruby":"消(き)えやしない 君(きみ)がくれた温(ぬく)もり","cn":"","is_continuation":false},{"time":180.11,"jp_plain":"抱きしめ 僕はいまを生きていくから","jp_ruby":"抱(だ)きしめ 僕(ぼく)はいまを生(い)きていくから","cn":"","is_continuation":false},{"time":194.27,"jp_plain":"名前を呼ぶよ 来る日も来る日も","jp_ruby":"名前(なまえ)を呼(よ)ぶよ 来(く)る日(ひ)も来(く)る日(ひ)も","cn":"","is_continuation":false},{"time":199.22,"jp_plain":"たえず叫ぶよ あのままの二人でいようよ","jp_ruby":"たえず叫(さけ)ぶよ あのままの二人(ふたり)でいようよ","cn":"","is_continuation":false},{"time":208.49,"jp_plain":"デイバイデイ","jp_ruby":"デイバイデイ","cn":"","is_continuation":true},{"time":209.63,"jp_plain":"どんなスピードで追いかけたら","jp_ruby":"どんなスピードで追(お)いかけたら","cn":"","is_continuation":true},{"time":214.62,"jp_plain":"また君と巡り逢えるだろう","jp_ruby":"また君(きみ)と巡(めぐ)り逢(あ)えるだろう","cn":"","is_continuation":true},{"time":219.87,"jp_plain":"わけあえた日々 季節はふいに","jp_ruby":"わけあえた日々(ひび) 季節(きせつ)はふいに","cn":"","is_continuation":false},{"time":224.19,"jp_plain":"君だけを乗せ 彼方へ","jp_ruby":"君(きみ)だけを乗(の)せ 彼方(かなた)へ","cn":"","is_continuation":false},{"time":228.5,"jp_plain":"だから いつもココロで想い続けてる","jp_ruby":"だから いつもココロで想(おも)い続(つづ)けてる","cn":"","is_continuation":true},{"time":234.81,"jp_plain":"まだ僕の声は聴こえてる？","jp_ruby":"まだ僕(ぼく)の声(こえ)は聴(き)こえてる？","cn":"","is_continuation":true},{"time":239.82,"jp_plain":"進み出す日々 目を開けるたび","jp_ruby":"進(すす)み出(だ)す日々(ひび) 目(め)を開(あ)けるたび","cn":"","is_continuation":false},{"time":244.22,"jp_plain":"近づいていく 運命と信じて","jp_ruby":"近(ちか)づいていく 運命(うんめい)と信(しん)じて","cn":"","is_continuation":false},{"time":250.2,"jp_plain":"言えなかった胸の奥の言葉","jp_ruby":"言(い)えなかった胸(むね)の奥(おく)の言葉","cn":"","is_continuation":true},{"time":255.59,"jp_plain":"いまなら ありのまま君に渡せる","jp_ruby":"いまなら ありのまま君(きみ)に渡(わた)せる","cn":"","is_continuation":true},{"time":260.36,"jp_plain":"どれだけの時が流れても 永遠に","jp_ruby":"どれだけの時(とき)が流(なが)れても 永遠(えいえん)に","cn":"","is_continuation":false},{"time":266.86,"jp_plain":"過去形にならない \"I love you\"","jp_ruby":"過去形(かこけい)にならない \"I love you\"","cn":"","is_continuation":false}]
+};
+
+const KAIBUTSU_DATA = {
+  title: "怪物",
+  artist: "YOASOBI",
+  duration: 192.66,
+  lines: [{"time":1.11,"jp_plain":"あぁ素晴らしき世界に今日も乾杯","jp_ruby":"あぁ素晴(すば)らしき世界(せかい)に今日(きょう)も乾杯(かんぱい)","cn":"","is_continuation":false},{"time":4.79,"jp_plain":"街に飛び交う笑い声も","jp_ruby":"街(まち)に飛(と)び交(か)う笑(わら)い声(ごえ)も","cn":"","is_continuation":false},{"time":7.35,"jp_plain":"見て見ぬフリしてるだけの作りもんさ","jp_ruby":"見(み)て見(み)ぬフリしてるだけの作(つく)りもんさ","cn":"","is_continuation":false},{"time":11.88,"jp_plain":"気が触れそうだ","jp_ruby":"気(き)が触(ふ)れそうだ","cn":"","is_continuation":false},{"time":13.29,"jp_plain":"クラクラするほどの良い匂いが","jp_ruby":"クラクラするほどの良(よ)い匂(にお)いが","cn":"","is_continuation":false},{"time":15.85,"jp_plain":"ツンと刺した鼻の奥","jp_ruby":"ツンと刺(さ)した鼻(はな)の奥(おく)","cn":"","is_continuation":false},{"time":18.24,"jp_plain":"目を覚ます本能のまま","jp_ruby":"目(め)を覚(さ)ます本能(ほんのう)のまま","cn":"","is_continuation":false},{"time":20.14,"jp_plain":"今日は誰の番だ？","jp_ruby":"今日(きょう)は誰(だれ)の番(ばん)だ？","cn":"","is_continuation":false},{"time":23.04,"jp_plain":"この世界で何が出来るのか","jp_ruby":"この世界(せかい)で何(なに)が出来(でき)るのか","cn":"","is_continuation":false},{"time":26.84,"jp_plain":"僕には何が出来るのか","jp_ruby":"僕(ぼく)には何(なに)が出来(でき)るのか","cn":"","is_continuation":false},{"time":29.88,"jp_plain":"ただその真っ黒な目から","jp_ruby":"ただその真(ま)っ黒(くろ)な目(め)から","cn":"","is_continuation":false},{"time":32.54,"jp_plain":"涙溢れ落ちないように","jp_ruby":"涙(なみだ)溢(あふ)れ落(お)ちないように","cn":"","is_continuation":false},{"time":35.51,"jp_plain":"あぁ願う未来に何度でもずっと","jp_ruby":"あぁ願(ねが)う未来(みらい)に何度(なんど)でもずっと","cn":"","is_continuation":false},{"time":38.87,"jp_plain":"喰らいつく","jp_ruby":"喰(く)らいつく","cn":"","is_continuation":false},{"time":39.92,"jp_plain":"この間違いだらけの世界の中","jp_ruby":"この間違(まちが)いだらけの世界(せかい)の中(なか)","cn":"","is_continuation":false},{"time":44.12,"jp_plain":"君には笑ってほしいから","jp_ruby":"君(きみ)には笑(わら)ってほしいから","cn":"","is_continuation":false},{"time":47.34,"jp_plain":"もう誰も傷付けない","jp_ruby":"もう誰(だれ)も傷付(きずつ)けない","cn":"","is_continuation":false},{"time":49.46,"jp_plain":"強く強くなりたいんだよ","jp_ruby":"強(つよ)く強(つよ)くなりたいんだよ","cn":"","is_continuation":false},{"time":52.17,"jp_plain":"僕が僕でいられるように","jp_ruby":"僕(ぼく)が僕(ぼく)でいられるように","cn":"","is_continuation":false},{"time":63.89,"jp_plain":"素晴らしき世界は今日も安泰","jp_ruby":"素晴(すば)らしき世界(せかい)は今日(きょう)も安泰(あんたい)","cn":"","is_continuation":false},{"time":66.88,"jp_plain":"街に渦巻く悪い話も","jp_ruby":"街(まち)に渦巻(うずま)く悪(わる)い話(はなし)も","cn":"","is_continuation":false},{"time":69.62,"jp_plain":"知らない知らないフリして目を逸らした","jp_ruby":"知(し)らない知(し)らないフリして目(め)を逸(そ)らした","cn":"","is_continuation":false},{"time":73.72,"jp_plain":"正気の沙汰じゃないな","jp_ruby":"正気(しょうき)の沙汰(さた)じゃないな","cn":"","is_continuation":false},{"time":75.98,"jp_plain":"真面目に着飾った行進","jp_ruby":"真面目(まじめ)に着飾(きかざ)った行進(こうしん)","cn":"","is_continuation":false},{"time":78.18,"jp_plain":"鳴らす足音が弾む行き先は","jp_ruby":"鳴(な)らす足音(あしおと)が弾(はず)む行(い)き先(さき)は","cn":"","is_continuation":false},{"time":81,"jp_plain":"消えない消えない味が染み付いている","jp_ruby":"消(き)えない消(き)えない味(あじ)が染(し)み付(つ)いている","cn":"","is_continuation":false},{"time":85.1,"jp_plain":"裏側の世界","jp_ruby":"裏側(うらがわ)の世界(せかい)","cn":"","is_continuation":false},{"time":98.06,"jp_plain":"清く正しく生きること","jp_ruby":"清(きよ)く正(ただ)しく生(い)きること","cn":"","is_continuation":false},{"time":100.43,"jp_plain":"誰も悲しませずに生きること","jp_ruby":"誰(だれ)も悲(かな)しませずに生(い)きること","cn":"","is_continuation":false},{"time":103.06,"jp_plain":"はみ出さず真っ直ぐに生きること","jp_ruby":"はみ出(だ)さず真(ま)っ直(す)ぐに生(い)きること","cn":"","is_continuation":false},{"time":105.92,"jp_plain":"それが間違わないで生きること？","jp_ruby":"それが間違(まちが)わないで生(い)きること？","cn":"","is_continuation":false},{"time":108.85,"jp_plain":"ありのまま生きることが正義か","jp_ruby":"ありのまま生(い)きることが正義(せいぎ)か","cn":"","is_continuation":false},{"time":111.55,"jp_plain":"騙し騙し生きるのは正義か","jp_ruby":"騙(だま)し騙(だま)し生(い)きるのは正義(せいぎ)か","cn":"","is_continuation":false},{"time":114.47999999999999,"jp_plain":"僕の在るべき姿とはなんだ","jp_ruby":"僕(ぼく)の在(あ)るべき姿(すがた)とはなんだ","cn":"","is_continuation":false},{"time":117.27000000000001,"jp_plain":"本当の僕は何者なんだ","jp_ruby":"本当(ほんとう)の僕(ぼく)は何者(なにもの)なんだ","cn":"","is_continuation":false},{"time":119.86,"jp_plain":"教えてくれよ","jp_ruby":"教(おし)えてくれよ","cn":"","is_continuation":false},{"time":125.47,"jp_plain":"教えてくれよ","jp_ruby":"教(おし)えてくれよ","cn":"","is_continuation":true},{"time":131.16,"jp_plain":"今日も","jp_ruby":"今日(きょう)も","cn":"","is_continuation":true},{"time":131.92,"jp_plain":"答えのない世界の中で","jp_ruby":"答(こた)えのない世界(せかい)の中(なか)で","cn":"","is_continuation":false},{"time":134.81,"jp_plain":"願ってるんだよ","jp_ruby":"願(ねが)ってるんだよ","cn":"","is_continuation":false},{"time":136.45,"jp_plain":"不器用だけれど","jp_ruby":"不器用(ぶきよう)だけれど","cn":"","is_continuation":false},{"time":138.14,"jp_plain":"いつまでも君とただ","jp_ruby":"いつまでも君(きみ)とただ","cn":"","is_continuation":false},{"time":141.38,"jp_plain":"笑っていたいから","jp_ruby":"笑(わら)っていたいから","cn":"","is_continuation":false},{"time":143.15,"jp_plain":"あぁ跳ねる心臓が","jp_ruby":"あぁ跳(は)ねる心臓(しんぞう)が","cn":"","is_continuation":false},{"time":145.49,"jp_plain":"体揺らし叫ぶんだよ","jp_ruby":"体(からだ)揺(ゆ)らし叫(さけ)ぶんだよ","cn":"","is_continuation":false},{"time":148.13,"jp_plain":"今こそ動き出せ","jp_ruby":"今(いま)こそ動(うご)き出(だ)せ","cn":"","is_continuation":false},{"time":151.18,"jp_plain":"あぁ弱い自分を何度でもずっと","jp_ruby":"あぁ弱(よわ)い自分(じぶん)を何度(なんど)でもずっと","cn":"","is_continuation":false},{"time":154.43,"jp_plain":"喰らい尽くす","jp_ruby":"喰(く)らい尽(つ)くす","cn":"","is_continuation":false},{"time":155.57999999999998,"jp_plain":"この間違いだらけの世界の中","jp_ruby":"この間違(まちが)いだらけの世界(せかい)の中(なか)","cn":"","is_continuation":true},{"time":159.85,"jp_plain":"君には笑ってほしいから","jp_ruby":"君(きみ)には笑(わら)ってほしいから","cn":"","is_continuation":true},{"time":163.03,"jp_plain":"もう誰も泣かないよう","jp_ruby":"もう誰(だれ)も泣(な)かないよう","cn":"","is_continuation":false},{"time":165.37,"jp_plain":"強く強くなりたいんだよ","jp_ruby":"強(つよ)く強(つよ)くなりたいんだよ","cn":"","is_continuation":true},{"time":167.97,"jp_plain":"僕が僕でいられるように","jp_ruby":"僕(ぼく)が僕(ぼく)でいられるように","cn":"","is_continuation":true},{"time":182.15,"jp_plain":"ただ君を守るそのために","jp_ruby":"ただ君(きみ)を守(まも)るそのために","cn":"","is_continuation":false},{"time":185.16,"jp_plain":"走る走る走るんだよ","jp_ruby":"走(はし)る走(はし)る走(はし)るんだよ","cn":"","is_continuation":false},{"time":187.66,"jp_plain":"僕の中の僕を超える","jp_ruby":"僕(ぼく)の中(なか)の僕(ぼく)を超(こ)える","cn":"","is_continuation":false}]
+};
+
+const YUSHA_DATA = {
+  title: "勇者",
+  artist: "YOASOBI",
+  duration: 183.86,
+  lines: [{"time":0.43,"jp_plain":"まるで御伽の話","jp_ruby":"まるで御伽(おとぎ)の話(はなし)","cn":"","is_continuation":false},{"time":2.97,"jp_plain":"終わり迎えた証","jp_ruby":"終(お)わり迎(むか)えた証(あかし)","cn":"","is_continuation":false},{"time":5.26,"jp_plain":"長過ぎる旅路から","jp_ruby":"長(なが)過(す)ぎる旅路(たびじ)から","cn":"","is_continuation":false},{"time":8.05,"jp_plain":"切り出した一節","jp_ruby":"切(き)り出(だ)した一節(いっせつ)","cn":"","is_continuation":false},{"time":9.63,"jp_plain":"それはかつてこの地に","jp_ruby":"それはかつてこの地(ち)に","cn":"","is_continuation":false},{"time":12.15,"jp_plain":"影を落とした悪を","jp_ruby":"影(かげ)を落(お)とした悪(わる)を","cn":"","is_continuation":false},{"time":14.34,"jp_plain":"討ち取りし勇者との","jp_ruby":"討(う)ち取(と)りし勇者(ゆうしゃ)との","cn":"","is_continuation":false},{"time":16.9,"jp_plain":"短い旅の記憶","jp_ruby":"短(みじか)い旅(たび)の記憶(きおく)","cn":"","is_continuation":false},{"time":29.46,"jp_plain":"物語は終わり","jp_ruby":"物語(ものがたり)は終(お)わり","cn":"","is_continuation":false},{"time":31.77,"jp_plain":"勇者は眠りにつく","jp_ruby":"勇者(ゆうしゃ)は眠(ねむ)りにつく","cn":"","is_continuation":false},{"time":34.01,"jp_plain":"穏やかな日常を","jp_ruby":"穏(おだ)やかな日常(にちじょう)を","cn":"","is_continuation":false},{"time":37.08,"jp_plain":"この地に残して","jp_ruby":"この地(ち)に残(のこ)して","cn":"","is_continuation":false},{"time":38.55,"jp_plain":"時の流れは無情に","jp_ruby":"時(とき)の流(なが)れは無情(むじょう)に","cn":"","is_continuation":false},{"time":41.01,"jp_plain":"人を忘れさせる","jp_ruby":"人(ひと)を忘(わす)れさせる","cn":"","is_continuation":false},{"time":43.23,"jp_plain":"そこに生きた軌跡も","jp_ruby":"そこに生(い)きた軌跡(きせき)も","cn":"","is_continuation":false},{"time":46.11,"jp_plain":"錆び付いていく","jp_ruby":"錆(さ)び付(つ)いていく","cn":"","is_continuation":false},{"time":47.67,"jp_plain":"それでも君の","jp_ruby":"それでも君(きみ)の","cn":"","is_continuation":false},{"time":49.89,"jp_plain":"言葉も願いも勇気も","jp_ruby":"言葉(ことば)も願(ねが)いも勇気(ゆうき)も","cn":"","is_continuation":false},{"time":51.99,"jp_plain":"今も確かに私の中で","jp_ruby":"今(いま)も確(たし)かに私(わたし)の中(なか)で","cn":"","is_continuation":false},{"time":55.19,"jp_plain":"生きている","jp_ruby":"生(い)きている","cn":"","is_continuation":false},{"time":58.12,"jp_plain":"同じ途を選んだ","jp_ruby":"同(おな)じ途(みち)を選(えら)んだ","cn":"","is_continuation":false},{"time":59.63,"jp_plain":"それだけだったはずなのに","jp_ruby":"それだけだったはずなのに","cn":"","is_continuation":false},{"time":61.78,"jp_plain":"いつの間にかどうして","jp_ruby":"いつの間(あいだ)にかどうして","cn":"","is_continuation":false},{"time":63.45,"jp_plain":"頬を伝う涙の理由をもっと","jp_ruby":"頬(ほお)を伝(つた)う涙(なみだ)の理由(りゆう)をもっと","cn":"","is_continuation":false},{"time":67.94,"jp_plain":"知りたいんだ 今更だって","jp_ruby":"知(し)りたいんだ 今更(いまさら)だって","cn":"","is_continuation":false},{"time":70,"jp_plain":"共に歩んだ旅路を辿れば","jp_ruby":"共(とも)に歩(あゆ)んだ旅路(たびじ)を辿(たど)れば","cn":"","is_continuation":false},{"time":72.59,"jp_plain":"そこに君は居なくとも","jp_ruby":"そこに君(きみ)は居(い)なくとも","cn":"","is_continuation":false},{"time":76.02,"jp_plain":"きっと見つけられる","jp_ruby":"きっと見(み)つけられる","cn":"","is_continuation":false},{"time":77.89,"jp_plain":"Right at the end, embarks a new story","jp_ruby":"Right at the end, embarks a new story","cn":"","is_continuation":false},{"time":80.25,"jp_plain":"Out to learn people in this journey","jp_ruby":"Out to learn people in this journey","cn":"","is_continuation":false},{"time":82.42,"jp_plain":"Story of our days will go on forever","jp_ruby":"Story of our days will go on forever","cn":"","is_continuation":false},{"time":85.01,"jp_plain":"Ever, ever, as we now walk","jp_ruby":"Ever, ever, as we now walk","cn":"","is_continuation":false},{"time":87.02,"jp_plain":"物語は続く","jp_ruby":"物語(ものがたり)は続(つづ)く","cn":"","is_continuation":false},{"time":89.28999999999999,"jp_plain":"一人の旅へと発つ","jp_ruby":"一人(ひとり)の旅(たび)へと発(た)つ","cn":"","is_continuation":false},{"time":91.77,"jp_plain":"立ち寄る街で出会う","jp_ruby":"立(た)ち寄(よ)る街(まち)で出会(であ)う","cn":"","is_continuation":false},{"time":93.55,"jp_plain":"人の記憶の中に残る君は","jp_ruby":"人(ひと)の記憶(きおく)の中(なか)に残(のこ)る君(きみ)は","cn":"","is_continuation":false},{"time":95.94,"jp_plain":"相も変わらずお人好しで","jp_ruby":"相(そう)も変(か)わらずお人(ひと)好(よ)しで","cn":"","is_continuation":false},{"time":98.00999999999999,"jp_plain":"格好つけてばかりだね","jp_ruby":"格好(かっこう)つけてばかりだね","cn":"","is_continuation":false},{"time":100.65,"jp_plain":"あちらこちらに作ったシンボルは","jp_ruby":"あちらこちらに作(つく)ったシンボルは","cn":"","is_continuation":false},{"time":103.3,"jp_plain":"勝ち取った平和の証","jp_ruby":"勝(か)ち取(と)った平和(へいわ)の証(あかし)","cn":"","is_continuation":false},{"time":104.88,"jp_plain":"それすら 未来でいつか","jp_ruby":"それすら 未来(みらい)でいつか","cn":"","is_continuation":false},{"time":107.06,"jp_plain":"私が一人にならないように","jp_ruby":"私(わたし)が一人(ひとり)にならないように","cn":"","is_continuation":false},{"time":109.68,"jp_plain":"あの旅を思い出せるように","jp_ruby":"あの旅(たび)を思(おも)い出(だ)せるように","cn":"","is_continuation":false},{"time":111.84,"jp_plain":"残された目印","jp_ruby":"残(のこ)された目印(めじるし)","cn":"","is_continuation":false},{"time":114.78,"jp_plain":"Ah, ah, eh-ya","jp_ruby":"Ah, ah, eh-ya","cn":"","is_continuation":false},{"time":117.02000000000001,"jp_plain":"Ah, ah, ooh-whoa","jp_ruby":"Ah, ah, ooh-whoa","cn":"","is_continuation":false},{"time":119.45,"jp_plain":"Ah, ah, eh-ya","jp_ruby":"Ah, ah, eh-ya","cn":"","is_continuation":true},{"time":122.46,"jp_plain":"Hey, eh-ya","jp_ruby":"Hey, eh-ya","cn":"","is_continuation":false},{"time":123.71,"jp_plain":"まるで御伽の話","jp_ruby":"まるで御伽(おとぎ)の話(はなし)","cn":"","is_continuation":true},{"time":126.35,"jp_plain":"終わり迎えた証","jp_ruby":"終(お)わり迎(むか)えた証(あかし)","cn":"","is_continuation":true},{"time":128.75,"jp_plain":"私を変えた出会い","jp_ruby":"私(わたし)を変(か)えた出会(であ)い","cn":"","is_continuation":false},{"time":130.83,"jp_plain":"百分の一の旅路","jp_ruby":"百分(ひゃくぶん)の一(いち)の旅路(たびじ)","cn":"","is_continuation":false},{"time":134.38,"jp_plain":"君の勇気をいつか 風がさらって","jp_ruby":"君(きみ)の勇気(ゆうき)をいつか 風(かぜ)がさらって","cn":"","is_continuation":false},{"time":136.94,"jp_plain":"誰の記憶から消えてしまっても","jp_ruby":"誰(だれ)の記憶(きおく)から消(き)えてしまっても","cn":"","is_continuation":false},{"time":139.5,"jp_plain":"私が未来に連れて行くから","jp_ruby":"私(わたし)が未来(みらい)に連(つ)れて行(い)くから","cn":"","is_continuation":false},{"time":143.32,"jp_plain":"君の手を取った","jp_ruby":"君(きみ)の手(て)を取(と)った","cn":"","is_continuation":false},{"time":144.54,"jp_plain":"あの日全て始まった くだらなくて","jp_ruby":"あの日(ひ)全(すべ)て始(はじ)まった くだらなくて","cn":"","is_continuation":false},{"time":147.18,"jp_plain":"思わずふっと笑ってしまうような","jp_ruby":"思(おも)わずふっと笑(わら)ってしまうような","cn":"","is_continuation":false},{"time":149.96,"jp_plain":"ありふれた時間が今も眩しい","jp_ruby":"ありふれた時間(じかん)が今(いま)も眩(まぶ)しい","cn":"","is_continuation":false},{"time":154.24,"jp_plain":"知りたいんだ 今更だって","jp_ruby":"知(し)りたいんだ 今更(いまさら)だって","cn":"","is_continuation":true},{"time":156.74,"jp_plain":"振り返るとそこにはいつでも","jp_ruby":"振(ふ)り返(かえ)るとそこにはいつでも","cn":"","is_continuation":false},{"time":159.28,"jp_plain":"優しく微笑みかける","jp_ruby":"優(やさ)しく微笑(ほほえ)みかける","cn":"","is_continuation":false},{"time":162.35,"jp_plain":"君がいるから","jp_ruby":"君(きみ)がいるから","cn":"","is_continuation":false},{"time":164.15,"jp_plain":"Right at the end, embarks a new story","jp_ruby":"Right at the end, embarks a new story","cn":"","is_continuation":true},{"time":166.67000000000002,"jp_plain":"Out to learn people in this journey","jp_ruby":"Out to learn people in this journey","cn":"","is_continuation":true},{"time":169.02,"jp_plain":"So hurry up, the end of hero, forever","jp_ruby":"So hurry up, the end of hero, forever","cn":"","is_continuation":false},{"time":171.51,"jp_plain":"Ever, ever, as we now walk","jp_ruby":"Ever, ever, as we now walk","cn":"","is_continuation":true},{"time":173.31,"jp_plain":"新たな旅の始まりは","jp_ruby":"新(あら)たな旅(たび)の始(はじ)まりは","cn":"","is_continuation":false},{"time":175.64,"jp_plain":"君が守り抜いたこの地に","jp_ruby":"君(きみ)が守(まも)り抜(ぬ)いたこの地(ち)に","cn":"","is_continuation":false},{"time":178.86,"jp_plain":"芽吹いた命と共に","jp_ruby":"芽吹(めぶ)いた命(いのち)と共(とも)に","cn":"","is_continuation":false}]
+};
+
+const STORM_DATA = {
+  title: "storm",
+  artist: "小清水亜美",
+  duration: 260.95,
+  lines: [{"time":15.83,"jp_plain":"静かに二人を包んでいた","jp_ruby":"静(しず)かに二人(ふたり)を包(つつ)んでいた","cn":"靜靜包圍著二人","is_continuation":false},{"time":21.6,"jp_plain":"綺麗な動かない時間から","jp_ruby":"綺麗(きれい)な動(うご)かない時間(じかん)から","cn":"美麗的靜止時光開始","is_continuation":false},{"time":27.64,"jp_plain":"羽を広げ飛び立つ時が","jp_ruby":"羽(はね)を広(ひろ)げ飛(と)び立(た)つ時(とき)が","cn":"展開雙翼 飛翔而去的那一刻","is_continuation":false},{"time":33.55,"jp_plain":"もう側に来てるの","jp_ruby":"もう側(そば)に来(き)てるの","cn":"已來到身邊了","is_continuation":false},{"time":39.69,"jp_plain":"緑の夜の中寄り添って","jp_ruby":"緑(みどり)の夜(よる)の中(なか)寄(よ)り添(そ)って","cn":"在翠綠的夜裡互相依偎","is_continuation":false},{"time":45.91,"jp_plain":"無口な慰めをくれたから","jp_ruby":"無口(むくち)な慰(なぐさ)めをくれたから","cn":"給予無言的安慰","is_continuation":false},{"time":52.03,"jp_plain":"どんな時もその温もりを","jp_ruby":"どんな時(とき)もその温(ぬく)もりを","cn":"無論何時都能擁抱那溫暖而前行","is_continuation":false},{"time":58.11,"jp_plain":"抱きしめて行ける","jp_ruby":"抱(だ)きしめて行(ゆ)ける","cn":"無論何時都能擁抱那溫暖而前行","is_continuation":true},{"time":64.39,"jp_plain":"夢の住むこの場所を守りたいずっと","jp_ruby":"夢(ゆめ)の住(す)むこの場所(ばしょ)を守(まも)りたいずっと","cn":"我想永遠守護這夢想所在之地","is_continuation":false},{"time":70.61,"jp_plain":"風の音、運命の歌が響いて","jp_ruby":"風(かぜ)の音(おと)、運命(うんめい)の歌(うた)が響(ひび)いて","cn":"風的聲音與命運之歌迴盪","is_continuation":false},{"time":76.71000000000001,"jp_plain":"灯火を手に取って冬空を照らす","jp_ruby":"灯火(ともしび)を手(て)に取(と)って冬空(ふゆぞら)を照(て)らす","cn":"手中的燈火照亮了冬日的夜空","is_continuation":false},{"time":83.76,"jp_plain":"胸の星をただ信じて","jp_ruby":"胸(むね)の星(ほし)をただ信(しん)じて","cn":"只是相信著胸口的星芒","is_continuation":false},{"time":88.89,"jp_plain":"空を行く鳥たちの交わす鳴き声","jp_ruby":"空(そら)を行(ゆ)く鳥(とり)たちの交(か)わす鳴(な)き声(ごえ)","cn":"飛向天空的鳥兒們交相鳴泣","is_continuation":false},{"time":94.88,"jp_plain":"暮れて行く草原に響いてるよ","jp_ruby":"暮(く)れて行(ゆ)く草原(そうげん)に響(ひび)いてるよ","cn":"在逐漸染成暮色的草原上響徹","is_continuation":false},{"time":101.00999999999999,"jp_plain":"安らぎの大地へと帰るため","jp_ruby":"安(やす)らぎの大地(だいち)へと帰(かえ)るため","cn":"為了回到那片安祥的大地","is_continuation":false},{"time":106.55,"jp_plain":"最後の風を超えて行く","jp_ruby":"最後(さいご)の風(かぜ)を超(こ)えて行(ゆ)く","cn":"穿越最後的暴風而去吧","is_continuation":false},{"time":130.81,"jp_plain":"額にちりちりと夕凪が","jp_ruby":"額(ひたい)にちりちりと夕凪(ゆうなぎ)が","cn":"穿越最後的暴風而去吧","is_continuation":false},{"time":137.03,"jp_plain":"嵐の予感を運んで来る","jp_ruby":"嵐(あらし)の予感(よかん)を運(はこ)んで来(く)る","cn":"因那暴風雨將臨的預感","is_continuation":false},{"time":143.14,"jp_plain":"貴方に吹く風の全てを","jp_ruby":"貴方(あなた)に吹(ふ)く風(かぜ)の全(すべ)てを","cn":"彷彿感受到了那預感般 風逐漸變大了","is_continuation":false},{"time":149.3,"jp_plain":"受け止めてあげたい","jp_ruby":"受(う)け止(と)めてあげたい","cn":"彷彿感受到了那預感般 風逐漸變大了","is_continuation":true},{"time":155.18,"jp_plain":"優しい時間だけでいいのに","jp_ruby":"優(やさ)しい時間(じかん)だけでいいのに","cn":"只需要溫柔的時光即可","is_continuation":false},{"time":161.2,"jp_plain":"いのちは切なさをくれるのね","jp_ruby":"いのちは切(せつ)なさをくれるのね","cn":"因為生命總是伴隨著許多哀傷","is_continuation":false},{"time":167.74,"jp_plain":"二人でいたよろこびだけを","jp_ruby":"二人(ふたり)でいたよろこびだけを","cn":"懷著兩人彼此傾訴的欣喜","is_continuation":false},{"time":173.72,"jp_plain":"抱きしめて行くわ","jp_ruby":"抱(だ)きしめて行(ゆ)くわ","cn":"沉沉入睡","is_continuation":false},{"time":204.43,"jp_plain":"愛の住むこの場所を守りたいずっと","jp_ruby":"愛(あい)の住(す)むこの場所(ばしょ)を守(まも)りたいずっと","cn":"想一直守護彼此相愛的這個地方","is_continuation":false},{"time":210.21,"jp_plain":"体ごと運命に焼かれてもいい","jp_ruby":"体(からだ)ごと運命(うんめい)に焼(や)かれてもいい","cn":"為此無論怎樣被命運折磨都無所謂","is_continuation":false},{"time":216.43,"jp_plain":"灯火を手に取って冬空を照らす","jp_ruby":"灯火(ともしび)を手(て)に取(と)って冬空(ふゆぞら)を照(て)らす","cn":"手中的燈火照亮了冬日的夜空","is_continuation":true},{"time":223.62,"jp_plain":"胸の星をただ信じて","jp_ruby":"胸(むね)の星(ほし)をただ信(しん)じて","cn":"只是相信著胸口的星芒","is_continuation":true},{"time":228.57,"jp_plain":"空を行く鳥たちの交わす鳴き声","jp_ruby":"空(そら)を行(ゆ)く鳥(とり)たちの交(か)わす鳴(な)き声(ごえ)","cn":"飛向天空的鳥兒們交相鳴泣","is_continuation":true},{"time":234.69,"jp_plain":"暮れて行く草原に響いてるよ","jp_ruby":"暮(く)れて行(ゆ)く草原(そうげん)に響(ひび)いてるよ","cn":"在逐漸染成暮色的草原上響徹","is_continuation":true},{"time":240.74,"jp_plain":"嵐を超えて辿りつく場所は","jp_ruby":"嵐(あらし)を超(こ)えて辿(たど)りつく場所(ばしょ)は","cn":"在逐漸染成暮色的草原上響徹","is_continuation":false},{"time":246.47,"jp_plain":"きっと貴方の胸の中","jp_ruby":"きっと貴方(あなた)の胸(むね)の中(なか)","cn":"一定是回到你的懷中…","is_continuation":false},{"time":255.95,"jp_plain":"帰るわ…","jp_ruby":"帰(かえ)るわ…","cn":"一定是回到你的懷中…","is_continuation":true}]
+};
+
+const HOUKIGUMO_DATA = {
+  title: "ホウキ雲",
+  artist: "RYTHEM",
+  duration: 253.16,
+  lines: [{"time":9.81,"jp_plain":"どこか遠くで 耳を","jp_ruby":"どこか遠(とお)くで 耳(みみ)を","cn":"","is_continuation":false},{"time":13.05,"jp_plain":"澄ましている人がいる","jp_ruby":"澄(す)ましている人(ひと)がいる","cn":"","is_continuation":false},{"time":17.91,"jp_plain":"あらゆる場所で","jp_ruby":"あらゆる場所(ばしょ)で","cn":"","is_continuation":false},{"time":20.28,"jp_plain":"空を見上げている人がいる","jp_ruby":"空(そら)を見上(みあ)げている人(ひと)がいる","cn":"","is_continuation":false},{"time":25.66,"jp_plain":"夜空の下で","jp_ruby":"夜空(よぞら)の下(した)で","cn":"","is_continuation":false},{"time":28.18,"jp_plain":"口笛ふいてる僕たちは","jp_ruby":"口笛(くちぶえ)ふいてる僕(ぼく)たちは","cn":"","is_continuation":false},{"time":33.65,"jp_plain":"言葉もないまま","jp_ruby":"言葉(ことば)もないまま","cn":"","is_continuation":false},{"time":35.79,"jp_plain":"指でただ星座をなぞってる","jp_ruby":"指(ゆび)でただ星座(せいざ)をなぞってる","cn":"","is_continuation":false},{"time":40.32,"jp_plain":"寒がりやの夢","jp_ruby":"寒(さむ)がりやの夢(ゆめ)","cn":"","is_continuation":false},{"time":44.25,"jp_plain":"冷たい君の手","jp_ruby":"冷(つめ)たい君(きみ)の手(て)","cn":"","is_continuation":false},{"time":48.36,"jp_plain":"あたためる魔法は","jp_ruby":"あたためる魔法(まほう)は","cn":"","is_continuation":false},{"time":52.01,"jp_plain":"1つの道を信じること","jp_ruby":"1つの道(みち)を信(しん)じること","cn":"","is_continuation":false},{"time":57.45,"jp_plain":"彗雲の向コウに見つけた一粒の星は","jp_ruby":"彗雲(ほうきぐも)の向(む)コウに見(み)つけた一(ひと)粒(つぶ)の星(ほし)は","cn":"","is_continuation":false},{"time":65.95,"jp_plain":"輝く星でも かすかな星でも","jp_ruby":"輝(かがや)く星(ほし)でも かすかな星(ほし)でも","cn":"","is_continuation":false},{"time":70.03,"jp_plain":"君だけの光","jp_ruby":"君(きみ)だけの光(ひかり)","cn":"","is_continuation":false},{"time":73.09,"jp_plain":"胸の雲の向コウに","jp_ruby":"胸(むね)の雲(くも)の向(む)コウに","cn":"","is_continuation":false},{"time":76.24,"jp_plain":"見えないままの道しるべ","jp_ruby":"見(み)えないままの道(みち)しるべ","cn":"","is_continuation":false},{"time":81.89,"jp_plain":"さぁ この手をひらいて","jp_ruby":"さぁ この手(て)をひらいて","cn":"","is_continuation":false},{"time":85.82,"jp_plain":"今何を信じますか?","jp_ruby":"今(いま)何(なん)を信(しん)じますか?","cn":"","is_continuation":false},{"time":90.64,"jp_plain":"眠れぬ夜に","jp_ruby":"眠(ねむ)れぬ夜(よる)に","cn":"","is_continuation":false},{"time":93.18,"jp_plain":"1人で泣いてる人がいる","jp_ruby":"1人(ひとり)で泣(な)いてる人(ひと)がいる","cn":"","is_continuation":false},{"time":98.45,"jp_plain":"朝を迎えた","jp_ruby":"朝(あさ)を迎(むか)えた","cn":"","is_continuation":false},{"time":100.72999999999999,"jp_plain":"地球のどこかで 笑う人がいる","jp_ruby":"地球(ちきゅう)のどこかで 笑(わら)う人(ひと)がいる","cn":"","is_continuation":false},{"time":105.33,"jp_plain":"途方に暮れてる","jp_ruby":"途方(とほう)に暮(く)れてる","cn":"","is_continuation":false},{"time":109.28,"jp_plain":"迷い続けてる","jp_ruby":"迷(まよ)い続(つづ)けてる","cn":"","is_continuation":false},{"time":113.25,"jp_plain":"ふみだす魔法は","jp_ruby":"ふみだす魔法(まほう)は","cn":"","is_continuation":false},{"time":116.75,"jp_plain":"明日の自分信じること","jp_ruby":"明日(あす)の自分(じぶん)信(しん)じること","cn":"","is_continuation":false},{"time":122.57,"jp_plain":"空を超えた向コウに","jp_ruby":"空(そら)を超(こ)えた向(む)コウに","cn":"","is_continuation":false},{"time":125.92,"jp_plain":"探してたあの日の星は","jp_ruby":"探(さが)してたあの日(ひ)の星(ほし)は","cn":"","is_continuation":false},{"time":130.91,"jp_plain":"どこに忘れたの?","jp_ruby":"どこに忘(わす)れたの?","cn":"","is_continuation":false},{"time":133.01,"jp_plain":"誰が見つけたの?","jp_ruby":"誰(だれ)が見(み)つけたの?","cn":"","is_continuation":false},{"time":135.14,"jp_plain":"君だけの光","jp_ruby":"君(きみ)だけの光(ひかり)","cn":"","is_continuation":true},{"time":138.06,"jp_plain":"胸の奥の暗闇","jp_ruby":"胸(むね)の奥(おく)の暗闇(くらやみ)","cn":"","is_continuation":false},{"time":141.13,"jp_plain":"まぶたを閉じて切り開く","jp_ruby":"まぶたを閉(と)じて切(き)り開(ひら)く","cn":"","is_continuation":false},{"time":146.93,"jp_plain":"さぁ 扉よひらいて","jp_ruby":"さぁ 扉(とびら)よひらいて","cn":"","is_continuation":false},{"time":150.63,"jp_plain":"今 何がみえてますか?","jp_ruby":"今(いま) 何(なん)がみえてますか?","cn":"","is_continuation":false},{"time":170.51,"jp_plain":"\"ほんの少しの風が吹きました","jp_ruby":"\"ほんの少(すこ)しの風(かぜ)が吹(ふ)きました","cn":"","is_continuation":false},{"time":178.17000000000002,"jp_plain":"最後の魔法は弱い心も信じること\"","jp_ruby":"最後(さいご)の魔法(まほう)は弱(よわ)い心(こころ)も信(しん)じること\"","cn":"","is_continuation":false},{"time":187.52,"jp_plain":"彗雲の向コウに見つけた一粒の星は","jp_ruby":"彗雲(ほうきぐも)の向(む)コウに見(み)つけた一(ひと)粒(つぶ)の星(ほし)は","cn":"","is_continuation":true},{"time":195.73,"jp_plain":"輝く星でも かすかな星でも","jp_ruby":"輝(かがや)く星(ほし)でも かすかな星(ほし)でも","cn":"","is_continuation":true},{"time":199.82999999999998,"jp_plain":"君だけの光","jp_ruby":"君(きみ)だけの光(ひかり)","cn":"","is_continuation":true},{"time":202.88,"jp_plain":"胸の雲の向コウに","jp_ruby":"胸(むね)の雲(くも)の向(む)コウに","cn":"","is_continuation":true},{"time":206.55,"jp_plain":"見えないままの道しるべ","jp_ruby":"見(み)えないままの道(みち)しるべ","cn":"","is_continuation":true},{"time":211.89,"jp_plain":"さぁ この手をひらいて","jp_ruby":"さぁ この手(て)をひらいて","cn":"","is_continuation":true},{"time":215.64,"jp_plain":"今 何を信じますか?","jp_ruby":"今(いま) 何(なん)を信(しん)じますか?","cn":"","is_continuation":false},{"time":218.99,"jp_plain":"目をとじて... 目をあけて","jp_ruby":"目(め)をとじて... 目(め)をあけて","cn":"","is_continuation":false},{"time":226.67000000000002,"jp_plain":"今 何が聞こえるの?","jp_ruby":"今(いま) 何(なん)が聞(き)こえるの?","cn":"","is_continuation":false},{"time":229.57999999999998,"jp_plain":"何が見えてるの?","jp_ruby":"何(なに)が見(み)えてるの?","cn":"","is_continuation":false},{"time":231.57999999999998,"jp_plain":"君だけの光","jp_ruby":"君(きみ)だけの光(ひかり)","cn":"","is_continuation":true},{"time":234.5,"jp_plain":"青い屋根に登って","jp_ruby":"青(あお)い屋根(やね)に登(のぼ)って","cn":"","is_continuation":false},{"time":237.93,"jp_plain":"生まれた夜空 見下ろした","jp_ruby":"生(う)まれた夜空(よぞら) 見下(みお)ろした","cn":"","is_continuation":false},{"time":243.17,"jp_plain":"叶わないことなんてない","jp_ruby":"叶(かな)わないことなんてない","cn":"","is_continuation":false},{"time":248.16,"jp_plain":"ひらくのは その君の手","jp_ruby":"ひらくのは その君(きみ)の手(て)","cn":"","is_continuation":false}]
+};
+
+const COMPLEX_IMAGE_DATA = {
+  title: "コンプレックス・イマージュ",
+  artist: "彩音",
+  duration: 264.68,
+  lines: [{"time":19.47,"jp_plain":"信じてた 信じられた その全てを 今始めよう","jp_ruby":"信(しん)じてた 信(しん)じられた その全(すべ)てを 今(いま)始(はじ)めよう","cn":"","is_continuation":false},{"time":26.22,"jp_plain":"不器用なこの勇気は コンプレックス・イマージュ","jp_ruby":"不(ふ)器用(きよう)なこの勇気(ゆうき)は コンプレックス・イマージュ","cn":"","is_continuation":false},{"time":32.99,"jp_plain":"乾いた風が 追いかける波のように","jp_ruby":"乾(かわ)いた風(かぜ)が 追(お)いかける波(なみ)のように","cn":"","is_continuation":false},{"time":40.28,"jp_plain":"そっと背中を押す気がした","jp_ruby":"そっと背中(せなか)を押(お)す気(き)がした","cn":"","is_continuation":false},{"time":46.89,"jp_plain":"耳をすませば ざわめくローフリケンシー","jp_ruby":"耳(みみ)をすませば ざわめくローフリケンシー","cn":"","is_continuation":false},{"time":54.91,"jp_plain":"新しい その場所への 扉を開け放て","jp_ruby":"新(あたら)しい その場所(ばしょ)への 扉(とびら)を開(あ)け放(はな)て","cn":"","is_continuation":false},{"time":62.9,"jp_plain":"切なくて愛しいほど 想いは時空を超えて","jp_ruby":"切(せつ)なくて愛(いと)しいほど 想(おも)いは時空(じくう)を超(こ)えて","cn":"","is_continuation":false},{"time":70.53,"jp_plain":"Together ずっと 心はそばにある","jp_ruby":"Together ずっと 心(こころ)はそばにある","cn":"","is_continuation":false},{"time":77.1,"jp_plain":"大切なあの日溜まりが 刹那に散りゆく景色","jp_ruby":"大切(たいせつ)なあの日溜(ひだ)まりが 刹那(せつな)に散(ち)りゆく景色","cn":"","is_continuation":false},{"time":84.67,"jp_plain":"今すべての力を与え賜え","jp_ruby":"今(いま)すべての力(ちから)を与(あた)え賜(たま)え","cn":"","is_continuation":false},{"time":91.42,"jp_plain":"僕は瞳をそらさずに 傷も涙も真実も...","jp_ruby":"僕(ぼく)は瞳(ひとみ)をそらさずに 傷(きず)も涙(なみだ)も真実(しんじつ)も...","cn":"","is_continuation":false},{"time":121.43,"jp_plain":"温かい その雫が 透明なら 力となり","jp_ruby":"温(あたた)かい その雫(しずく)が 透明(とうめい)なら 力(ちから)となり","cn":"","is_continuation":false},{"time":128.36,"jp_plain":"もしそれが 深紅ならば コンプレックス・イマージュ","jp_ruby":"もしそれが 深紅(しんく)ならば コンプレックス・イマージュ","cn":"","is_continuation":false},{"time":134.71,"jp_plain":"手探りの道 絡み合うラビリンス","jp_ruby":"手探(てさぐ)りの道(みち) 絡(から)み合(あ)うラビリンス","cn":"","is_continuation":false},{"time":142.12,"jp_plain":"離れていても聞こえる声","jp_ruby":"離(はな)れていても聞(き)こえる声","cn":"","is_continuation":false},{"time":148.94,"jp_plain":"目には見えない確かなローフリケンシー","jp_ruby":"目(め)には見(み)えない確(たし)かなローフリケンシー","cn":"","is_continuation":false},{"time":156.2,"jp_plain":"もう二度と 迷わないと 誓えるこの想い","jp_ruby":"もう二(に)度(ど)と 迷(まよ)わないと 誓(ちか)えるこの想(おも)い","cn":"","is_continuation":false},{"time":164.85,"jp_plain":"遙かなるヤシロの神よ 祈りがもし届くなら","jp_ruby":"遙(はる)かなるヤシロの神(かみ)よ 祈(いの)りがもし届(とど)くなら","cn":"","is_continuation":false},{"time":172.02,"jp_plain":"Togetherここに 僅かな微笑を","jp_ruby":"Togetherここに 僅(わず)かな微笑(びしょう)を","cn":"","is_continuation":false},{"time":178.67000000000002,"jp_plain":"戸惑いはもう何もなく 導く光のままに","jp_ruby":"戸惑(とまど)いはもう何(なに)もなく 導(みちび)く光(ひかり)のままに","cn":"","is_continuation":false},{"time":186.01,"jp_plain":"今全ての悲しみを捨てて","jp_ruby":"今(いま)全(すべ)ての悲(かな)しみを捨(す)てて","cn":"","is_continuation":false},{"time":193.14,"jp_plain":"僕は瞳をそらさずに 傷も涙も真実も...","jp_ruby":"僕(ぼく)は瞳(ひとみ)をそらさずに 傷(きず)も涙(なみだ)も真実(しんじつ)も...","cn":"","is_continuation":true},{"time":231.13,"jp_plain":"切なくて愛しいほど 想いは時空を超えて","jp_ruby":"切(せつ)なくて愛(いと)しいほど 想(おも)いは時空(じくう)を超(こ)えて","cn":"","is_continuation":true},{"time":238.54,"jp_plain":"Together ずっと 心はそばにある","jp_ruby":"Together ずっと 心(こころ)はそばにある","cn":"","is_continuation":true},{"time":245.31,"jp_plain":"大切なあの日溜まりが 刹那に散りゆく景色","jp_ruby":"大切(たいせつ)なあの日溜(ひだ)まりが 刹那(せつな)に散(ち)りゆく景色","cn":"","is_continuation":true},{"time":252.54,"jp_plain":"今すべての力を与え賜え","jp_ruby":"今(いま)すべての力(ちから)を与(あた)え賜(たま)え","cn":"","is_continuation":true},{"time":259.68,"jp_plain":"僕は瞳をそらさずに 傷も涙も真実も...","jp_ruby":"僕(ぼく)は瞳(ひとみ)をそらさずに 傷(きず)も涙(なみだ)も真実(しんじつ)も...","cn":"","is_continuation":true}]
+};
+
+const HIMAWARI_DATA = {
+  title: "himawari",
+  artist: "Mr.Children",
+  duration: 321.05,
+  lines: [{"time":36.78,"jp_plain":"優しさの死に化粧で","jp_ruby":"優(やさ)しさの死(し)に化粧(けしょう)で","cn":"","is_continuation":false},{"time":42.64,"jp_plain":"笑ってるように見せてる","jp_ruby":"笑(わら)ってるように見(み)せてる","cn":"","is_continuation":false},{"time":47.78,"jp_plain":"君の覚悟が分かりすぎるから","jp_ruby":"君(きみ)の覚悟(かくご)が分(わ)かりすぎるから","cn":"","is_continuation":false},{"time":53.94,"jp_plain":"僕はそっと手を振るだけ","jp_ruby":"僕(ぼく)はそっと手(て)を振(ふ)るだけ","cn":"","is_continuation":false},{"time":59.14,"jp_plain":"「ありがとう」も「さよなら」も僕らにはもういらない","jp_ruby":"「ありがとう」も「さよなら」も僕(ぼく)らにはもういらない","cn":"","is_continuation":false},{"time":70.28999999999999,"jp_plain":"「全部嘘だよ」そう言って笑う君を","jp_ruby":"「全部(ぜんぶ)嘘(うそ)だよ」そう言(い)って笑(わら)う君(きみ)を","cn":"","is_continuation":false},{"time":77.69,"jp_plain":"まだ期待してるから","jp_ruby":"まだ期待(きたい)してるから","cn":"","is_continuation":false},{"time":80.86,"jp_plain":"いつも","jp_ruby":"いつも","cn":"","is_continuation":false},{"time":82.53999999999999,"jp_plain":"透き通るほど真っ直ぐに","jp_ruby":"透(す)き通(とお)るほど真(ま)っ直(す)ぐに","cn":"","is_continuation":false},{"time":88.21000000000001,"jp_plain":"明日へ漕ぎだす君がいる","jp_ruby":"明日(あす)へ漕(こ)ぎだす君(きみ)がいる","cn":"","is_continuation":false},{"time":93.22999999999999,"jp_plain":"眩しくて 綺麗で 苦しくなる","jp_ruby":"眩(まぶ)しくて 綺麗(きれい)で 苦(くる)しくなる","cn":"","is_continuation":false},{"time":105.36,"jp_plain":"暗がりで咲いてるひまわり","jp_ruby":"暗(くら)がりで咲(さ)いてるひまわり","cn":"","is_continuation":false},{"time":110.65,"jp_plain":"嵐が去ったあとの陽だまり","jp_ruby":"嵐(あらし)が去(さ)ったあとの陽(ひ)だまり","cn":"","is_continuation":false},{"time":115.65,"jp_plain":"そんな君に僕は恋してた","jp_ruby":"そんな君(きみ)に僕(ぼく)は恋(こい)してた","cn":"","is_continuation":false},{"time":133,"jp_plain":"想い出の角砂糖を","jp_ruby":"想(おも)い出(で)の角砂糖(かくざとう)を","cn":"","is_continuation":false},{"time":138.66,"jp_plain":"涙が溶かしちゃわぬように","jp_ruby":"涙(なみだ)が溶(と)かしちゃわぬように","cn":"","is_continuation":false},{"time":143.8,"jp_plain":"僕の命と共に尽きるように","jp_ruby":"僕(ぼく)の命(いのち)と共(とも)に尽(つ)きるように","cn":"","is_continuation":false},{"time":150,"jp_plain":"ちょっとずつ舐めて生きるから","jp_ruby":"ちょっとずつ舐(な)めて生(い)きるから","cn":"","is_continuation":false},{"time":154.26,"jp_plain":"だけど","jp_ruby":"だけど","cn":"","is_continuation":false},{"time":155.89,"jp_plain":"何故だろう 怖いもの見たさで","jp_ruby":"何故(なぜ)だろう 怖(こわ)いもの見(み)たさで","cn":"","is_continuation":false},{"time":161.57,"jp_plain":"愛に彷徨う僕もいる","jp_ruby":"愛(あい)に彷徨(さまよ)う僕(ぼく)もいる","cn":"","is_continuation":false},{"time":166.12,"jp_plain":"君のいない世界って","jp_ruby":"君(きみ)のいない世界(せかい)って","cn":"","is_continuation":false},{"time":172.52,"jp_plain":"どんな色をしてたろう？","jp_ruby":"どんな色(いろ)をしてたろう？","cn":"","is_continuation":false},{"time":178.67000000000002,"jp_plain":"違う誰かの肌触り","jp_ruby":"違(ちが)う誰(だれ)かの肌触(はだざわ)り","cn":"","is_continuation":false},{"time":184.06,"jp_plain":"格好つけたり はにかんだり","jp_ruby":"格好(かっこう)つけたり はにかんだり","cn":"","is_continuation":false},{"time":188.94,"jp_plain":"そんな僕が果たしているんだろうか？","jp_ruby":"そんな僕(ぼく)が果(は)たしているんだろうか？","cn":"","is_continuation":false},{"time":202.26,"jp_plain":"諦めること","jp_ruby":"諦(あきら)めること","cn":"","is_continuation":false},{"time":204.81,"jp_plain":"妥協すること","jp_ruby":"妥協(だきょう)すること","cn":"","is_continuation":false},{"time":207.66,"jp_plain":"誰かにあわせて生きること","jp_ruby":"誰(だれ)かにあわせて生(い)きること","cn":"","is_continuation":false},{"time":213.48,"jp_plain":"考えてる風でいて","jp_ruby":"考(かんが)えてる風(ふう)でいて","cn":"","is_continuation":false},{"time":216.96,"jp_plain":"実はそんなに深く考えていやしないこと","jp_ruby":"実(じつ)はそんなに深(ふか)く考(かんが)えていやしないこと","cn":"","is_continuation":false},{"time":224.75,"jp_plain":"思いを飲み込む美学と","jp_ruby":"思(おも)いを飲(の)み込(こ)む美学(びがく)と","cn":"","is_continuation":false},{"time":230.43,"jp_plain":"自分を言いくるめて","jp_ruby":"自分(じぶん)を言(い)いくるめて","cn":"","is_continuation":false},{"time":235.84,"jp_plain":"実際は面倒臭いことから逃げるようにして","jp_ruby":"実際(じっさい)は面倒臭(めんどうくさ)いことから逃(に)げるようにして","cn":"","is_continuation":false},{"time":243.2,"jp_plain":"邪にただ生きている","jp_ruby":"邪(よこしま)にただ生(い)きている","cn":"","is_continuation":false},{"time":270.68,"jp_plain":"だから","jp_ruby":"だから","cn":"","is_continuation":false},{"time":271.34,"jp_plain":"透き通るほど真っ直ぐに","jp_ruby":"透(す)き通(とお)るほど真(ま)っ直(す)ぐに","cn":"","is_continuation":true},{"time":277.29,"jp_plain":"明日へ漕ぎだす君をみて","jp_ruby":"明日(あす)へ漕(こ)ぎだす君(きみ)をみて","cn":"","is_continuation":false},{"time":281.93,"jp_plain":"眩しくて 綺麗で 苦しくなる","jp_ruby":"眩(まぶ)しくて 綺麗(きれい)で 苦(くる)しくなる","cn":"","is_continuation":true},{"time":294.28,"jp_plain":"暗がりで咲いてるひまわり","jp_ruby":"暗(くら)がりで咲(さ)いてるひまわり","cn":"","is_continuation":true},{"time":299.81,"jp_plain":"嵐が去ったあとの陽だまり","jp_ruby":"嵐(あらし)が去(さ)ったあとの陽(ひ)だまり","cn":"","is_continuation":true},{"time":304.76,"jp_plain":"そんな君に僕は恋してた","jp_ruby":"そんな君(きみ)に僕(ぼく)は恋(こい)してた","cn":"","is_continuation":true},{"time":316.05,"jp_plain":"そんな君を僕は ずっと","jp_ruby":"そんな君(きみ)を僕(ぼく)は ずっと","cn":"","is_continuation":false}]
+};
+
+const MARIGOLD_DATA = {
+  title: "マリーゴールド",
+  artist: "Aimyon",
+  duration: 271.01,
+  lines: [{"time":20.94,"jp_plain":"風の強さがちょっと 心を揺さぶりすぎて","jp_ruby":"風(かぜ)の強(つよ)さがちょっと 心(こころ)を揺(ゆ)さぶりすぎて","cn":"","is_continuation":false},{"time":29.52,"jp_plain":"真面目に見つめた 君が恋しい","jp_ruby":"真面目(まじめ)に見(み)つめた 君(きみ)が恋(こい)しい","cn":"","is_continuation":false},{"time":39.12,"jp_plain":"でんぐり返しの日々可哀想なふりをして","jp_ruby":"でんぐり返(がえ)しの日々(ひび)可哀想(かわいそう)なふりをして","cn":"","is_continuation":false},{"time":48.08,"jp_plain":"だらけてみたけど 希望の光は","jp_ruby":"だらけてみたけど 希望(きぼう)の光(ひかり)は","cn":"","is_continuation":false},{"time":56.77,"jp_plain":"目の前でずっと輝いている 幸せだ","jp_ruby":"目(め)の前(まえ)でずっと輝(かがや)いている 幸(しあわ)せだ","cn":"","is_continuation":false},{"time":64.84,"jp_plain":"麦わらの帽子の君が 揺れたマリーゴールドに似てる","jp_ruby":"麦(むぎ)わらの帽子(ぼうし)の君(きみ)が 揺(ゆ)れたマリーゴールドに似(に)てる","cn":"","is_continuation":false},{"time":74.96000000000001,"jp_plain":"あれは空がまだ青い夏のこと","jp_ruby":"あれは空(そら)がまだ青(あお)い夏(なつ)のこと","cn":"","is_continuation":false},{"time":79.25,"jp_plain":"懐かしいと笑えたあの日の恋","jp_ruby":"懐(なつ)かしいと笑(わら)えたあの日(ひ)の恋","cn":"","is_continuation":false},{"time":84.03999999999999,"jp_plain":"「もう離れないで」と 泣きそうな目で見つめる君を","jp_ruby":"「もう離(はな)れないで」と 泣(な)きそうな目(め)で見(み)つめる君(きみ)を","cn":"","is_continuation":false},{"time":92.8,"jp_plain":"雲のような優しさでそっとぎゅっと","jp_ruby":"雲(くも)のような優(やさ)しさでそっとぎゅっと","cn":"","is_continuation":false},{"time":97.46000000000001,"jp_plain":"抱きしめて 抱きしめて 離さない","jp_ruby":"抱(だ)きしめて 抱(だ)きしめて 離(はな)さない","cn":"","is_continuation":false},{"time":107.00999999999999,"jp_plain":"本当の気持ち全部","jp_ruby":"本当(ほんとう)の気持(きも)ち全部(ぜんぶ)","cn":"","is_continuation":false},{"time":110.47,"jp_plain":"吐き出せるほど強くはない","jp_ruby":"吐(は)き出(だ)せるほど強(つよ)くはない","cn":"","is_continuation":false},{"time":115.53,"jp_plain":"でも不思議なくらいに 絶望は見えない","jp_ruby":"でも不思議(ふしぎ)なくらいに 絶望(ぜつぼう)は見(み)えない","cn":"","is_continuation":false},{"time":124.98,"jp_plain":"目の奥にずっと写るシルエット 大好きさ","jp_ruby":"目(め)の奥(おく)にずっと写(うつ)るシルエット 大好(だいす)きさ","cn":"","is_continuation":false},{"time":132.91,"jp_plain":"柔らかな肌を寄せあい 少し冷たい空気を2人","jp_ruby":"柔(やわ)らかな肌(はだ)を寄(よ)せあい 少(すこ)し冷(つめ)たい空気(くうき)を2人(ふたり)","cn":"","is_continuation":false},{"time":142.94,"jp_plain":"かみしめて歩く今日という日に 何と名前をつけようかなんて話して","jp_ruby":"かみしめて歩(ある)く今日(きょう)という日(ひ)に 何(なに)と名前(なまえ)をつけようかなんて話(はな)して","cn":"","is_continuation":false},{"time":152.32,"jp_plain":"ああ アイラブユーの言葉じゃ 足りないからとキスして","jp_ruby":"ああ アイラブユーの言葉(ことば)じゃ 足(た)りないからとキスして","cn":"","is_continuation":false},{"time":160.91,"jp_plain":"雲がまだ2人の影を残すから いつまでも","jp_ruby":"雲(くも)がまだ2人(ふたり)の影(かげ)を残(のこ)すから いつまでも","cn":"","is_continuation":false},{"time":167.86,"jp_plain":"いつまでも このまま","jp_ruby":"いつまでも このまま","cn":"","is_continuation":false},{"time":171.56,"jp_plain":"遥か遠い場所にいても 繋がっていたいなあ","jp_ruby":"遥(はる)か遠(とお)い場所(ばしょ)にいても 繋(つな)がっていたいなあ","cn":"","is_continuation":false},{"time":180.25,"jp_plain":"2人の想いが 同じでありますように","jp_ruby":"2人(ふたり)の想(おも)いが 同(おな)じでありますように","cn":"","is_continuation":false},{"time":203.21,"jp_plain":"麦わらの帽子の君が 揺れたマリーゴールドに似てる","jp_ruby":"麦(むぎ)わらの帽子(ぼうし)の君(きみ)が 揺(ゆ)れたマリーゴールドに似(に)てる","cn":"","is_continuation":true},{"time":212.77,"jp_plain":"あれは空がまだ青い夏のこと","jp_ruby":"あれは空(そら)がまだ青(あお)い夏(なつ)のこと","cn":"","is_continuation":true},{"time":217.42000000000002,"jp_plain":"懐かしいと笑えたあの日の恋","jp_ruby":"懐(なつ)かしいと笑(わら)えたあの日(ひ)の恋","cn":"","is_continuation":true},{"time":222.59,"jp_plain":"「もう離れないで」と 泣きそうな目で見つめる君を","jp_ruby":"「もう離(はな)れないで」と 泣(な)きそうな目(め)で見(み)つめる君(きみ)を","cn":"","is_continuation":true},{"time":231.13,"jp_plain":"雲のような優しさでそっとぎゅっと 抱きしめて離さない","jp_ruby":"雲(くも)のような優(やさ)しさでそっとぎゅっと 抱(だ)きしめて離(はな)さない","cn":"","is_continuation":false},{"time":240.62,"jp_plain":"ああ アイラブユーの言葉じゃ 足りないからとキスして","jp_ruby":"ああ アイラブユーの言葉(ことば)じゃ 足(た)りないからとキスして","cn":"","is_continuation":true},{"time":249.27,"jp_plain":"雲がまだ2人の影を残すから いつまでも","jp_ruby":"雲(くも)がまだ2人(ふたり)の影(かげ)を残(のこ)すから いつまでも","cn":"","is_continuation":true},{"time":255.99,"jp_plain":"いつまでも このまま","jp_ruby":"いつまでも このまま","cn":"","is_continuation":true},{"time":262.21,"jp_plain":"離さない","jp_ruby":"離(はな)さない","cn":"","is_continuation":true},{"time":266.01,"jp_plain":"いつまでも いつまでも 離さない","jp_ruby":"いつまでも いつまでも 離(はな)さない","cn":"","is_continuation":false}]
 };
 
 /* ============================================================
@@ -1144,10 +1531,21 @@ function stripRuby(text) {
    載入歌曲
    ============================================================ */
 function loadSong(song) {
-  state.song = song;
+  // 檢查有沒有儲存的時間軸修正版
+  const songKey = getSongKey(song);
+  const override = getSongTimeOverride(songKey);
+
+  // 用 spread 建立淺拷貝,避免污染 SONGS_LIBRARY
+  state.song = {
+    ...song,
+    lines: override || song.lines,
+    _originalLines: song.lines,  // 保留原版,以便「丟棄修正」時恢復
+  };
   state.currentTime = 0;
   state.isPlaying = false;
   state.activeLineIdx = -1;
+  state.offset = 0;  // 每次載入歌都把 offset 歸零
+  if (typeof updateOffsetUI === 'function') updateOffsetUI();
 
   songTitle.textContent = song.title || '未知歌曲';
   songArtist.textContent = song.artist || '';
@@ -1404,6 +1802,11 @@ $('settingsBtn').addEventListener('click', () => {
   overlay.classList.add('active');
 });
 
+$('songlistSettingsBtn').addEventListener('click', () => {
+  settingsPanel.classList.add('open');
+  overlay.classList.add('active');
+});
+
 $('closeSettings').addEventListener('click', closeSettings);
 overlay.addEventListener('click', closeSettings);
 
@@ -1413,14 +1816,30 @@ function closeSettings() {
 }
 
 $('reloadBtn').addEventListener('click', () => {
-  if (confirm('返回歌單?')) {
-    pause();
-    startScreen.classList.remove('hidden');
-    songHeader.style.display = 'none';
-    lyricsContainer.style.display = 'none';
-    controls.style.display = 'none';
-    renderSongList();  // 重新渲染歌單(更新點擊次數)
+  // 如果有調過 offset,問是否保存
+  if (state.offset !== 0 && state.song) {
+    const sign = state.offset > 0 ? '+' : '';
+    const msg = `這次有調整時間 ${sign}${state.offset.toFixed(1)}s。\n\n是否要將這個調整永久套用到歌詞時間軸?\n\n(下次播放這首歌時會自動使用調整後的時間軸,顯示 0.0s)`;
+    if (confirm(msg)) {
+      // 套用修正:把 offset 加到 lines 的 time
+      const songKey = getSongKey(state.song);
+      saveTimeOverride(songKey, state.song.lines, state.offset);
+    }
   }
+
+  // 確認返回(如果有開「返回詢問」設定)
+  const needsConfirm = getConfirmBack() !== 'off';
+  if (needsConfirm && !confirm('返回歌單?')) return;
+
+  pause();
+  state.offset = 0;
+  if (typeof updateOffsetUI === 'function') updateOffsetUI();
+
+  startScreen.classList.remove('hidden');
+  songHeader.style.display = 'none';
+  lyricsContainer.style.display = 'none';
+  controls.style.display = 'none';
+  renderSongList();  // 重新渲染歌單(更新點擊次數)
 });
 
 /* ============================================================
@@ -1444,20 +1863,145 @@ document.querySelectorAll('[data-setting]').forEach(btn => {
       updateUI(true);
     } else if (setting === 'size') {
       applyFontSize();
+    } else if (setting === 'confirmBack') {
+      setConfirmBack(value);  // 存到 localStorage
     }
   });
 });
 
+// 初始化「返回歌單詢問」的開關狀態
+(function initConfirmBackUI() {
+  const current = getConfirmBack();
+  document.querySelectorAll('[data-setting="confirmBack"]').forEach(b => {
+    b.classList.toggle('active', b.dataset.value === current);
+  });
+})();
+
+// 復原已刪除的歌(顯示選單,可個別或全部)
+$('restoreAllBtn').addEventListener('click', () => {
+  const deleted = getDeletedSongs();
+  if (deleted.length === 0) {
+    alert('沒有已刪除的歌可以復原。');
+    return;
+  }
+  showRestoreMenu(deleted);
+});
+
+function showRestoreMenu(deletedKeys) {
+  // 從 SONGS_LIBRARY 找出已刪除的歌的完整資料
+  const deletedSongs = SONGS_LIBRARY.filter(s => deletedKeys.includes(getSongKey(s)));
+
+  const menu = document.createElement('div');
+  menu.className = 'song-menu-overlay';
+  menu.innerHTML = `
+    <div class="song-menu restore-menu">
+      <div class="song-menu-title">復原已刪除的歌</div>
+      <div class="song-menu-subtitle">點任何一首單獨復原,或點下方按鈕全部復原</div>
+      <div class="restore-list">
+        ${deletedSongs.map(s => {
+          const key = getSongKey(s);
+          return `
+            <button class="restore-item" data-key="${escapeHtml(key)}">
+              <div class="restore-item-text">
+                <div class="restore-item-title">${escapeHtml(s.title)}</div>
+                <div class="restore-item-artist">${escapeHtml(s.artist || '—')}</div>
+              </div>
+              <span class="restore-item-icon">↩️</span>
+            </button>
+          `;
+        }).join('')}
+      </div>
+      <button class="song-menu-btn" data-action="restore-all">↩️ 全部復原 (${deletedSongs.length} 首)</button>
+      <button class="song-menu-btn cancel" data-action="cancel">取消</button>
+    </div>
+  `;
+
+  menu.addEventListener('click', e => {
+    // 點背景關閉
+    if (e.target === menu) {
+      menu.remove();
+      return;
+    }
+    // 取消
+    if (e.target.dataset.action === 'cancel') {
+      menu.remove();
+      return;
+    }
+    // 全部復原
+    if (e.target.dataset.action === 'restore-all') {
+      if (confirm(`確定要復原全部 ${deletedSongs.length} 首已刪除的歌?`)) {
+        restoreAllDeleted();
+        renderSongList();
+        menu.remove();
+      }
+      return;
+    }
+    // 單獨復原(點到 restore-item 或它的子元素)
+    const item = e.target.closest('.restore-item');
+    if (item) {
+      const key = item.dataset.key;
+      restoreOneDeleted(key);
+      renderSongList();
+      // 移除這個按鈕
+      item.remove();
+      // 如果沒剩下了,關閉選單
+      const remaining = menu.querySelectorAll('.restore-item').length;
+      if (remaining === 0) {
+        menu.remove();
+      } else {
+        // 更新「全部復原」按鈕的數字
+        const allBtn = menu.querySelector('[data-action="restore-all"]');
+        if (allBtn) allBtn.textContent = `↩️ 全部復原 (${remaining} 首)`;
+      }
+    }
+  });
+
+  document.body.appendChild(menu);
+}
+
+// 復原單一首歌
+function restoreOneDeleted(songKey) {
+  const deleted = getDeletedSongs();
+  const filtered = deleted.filter(k => k !== songKey);
+  try {
+    if (filtered.length === 0) {
+      localStorage.removeItem(LS_DELETED_KEY);
+    } else {
+      localStorage.setItem(LS_DELETED_KEY, JSON.stringify(filtered));
+    }
+  } catch (e) {}
+}
+
+// 重設所有歌的播放次數
+$('resetPlaysBtn').addEventListener('click', () => {
+  const counts = getPlayCounts();
+  const total = Object.keys(counts).length;
+  if (total === 0) {
+    alert('沒有播放紀錄可以重設。');
+    return;
+  }
+  if (confirm(`確定要重設「全部 ${total} 首」歌的播放次數?\n此操作無法復原。`)) {
+    resetAllPlayCounts();
+    renderSongList();
+    alert('所有播放次數已重設。');
+  }
+});
+
+function updateOffsetUI() {
+  offsetValueEl.textContent = state.offset.toFixed(1) + 's';
+  offsetValueEl.classList.toggle('adjusted', state.offset !== 0);
+}
+
 $('offsetMinus').addEventListener('click', () => {
   state.offset = Math.round((state.offset - 0.5) * 10) / 10;
-  offsetValueEl.textContent = state.offset.toFixed(1) + 's';
+  updateOffsetUI();
   state.activeLineIdx = -1;
   updateUI(true);
 });
 
 $('offsetPlus').addEventListener('click', () => {
   state.offset = Math.round((state.offset + 0.5) * 10) / 10;
-  offsetValueEl.textContent = state.offset.toFixed(1) + 's';
+  updateOffsetUI();
   state.activeLineIdx = -1;
   updateUI(true);
 });
@@ -1465,24 +2009,142 @@ $('offsetPlus').addEventListener('click', () => {
 /* ============================================================
    字體大小滑桿
    ============================================================ */
-function setupSlider(sliderId, valueId, settingKey, suffix = '') {
-  const slider = $(sliderId);
-  const valueEl = $(valueId);
+/* ============================================================
+   字體大小調整(+/- 按鈕)
+   ============================================================
+   日文字體:18~60px,每次 ±2
+   振假名:30~70(%),每次 ±5
+   ============================================================ */
+const FONT_LIMITS = {
+  sizeMain: { min: 18, max: 60, step: 2 },
+  sizeRuby: { min: 30, max: 70, step: 5 },
+};
 
-  function update() {
-    state.settings[settingKey] = parseInt(slider.value);
-    valueEl.textContent = slider.value + suffix;
-    applyFontSize();
-  }
+const SONG_DATA = {
+  title: "天使にふれたよ!",
+  artist: "放課後ティータイム",
+  duration: 255.44,
+  lines: [{"time":10.72,"jp_plain":"ねぇ 思い出のカケラに","jp_ruby":"ねぇ 思(おも)い出(で)のカケラに","cn":"吶 如果要替回憶的碎片 取個名字來保存的話","is_continuation":false},{"time":15.94,"jp_plain":"名前をつけて保存するなら","jp_ruby":"名前(なまえ)をつけて保存(ほぞん)するなら","cn":"吶 如果要替回憶的碎片 取個名字來保存的話","is_continuation":true},{"time":22.88,"jp_plain":"“宝物”がぴったりだね","jp_ruby":"“宝物(たからもの)”がぴったりだね","cn":"用“寶物”來取名會最適合吧","is_continuation":false},{"time":27.29,"jp_plain":"そう ココロの容量が","jp_ruby":"そう ココロの容量(ようりょう)が","cn":"沒錯 心的容量 不停地被填滿","is_continuation":false},{"time":32.99,"jp_plain":"いっぱいになるくらいに","jp_ruby":"いっぱいになるくらいに","cn":"沒錯 心的容量 不停地被填滿","is_continuation":true},{"time":36.82,"jp_plain":"過ごしたね ときめき色の毎日","jp_ruby":"過(す)ごしたね ときめき色(いろ)の毎日(まいにち)","cn":"就這樣度過 繽紛的每天","is_continuation":false},{"time":42.6,"jp_plain":"なじんだ制服と上履き","jp_ruby":"なじんだ制服(せいふく)と上履(うわば)き","cn":"熟悉的制服與室內鞋 還有白板上的塗鴉","is_continuation":false},{"time":47.66,"jp_plain":"ホワイトボードの落書き","jp_ruby":"ホワイトボードの落書(らくが)き","cn":"熟悉的制服與室內鞋 還有白板上的塗鴉","is_continuation":true},{"time":51.7,"jp_plain":"明日の入り口に","jp_ruby":"明日(あした)の入(い)り口(ぐち)に","cn":"在明天的入口 是不是該全部留下呢?","is_continuation":false},{"time":55.79,"jp_plain":"置いてかなくちゃいけないのかな","jp_ruby":"置(お)いてかなくちゃいけないのかな","cn":"在明天的入口 是不是該全部留下呢?","is_continuation":true},{"time":60.08,"jp_plain":"でもね、会えたよ! すてきな天使に","jp_ruby":"でもね、会(あ)えたよ! すてきな天使(てんし)に","cn":"但是呢、我遇見了! 美麗的天使","is_continuation":false},{"time":68.24,"jp_plain":"卒業は終わりじゃない","jp_ruby":"卒業(そつぎょう)は終(お)わりじゃない","cn":"畢業不會是我們的終點 從今以後也是朋友","is_continuation":false},{"time":72.4,"jp_plain":"これからも仲間だから","jp_ruby":"これからも仲間(なかま)だから","cn":"畢業不會是我們的終點 從今以後也是朋友","is_continuation":true},{"time":76.64,"jp_plain":"一緒の写真たち","jp_ruby":"一緒(いっしょ)の写真(しゃしん)たち","cn":"大家的照片 一同擁有的吊飾","is_continuation":false},{"time":80.52,"jp_plain":"おそろのキーホルダー","jp_ruby":"おそろのキーホルダー","cn":"大家的照片 一同擁有的吊飾","is_continuation":true},{"time":84.41,"jp_plain":"いつまでも輝いてる","jp_ruby":"いつまでも輝(かがや)いてる","cn":"無論何時 都會閃耀光芒 對這永恆的笑容 說聲謝謝","is_continuation":false},{"time":88.73,"jp_plain":"ずっと その笑顔 ありがとう","jp_ruby":"ずっと その笑顔(えがお) ありがとう","cn":"無論何時 都會閃耀光芒 對這永恆的笑容 說聲謝謝","is_continuation":true},{"time":100.97999999999999,"jp_plain":"ねぇ 桜の木もちょっと","jp_ruby":"ねぇ 桜(さくら)の木(き)もちょっと","cn":"吶 那顆櫻花樹 也慢慢地長高了呢","is_continuation":false},{"time":106.50999999999999,"jp_plain":"背丈が伸びたみたい","jp_ruby":"背丈(せたけ)が伸(の)びたみたい","cn":"吶 那顆櫻花樹 也慢慢地長高了呢","is_continuation":true},{"time":110.56,"jp_plain":"見えないゆっくりなスピードでも","jp_ruby":"見(み)えないゆっくりなスピードでも","cn":"用看不見的緩慢的速度","is_continuation":false},{"time":117.50999999999999,"jp_plain":"きっとあの空は見てたね","jp_ruby":"きっとあの空(そら)は見(み)てたね","cn":"一定都能再看見那片天空","is_continuation":false},{"time":123.53,"jp_plain":"何度もつまずいたこと","jp_ruby":"何度(なんど)もつまずいたこと","cn":"無論多少次遭受挫折 即使那樣 也要堅持走到最後","is_continuation":false},{"time":127.09,"jp_plain":"それでも 最後まで歩けたこと","jp_ruby":"それでも 最後(さいご)まで歩(ある)けたこと","cn":"無論多少次遭受挫折 即使那樣 也要堅持走到最後","is_continuation":true},{"time":132.78,"jp_plain":"ふわり放課後の廊下に","jp_ruby":"ふわり放課(ほうか)後(ご)の廊下(ろうか)に","cn":"輕飄飄的下課時間的走廊 散落的音符的羽毛","is_continuation":false},{"time":137.84,"jp_plain":"こぼれた音符の羽根","jp_ruby":"こぼれた音符(おんぷ)の羽根(はね)","cn":"輕飄飄的下課時間的走廊 散落的音符的羽毛","is_continuation":true},{"time":142.01,"jp_plain":"ふかふか積もるまで","jp_ruby":"ふかふか積(つ)もるまで","cn":"鬆軟地疊在一起 如果能像這樣一直下去那就好了","is_continuation":false},{"time":146.06,"jp_plain":"このままでいれたらいいのにな","jp_ruby":"このままでいれたらいいのにな","cn":"鬆軟地疊在一起 如果能像這樣一直下去那就好了","is_continuation":true},{"time":150.41,"jp_plain":"でもね、ふれたよ! 愛すべき天使に","jp_ruby":"でもね、ふれたよ! 愛(あい)すべき天使(てんし)に","cn":"但是呢、我碰見了! 值得珍惜的天使","is_continuation":false},{"time":158.3,"jp_plain":"ただいまって言いたくなる","jp_ruby":"ただいまって言(い)いたくなる","cn":"只要想到 就想說聲我回來了 這個地方永遠不會改變","is_continuation":false},{"time":162.47,"jp_plain":"この場所は変わらないよ","jp_ruby":"この場所(ばしょ)は変(か)わらないよ","cn":"只要想到 就想說聲我回來了 這個地方永遠不會改變","is_continuation":true},{"time":166.76,"jp_plain":"メールの受信箱","jp_ruby":"メールの受信(じゅしん)箱(ばこ)","cn":"在信箱上 畫上一圈一圈的月曆","is_continuation":false},{"time":170.69,"jp_plain":"○したカレンダー","jp_ruby":"○(まる)したカレンダー","cn":"在信箱上 畫上一圈一圈的月曆","is_continuation":true},{"time":174.88,"jp_plain":"とびきりの夢と出会いくれた","jp_ruby":"とびきりの夢(ゆめ)と出会(であ)いくれた","cn":"能遇見像你們如此美好的夢 都要向音樂說聲謝謝","is_continuation":false},{"time":179.96,"jp_plain":"音楽にありがとう","jp_ruby":"音楽(おんがく)にありがとう","cn":"能遇見像你們如此美好的夢 都要向音樂說聲謝謝","is_continuation":true},{"time":186.51,"jp_plain":"駅のホーム 河原の道","jp_ruby":"駅(えき)のホーム 河原(かわら)の道(みち)","cn":"車站的月台 河原的道路 即使我們在此分離 也會仰望同一片天空","is_continuation":false},{"time":190.66,"jp_plain":"離れてても 同じ空見上げて","jp_ruby":"離(はな)れてても 同(おな)じ空(そら)見上(みあ)げて","cn":"車站的月台 河原的道路 即使我們在此分離 也會仰望同一片天空","is_continuation":true},{"time":197.68,"jp_plain":"ユニゾンで歌おう!","jp_ruby":"ユニゾンで歌(うた)おう!","cn":"讓我們一起高唱吧!","is_continuation":false},{"time":221.9,"jp_plain":"でもね、会えたよ! すてきな天使に","jp_ruby":"でもね、会(あ)えたよ! すてきな天使(てんし)に","cn":"但是呢、我遇見了! 美麗的天使","is_continuation":true},{"time":230.26,"jp_plain":"卒業は終わりじゃない","jp_ruby":"卒業(そつぎょう)は終(お)わりじゃない","cn":"畢業不會是我們的終點 從今以後也是朋友","is_continuation":true},{"time":234.1,"jp_plain":"これからも仲間だから","jp_ruby":"これからも仲間(なかま)だから","cn":"畢業不會是我們的終點 從今以後也是朋友","is_continuation":true},{"time":238.5,"jp_plain":"大好きって言うなら","jp_ruby":"大好(だいす)きって言(ゆ)うなら","cn":"如果你說最喜歡我 我就會告訴你 我最最喜歡你","is_continuation":false},{"time":242.62,"jp_plain":"大大好きって返すよ","jp_ruby":"大大(だいだい)好(す)きって返(かえ)すよ","cn":"如果你說最喜歡我 我就會告訴你 我最最喜歡你","is_continuation":true},{"time":246.64,"jp_plain":"忘れ物もうないよね","jp_ruby":"忘(わす)れ物(もの)もうないよね","cn":"遺忘的東西 已經沒有了吧 我們要一直在一起 直到永遠","is_continuation":false},{"time":250.44,"jp_plain":"ずっと 永遠に一緒だよ","jp_ruby":"ずっと 永遠(えいえん)に一緒(いっしょ)だよ","cn":"遺忘的東西 已經沒有了吧 我們要一直在一起 直到永遠","is_continuation":true}]
+};
 
-  slider.addEventListener('input', update);
-  // 初始化顯示
-  valueEl.textContent = slider.value + suffix;
+const SONG_1_DATA = {
+  title: "打上花火",
+  artist: "DAOKO×米津玄師",
+  duration: 232.98,
+  lines: [{"time":20,"jp_plain":"あの日見渡した渚を 今も思い出すんだ","jp_ruby":"あの日(ひ)見渡(みわた)した渚(なぎさ)を 今(いま)も思(おも)い出(だ)すんだ","cn":"那日眺望過的海岸 如今仍能憶起","is_continuation":false},{"time":29.99,"jp_plain":"砂の上に刻んだ言葉 君の後ろ姿","jp_ruby":"砂(すな)の上(うえ)に刻(きざ)んだ言葉(ことば) 君(きみ)の後(うし)ろ姿(すがた)","cn":"沙灘上刻劃下的文字 你的背影","is_continuation":false},{"time":39.96,"jp_plain":"寄り返す波が 足元をよぎり何かを攫う","jp_ruby":"寄(よ)り返(かえ)す波(なみ)が 足元(あしもと)をよぎり何(なに)かを攫(さら)う","cn":"浪花往返 沖過腳邊帶走了些什麼","is_continuation":false},{"time":49.78,"jp_plain":"夕凪の中 日暮れだけが通り過ぎて行く","jp_ruby":"夕凪(ゆうなぎ)の中(なか) 日暮(ひぐ)れだけが通(とお)り過(す)ぎて行(ゆ)く","cn":"風平浪靜之中 日暮獨自溜走","is_continuation":false},{"time":60.09,"jp_plain":"パッと光って咲いた 花火を見ていた","jp_ruby":"パッと光(ひか)って咲(さ)いた 花火(はなび)を見(み)ていた","cn":"啪一聲綻放光芒 我們看著煙花","is_continuation":false},{"time":64.85,"jp_plain":"きっとまだ 終わらない夏が","jp_ruby":"きっとまだ 終(お)わらない夏(なつ)が","cn":"還未結束的夏天 一定會將","is_continuation":false},{"time":69.64,"jp_plain":"曖昧な心を 解かして繋いだ","jp_ruby":"曖昧(あいまい)な心(こころ)を 解(と)かして繋(つな)いだ","cn":"曖昧的心 融化後相繫一起","is_continuation":false},{"time":74.75,"jp_plain":"この夜が 続いて欲しかった","jp_ruby":"この夜(よる)が 続(つづ)いて欲(ほ)しかった","cn":"多希望 這個夜晚繼續下去","is_continuation":false},{"time":90.14,"jp_plain":"「あと何度君と同じ花火を見られるかな」って","jp_ruby":"「あと何度(なんど)君(きみ)と同(おな)じ花火(はなび)を見(み)られるかな」って","cn":"「還能再與你共賞幾次同樣的煙花呢」","is_continuation":false},{"time":94.84,"jp_plain":"笑う顔に何ができるだろうか","jp_ruby":"笑(わら)う顔(かお)に何(なに)ができるだろうか","cn":"為那笑臉我又能做些什麼","is_continuation":false},{"time":99.97999999999999,"jp_plain":"傷つくこと 喜ぶこと","jp_ruby":"傷(きず)つくこと 喜(よろこ)ぶこと","cn":"受傷 喜悅 浪來浪去與情動","is_continuation":false},{"time":102.64,"jp_plain":"繰り返す波と情動","jp_ruby":"繰(く)り返(かえ)す波(なみ)と情動(じょうどう)","cn":"受傷 喜悅 浪來浪去與情動","is_continuation":true},{"time":104.81,"jp_plain":"焦燥 最終列車の音","jp_ruby":"焦燥(しょうそう) 最終(さいしゅう)列車(れっしゃ)の音(おと)","cn":"焦躁 末班列車的聲音","is_continuation":false},{"time":110.57,"jp_plain":"何度でも 言葉にして君を呼ぶよ","jp_ruby":"何度(なんど)でも 言葉(ことば)にして君(きみ)を呼(よ)ぶよ","cn":"無論幾次 我都會化作話語呼喚你","is_continuation":false},{"time":114.92,"jp_plain":"波間を選び もう一度","jp_ruby":"波間(なみま)を選(えら)び もう一度(いちど)","cn":"待浪退時 再一次","is_continuation":false},{"time":120.52,"jp_plain":"もう二度と悲しまずに済むように","jp_ruby":"もう二度(にど)と悲(かな)しまずに済(す)むように","cn":"是為了讓悲傷不再繼續就此而終","is_continuation":false},{"time":137.45,"jp_plain":"はっと息を飲めば 消えちゃいそうな光が","jp_ruby":"はっと息(いき)を飲(の)めば 消(き)えちゃいそうな光(ひかり)が","cn":"深深倒吸一口氣 那即將消失的光芒","is_continuation":false},{"time":142.26,"jp_plain":"きっとまだ 胸に住んでいた","jp_ruby":"きっとまだ 胸(むね)に住(す)んでいた","cn":"一定仍會 久留在胸中","is_continuation":false},{"time":147.28,"jp_plain":"手を伸ばせば触れた","jp_ruby":"手(て)を伸(の)ばせば触(ふ)れた","cn":"只要伸出手便能觸碰 那溫暖的未來","is_continuation":false},{"time":149.99,"jp_plain":"あったかい未来は ひそかに二人を見ていた","jp_ruby":"あったかい未来(みらい)は ひそかに二人(ふたり)を見(み)ていた","cn":"","is_continuation":false},{"time":158.07999999999998,"jp_plain":"パッと花火が ","jp_ruby":"パッと花火(はなび)が (パッと花火が)","cn":"","is_continuation":false},{"time":160.82999999999998,"jp_plain":"夜に咲いた ","jp_ruby":"夜(よる)に咲(さ)いた (夜に咲いた)","cn":"","is_continuation":false},{"time":163.32999999999998,"jp_plain":"夜に咲いて ","jp_ruby":"夜(よる)に咲(さ)いて (夜に咲いて)","cn":"","is_continuation":false},{"time":165.78,"jp_plain":"静かに消えた ","jp_ruby":"静(しず)かに消(き)えた (静かに消えた)","cn":"","is_continuation":false},{"time":168.38,"jp_plain":"離さないで ","jp_ruby":"離(はな)さないで (離れないで)","cn":"","is_continuation":false},{"time":170.8,"jp_plain":"もう少しだけ ","jp_ruby":"もう少(すこ)しだけ (もう少しだけ)","cn":"","is_continuation":false},{"time":173.3,"jp_plain":"もう少しだけ このままで","jp_ruby":"もう少(すこ)しだけ このままで","cn":"再一下下就好 維持現在這樣","is_continuation":false},{"time":187.46,"jp_plain":"あの日見渡した渚を 今も思い出すんだ","jp_ruby":"あの日(ひ)見渡(みわた)した渚(なぎさ)を 今(いま)も思(おも)い出(だ)すんだ","cn":"那日眺望過的海岸 如今仍能憶起","is_continuation":true},{"time":197.13,"jp_plain":"砂の上に刻んだ言葉 君の後ろ姿","jp_ruby":"砂(すな)の上(うえ)に刻(きざ)んだ言葉(ことば) 君(きみ)の後(うし)ろ姿(すがた)","cn":"沙灘上刻劃下的文字 你的背影","is_continuation":true},{"time":207.36,"jp_plain":"パッと光って咲いた 花火を見ていた","jp_ruby":"パッと光(ひか)って咲(さ)いた 花火(はなび)を見(み)ていた","cn":"啪一聲綻放光芒 我們看著煙花","is_continuation":true},{"time":212.12,"jp_plain":"きっとまだ 終わらない夏が","jp_ruby":"きっとまだ 終(お)わらない夏(なつ)が","cn":"還未結束的夏天 一定會將","is_continuation":true},{"time":217.05,"jp_plain":"曖昧な心を 解かして繋いだ","jp_ruby":"曖昧(あいまい)な心(こころ)を 解(と)かして繋(つな)いだ","cn":"曖昧的心 融化後相繫一起","is_continuation":true},{"time":222.45,"jp_plain":"この夜が 続いて欲しかった","jp_ruby":"この夜(よる)が 続(つづ)いて欲(ほ)しかった","cn":"多希望 這個夜晚繼續下去","is_continuation":true},{"time":227.98,"jp_plain":"La La La La...","jp_ruby":"La La La La...","cn":"","is_continuation":false}]
+};
+
+const SONG_2_DATA = {
+  title: "白金ディスコ",
+  artist: "阿良々木月火(CV: 井口裕香)",
+  duration: 251.34,
+  lines: [{"time":8.08,"jp_plain":"はぁどっこい！","jp_ruby":"はぁどっこい！","cn":"","is_continuation":false},{"time":16.25,"jp_plain":"あぁよいしょ！","jp_ruby":"あぁよいしょ！","cn":"","is_continuation":false},{"time":24.83,"jp_plain":"見渡せば一面 白金の世界に 一歩だけ踏み出して","jp_ruby":"見渡(みわた)せば一面(いちめん) 白金(はっきん)の世界(せかい)に 一歩(いっぽ)だけ踏(ふ)み出(だ)して","cn":"放眼看過去 就是全新一面 向著白金的世界 踏出一步吧","is_continuation":false},{"time":33.13,"jp_plain":"いつまでも止まらない この胸のときめきで 一緒に踊ろう","jp_ruby":"いつまでも止(と)まらない この胸(むね)のときめきで 一緒(いっしょ)に踊(おど)ろう","cn":"憑著這份 到何時也不會停止的內心躍動 來跟我起舞吧","is_continuation":false},{"time":41.78,"jp_plain":"君の背中であの日みつけた月が 今日も","jp_ruby":"君(きみ)の背中(せなか)であの日(ひ)みつけた月(つき)が 今日(きょう)も","cn":"躺在你背上的那一天 找尋到的月光","is_continuation":false},{"time":50.15,"jp_plain":"ミラーボールみたいに夜空で キラり チラり 輝いてる","jp_ruby":"ミラーボールみたいに夜空で キラり チラり 輝いてる","cn":"","is_continuation":false},{"time":61.55,"jp_plain":"かわってくもの かわらないもの 飽きっぽい私が","jp_ruby":"かわってくもの かわらないもの 飽(あ)きっぽい私(わたし)が","cn":"了解到 漸漸改變的東西 與恆久不變的東西 往往三分鐘熱度的我","is_continuation":false},{"time":69.87,"jp_plain":"はじめて知った この永遠を 君に誓うよ","jp_ruby":"はじめて知(し)った この永遠(えいえん)を 君(きみ)に誓(ちか)うよ","cn":"要把第一次發現到的 這份永遠 向你起誓","is_continuation":false},{"time":78.22,"jp_plain":"プラチナ うれしいのに","jp_ruby":"プラチナ うれしいのに","cn":"白金閃閃 明明是很開心 白金閃閃 但內心卻感到痛苦","is_continuation":false},{"time":82.51,"jp_plain":"プラチナ せつなくなって","jp_ruby":"プラチナ せつなくなって","cn":"白金閃閃 明明是很開心 白金閃閃 但內心卻感到痛苦","is_continuation":true},{"time":86.61,"jp_plain":"プラチナ なみだがでちゃうのは","jp_ruby":"プラチナ なみだがでちゃうのは","cn":"白金閃閃 流下淚水","is_continuation":false},{"time":90.84,"jp_plain":"なんで、どうして ディスコティック","jp_ruby":"なんで、どうして ディスコティック","cn":"","is_continuation":false},{"time":102.25999999999999,"jp_plain":"あぁよいしょ","jp_ruby":"あぁよいしょ","cn":"","is_continuation":false},{"time":110.32,"jp_plain":"はいはい！","jp_ruby":"はいはい！","cn":"","is_continuation":false},{"time":111.22,"jp_plain":"振り向けばいつでも 並んでる 足跡 君とねぇ じゃれあって","jp_ruby":"振(ふ)り向(む)けばいつでも 並(なら)んでる 足跡(あしあと) 君(きみ)とねぇ じゃれあって","cn":"向那方一看 就會看到 總是並排而走的腳印 與你互相嬉戲的痕跡","is_continuation":false},{"time":119.43,"jp_plain":"ねむたくてねむくない まだちょっとあとすこし 朝まで踊ろう","jp_ruby":"ねむたくてねむくない まだちょっとあとすこし 朝(あさ)まで踊(おど)ろう","cn":"很睏但是還不想睡 再來一點 再來一點 一起跳舞到明早吧","is_continuation":false},{"time":128.12,"jp_plain":"明日なんか来なくてもいいから ずっと こんな","jp_ruby":"明日(あした)なんか来(こ)なくてもいいから ずっと こんな","cn":"縱使明天不再來臨也好","is_continuation":false},{"time":136.17000000000002,"jp_plain":"今日が続きますようになんて ヒラリ フラリ 夢の中へ","jp_ruby":"今日(きょう)が続(つづ)きますようになんて ヒラリ フラリ 夢(ゆめ)の中(なか)へ","cn":"","is_continuation":false},{"time":147.62,"jp_plain":"ささやかだけど かけがえのない 歴史を重ねて","jp_ruby":"ささやかだけど かけがえのない 歴史(れきし)を重(かさ)ねて","cn":"雖然很渺小 但經過無可取替的歷史 不斷累積","is_continuation":false},{"time":155.94,"jp_plain":"ちいさなうそも ほんとうになる 君のとなりで","jp_ruby":"ちいさなうそも ほんとうになる 君(きみ)のとなりで","cn":"小小的謊話 最後也會在你身邊 成為真實","is_continuation":false},{"time":164.63,"jp_plain":"ディスコ？ ディスコ？ディスコ？ディスコ？","jp_ruby":"ディスコ？ ディスコ？ディスコ？ディスコ？","cn":"","is_continuation":false},{"time":171.88,"jp_plain":"はいはい！","jp_ruby":"はいはい！","cn":"","is_continuation":false},{"time":172.85,"jp_plain":"ディスコ！ディスコ！ディスコ！ディスコ！","jp_ruby":"ディスコ！ディスコ！ディスコ！ディスコ！","cn":"","is_continuation":false},{"time":180.29,"jp_plain":"あぁよいしょ！","jp_ruby":"あぁよいしょ！","cn":"","is_continuation":false},{"time":181.54,"jp_plain":"ディスコ... ディスコ... ディスコ... ディスコ...","jp_ruby":"ディスコ... ディスコ... ディスコ... ディスコ...","cn":"","is_continuation":false},{"time":188.29,"jp_plain":"もういっちょ！","jp_ruby":"もういっちょ！","cn":"","is_continuation":false},{"time":189.47,"jp_plain":"ディスコ！ディスコ！ディスコ！ディスコ！","jp_ruby":"ディスコ！ディスコ！ディスコ！ディスコ！","cn":"","is_continuation":false},{"time":197.07999999999998,"jp_plain":"かわっていくもの かわらないもの 飽きっぽい私が","jp_ruby":"かわっていくもの かわらないもの 飽きっぽい私が","cn":"","is_continuation":false},{"time":205.18,"jp_plain":"はじめて知った この永遠を 君に誓うよ","jp_ruby":"はじめて知(し)った この永遠(えいえん)を 君(きみ)に誓(ちか)うよ","cn":"要把第一次發現到的 這份永遠 向你起誓","is_continuation":true},{"time":213.2,"jp_plain":"ささやかだけど かけがえのない 歴史を重ねて","jp_ruby":"ささやかだけど かけがえのない 歴史(れきし)を重(かさ)ねて","cn":"雖然很渺小 但經過無可取替的歷史 不斷累積","is_continuation":true},{"time":221.73,"jp_plain":"偽りさえも ほんとうになる 君のとなりで","jp_ruby":"偽(いつわ)りさえも ほんとうになる 君(きみ)のとなりで","cn":"謊言也會在你身邊 變成真實","is_continuation":false},{"time":230.27,"jp_plain":"プラチナ うれしいのに","jp_ruby":"プラチナ うれしいのに","cn":"白金閃閃 明明是很開心 白金閃閃 但內心卻感到痛苦","is_continuation":true},{"time":234.26,"jp_plain":"プラチナ せつなくなって","jp_ruby":"プラチナ せつなくなって","cn":"白金閃閃 明明是很開心 白金閃閃 但內心卻感到痛苦","is_continuation":true},{"time":238.16,"jp_plain":"プラチナ なみだがでちゃうのは","jp_ruby":"プラチナ なみだがでちゃうのは","cn":"白金閃閃 流下淚水","is_continuation":true},{"time":242.71,"jp_plain":"なんで、どうして ディスコティック","jp_ruby":"なんで、どうして ディスコティック","cn":"","is_continuation":false},{"time":246.34,"jp_plain":"なんで、どうして ディスコティック","jp_ruby":"なんで、どうして ディスコティック","cn":"","is_continuation":false}]
+};
+
+const SONG_3_DATA = {
+  title: "花の塔",
+  artist: "Sayuri",
+  duration: 255.82,
+  lines: [{"time":13.67,"jp_plain":"君が持ってきた漫画","jp_ruby":"君(きみ)が持(も)ってきた漫画(まんが)","cn":"看著你帶來的漫畫","is_continuation":false},{"time":16.57,"jp_plain":"くれた知らない名前のお花","jp_ruby":"くれた知(し)らない名前(なまえ)のお花(はな)","cn":"和送給我的不知名花朵","is_continuation":false},{"time":19.64,"jp_plain":"今日はまだ来ないかな?","jp_ruby":"今日(きょう)はまだ来(こ)ないかな?","cn":"想著“今天怎麼還不來呢?”","is_continuation":false},{"time":22.1,"jp_plain":"初めての感情知ってしまった","jp_ruby":"初(はじ)めての感情(かんじょう)知(し)ってしまった","cn":"讓我感受到了初次體會的感情","is_continuation":false},{"time":26.03,"jp_plain":"窓に飾った絵画をなぞってひとりで宇宙を旅して","jp_ruby":"窓(まど)に飾(かざ)った絵画(かいが)をなぞってひとりで宇宙(うちゅう)を旅(たび)して","cn":"臨摹著裝飾在窗戶上的畫 獨自在宇宙遨遊","is_continuation":false},{"time":31.4,"jp_plain":"それだけでいいはずだったのに","jp_ruby":"それだけでいいはずだったのに","cn":"本來應該只要這樣就能滿足了","is_continuation":false},{"time":37.73,"jp_plain":"君の手を握ってしまったら","jp_ruby":"君(きみ)の手(て)を握(にぎ)ってしまったら","cn":"一旦握住了你的手","is_continuation":false},{"time":43.53,"jp_plain":"孤独を知らないこの街には","jp_ruby":"孤独(こどく)を知(し)らないこの街(まち)には","cn":"應該就無法再回到","is_continuation":false},{"time":49.44,"jp_plain":"もう二度と帰ってくることはできないのでしょう","jp_ruby":"もう二度(にど)と帰(かえ)ってくることはできないのでしょう","cn":"這座不知孤獨為何物的城鎮了吧","is_continuation":false},{"time":60.44,"jp_plain":"君が手を差し伸べた 光で影が生まれる","jp_ruby":"君(きみ)が手(て)を差(さ)し伸(の)べた 光(ひかり)で影(かげ)が生(う)まれる","cn":"你伸出了手 光照射下產生了影子","is_continuation":false},{"time":71.61,"jp_plain":"歌って聞かせて この話の続き","jp_ruby":"歌(うた)って聞(き)かせて この話(はなし)の続(つづ)き","cn":"唱給我聽吧 這段話的後續","is_continuation":false},{"time":77.36,"jp_plain":"連れて行って見たことない星まで","jp_ruby":"連(つ)れて行(い)って見(み)たことない星(ほし)まで","cn":"直到抵達你沒帶我去過的星球","is_continuation":false},{"time":94.18,"jp_plain":"誰の手も声も届かない","jp_ruby":"誰(だれ)の手(て)も声(こえ)も届(とど)かない","cn":"向著誰的手和聲音都無法抵達的","is_continuation":false},{"time":96.86,"jp_plain":"高く聳え立った塔の上へ","jp_ruby":"高(たか)く聳(そび)え立(た)った塔(とう)の上(うえ)へ","cn":"高高聳立的塔之上","is_continuation":false},{"time":100.28999999999999,"jp_plain":"飛ばすフウセンカズラ","jp_ruby":"飛(と)ばすフウセンカズラ","cn":"將氣球放飛","is_continuation":false},{"time":102.77000000000001,"jp_plain":"僕は君に笑って欲しいんだ","jp_ruby":"僕(ぼく)は君(きみ)に笑(わら)って欲(ほ)しいんだ","cn":"我只希望你能綻放笑容啊","is_continuation":false},{"time":106.45,"jp_plain":"満たされない穴は惰性の会話や澄ましたポーズで","jp_ruby":"満(み)たされない穴(あな)は惰性(だせい)の会話(かいわ)や澄(す)ましたポーズで","cn":"用至今已被習慣的對話和爽朗的舉止","is_continuation":false},{"time":112.08,"jp_plain":"これまでは埋めてきたけど","jp_ruby":"これまでは埋(う)めてきたけど","cn":"來填滿內心的空洞","is_continuation":false},{"time":116.74000000000001,"jp_plain":"退屈な日々を蹴散らして","jp_ruby":"退屈(たいくつ)な日々(ひび)を蹴散(けち)らして","cn":"想踢散無聊的時光","is_continuation":false},{"time":122.52,"jp_plain":"君と二人でこの街中を泳げたら","jp_ruby":"君(きみ)と二人(ふたり)でこの街中(まちじゅう)を泳(およ)げたら","cn":"若能與你二人在這城裡暢遊","is_continuation":false},{"time":130.02,"jp_plain":"それはどれだけ素敵なことでしょう","jp_ruby":"それはどれだけ素敵(すてき)なことでしょう","cn":"那該會有多麼美妙呢?","is_continuation":false},{"time":139.39,"jp_plain":"出したことないほど大きな声でやっと君に伝わる","jp_ruby":"出(だ)したことないほど大(おお)きな声(こえ)でやっと君(きみ)に伝(つた)わる","cn":"竭盡全身力氣 終於大聲將心意向你傳達","is_continuation":false},{"time":150.77,"jp_plain":"歪なくらいがさ きっとちょうどいいね","jp_ruby":"歪(いびつ)なくらいがさ きっとちょうどいいね","cn":"稍有些偏差 一定才恰好合適","is_continuation":false},{"time":156.34,"jp_plain":"世界の端と端を結んで","jp_ruby":"世界(せかい)の端(はじ)と端(はじ)を結(むす)んで","cn":"能夠將世界的兩端相連","is_continuation":false},{"time":174.26,"jp_plain":"窓に飾った絵画をなぞってひとりで宇宙を旅して","jp_ruby":"窓(まど)に飾(かざ)った絵画(かいが)をなぞってひとりで宇宙(うちゅう)を旅(たび)して","cn":"臨摹著裝飾在窗戶上的畫 獨自在宇宙遨遊","is_continuation":true},{"time":179.85,"jp_plain":"それだけでも不自由ないけど","jp_ruby":"それだけでも不自由(ふじゆう)ないけど","cn":"儘管僅是如此也沒什麼不自由","is_continuation":false},{"time":185.54,"jp_plain":"僕は選んでみたいの","jp_ruby":"僕(ぼく)は選(えら)んでみたいの","cn":"可我仍想嘗試一下選擇","is_continuation":false},{"time":187.7,"jp_plain":"高鳴る心 謎だらけの空を","jp_ruby":"高鳴(たかな)る心(こころ) 謎(なぞ)だらけの空(そら)を","cn":"激昂的心 和充滿謎團的天空","is_continuation":false},{"time":191.16,"jp_plain":"安全なループを今、書き換えて!","jp_ruby":"安全(あんぜん)なループを今(いま)、書(か)き換(か)えて!","cn":"將這安全的循環改寫吧!","is_continuation":false},{"time":200.01,"jp_plain":"君の手を握ってしまったら","jp_ruby":"君(きみ)の手(て)を握(にぎ)ってしまったら","cn":"一旦握住了你的手","is_continuation":true},{"time":205.77,"jp_plain":"孤独を知らないこの街には","jp_ruby":"孤独(こどく)を知(し)らないこの街(まち)には","cn":"應該就無法再回到","is_continuation":true},{"time":211.73,"jp_plain":"もう二度と帰ってくることはできないのでしょう","jp_ruby":"もう二度(にど)と帰(かえ)ってくることはできないのでしょう","cn":"這座不知孤獨為何物的城鎮了吧","is_continuation":true},{"time":222.78,"jp_plain":"いくらでも迷いながら 光も影も見に行こう","jp_ruby":"いくらでも迷(まよ)いながら 光(ひかり)も影(かげ)も見(み)に行(ゆ)こう","cn":"","is_continuation":false},{"time":234.01,"jp_plain":"歌って聞かせて この話の続き","jp_ruby":"歌(うた)って聞(き)かせて この話(はなし)の続(つづ)き","cn":"唱給我聽吧 這段話的後續","is_continuation":true},{"time":239.64,"jp_plain":"連れて行って見たことない星まで","jp_ruby":"連(つ)れて行(い)って見(み)たことない星(ほし)まで","cn":"直到抵達你沒帶我去過的星球","is_continuation":true},{"time":250.82,"jp_plain":"世界の端と端を結んで","jp_ruby":"世界(せかい)の端(はじ)と端(はじ)を結(むす)んで","cn":"能夠將世界的兩端相連","is_continuation":true}]
+};
+
+const 365_DATA = {
+  title: "365日の紙飛行機",
+  artist: "AKB48",
+  duration: 275.02,
+  lines: [{"time":13.69,"jp_plain":"朝の空を見上げて","jp_ruby":"朝(あさ)の空(そら)を見上(みあ)げて","cn":"清晨我仰望著天空 今天會是怎樣的一天呢","is_continuation":false},{"time":17.84,"jp_plain":"今日という一日が","jp_ruby":"今日(きょう)という一日(いちにち)が","cn":"清晨我仰望著天空 今天會是怎樣的一天呢","is_continuation":true},{"time":22.4,"jp_plain":"笑顔でいられるように","jp_ruby":"笑顔(えがお)でいられるように","cn":"希望能保持笑容度過 我這樣祈禱著","is_continuation":false},{"time":27.21,"jp_plain":"そっとお願いした","jp_ruby":"そっとお願(ねが)いした","cn":"希望能保持笑容度過 我這樣祈禱著","is_continuation":true},{"time":31.79,"jp_plain":"時には雨も降って","jp_ruby":"時(とき)には雨(あめ)も降(ふ)って","cn":"即使有時會下雨 偶爾還會落淚","is_continuation":false},{"time":36.02,"jp_plain":"涙も溢れるけど","jp_ruby":"涙(なみだ)も溢(あふ)れるけど","cn":"即使有時會下雨 偶爾還會落淚","is_continuation":true},{"time":40.52,"jp_plain":"思い通りにならない日は","jp_ruby":"思(おも)い通(どお)りにならない日(ひ)は","cn":"即使今天沒辦法順心如意 明天再好好加油吧","is_continuation":false},{"time":45.3,"jp_plain":"明日 頑張ろう","jp_ruby":"明日(あした) 頑張(がんば)ろう","cn":"即使今天沒辦法順心如意 明天再好好加油吧","is_continuation":true},{"time":50.23,"jp_plain":"ずっと見てる夢は","jp_ruby":"ずっと見(み)てる夢(ゆめ)は","cn":"在時常做的夢中 我已孤身一人","is_continuation":false},{"time":54.45,"jp_plain":"私がもう一人いて","jp_ruby":"私(わたし)がもう一人(ひとり)いて","cn":"在時常做的夢中 我已孤身一人","is_continuation":true},{"time":59,"jp_plain":"やりたいこと 好きなように","jp_ruby":"やりたいこと 好(す)きなように","cn":"盡情去做我所想 自由自在的夢","is_continuation":false},{"time":63.22,"jp_plain":"自由にできる夢","jp_ruby":"自由(じゆう)にできる夢(ゆめ)","cn":"盡情去做我所想 自由自在的夢","is_continuation":true},{"time":67.22,"jp_plain":"人生は紙飛行機","jp_ruby":"人生(じんせい)は紙飛行機(かみひこうき)","cn":"人生就像紙飛機 載著希望往前飛","is_continuation":false},{"time":71.55,"jp_plain":"願い乗せて飛んで行くよ","jp_ruby":"願(ねが)い乗(の)せて飛(と)んで行(ゆ)くよ","cn":"人生就像紙飛機 載著希望往前飛","is_continuation":true},{"time":76.82,"jp_plain":"風の中を力の限り","jp_ruby":"風(かぜ)の中(なか)を力(ちから)の限(かぎ)り","cn":"在風中竭盡全力 只是為了往前進","is_continuation":false},{"time":81.66,"jp_plain":"ただ進むだけ","jp_ruby":"ただ進(すす)むだけ","cn":"在風中竭盡全力 只是為了往前進","is_continuation":true},{"time":85.3,"jp_plain":"その距離を競うより","jp_ruby":"その距離(きょり)を競(きそ)うより","cn":"比起競爭飛的多遠 以怎樣的方式飛 飛到哪裡","is_continuation":false},{"time":89.69,"jp_plain":"どう飛んだか どこを飛んだのか","jp_ruby":"どう飛(と)んだか どこを飛(と)んだのか","cn":"比起競爭飛的多遠 以怎樣的方式飛 飛到哪裡","is_continuation":true},{"time":94.75,"jp_plain":"それが一番 大切なんだ","jp_ruby":"それが一番(いちばん) 大切(たいせつ)なんだ","cn":"那些才是最重要的 那麼就 隨心所向吧 在365日中","is_continuation":false},{"time":99.58,"jp_plain":"さあ 心のままに 365日","jp_ruby":"さあ 心(こころ)のままに 365日(にち)","cn":"那些才是最重要的 那麼就 隨心所向吧 在365日中","is_continuation":true},{"time":122.49,"jp_plain":"星はいくつ見えるか","jp_ruby":"星(ほし)はいくつ見(み)えるか","cn":"在只看得到幾顆星星 或是什麼都看不到的夜晚","is_continuation":false},{"time":126.65,"jp_plain":"何も見えない夜か","jp_ruby":"何(なに)も見(み)えない夜(よる)か","cn":"在只看得到幾顆星星 或是什麼都看不到的夜晚","is_continuation":true},{"time":131.14,"jp_plain":"元気が出ない そんな時は","jp_ruby":"元気(げんき)が出(で)ない そんな時(とき)は","cn":"打不起精神的那個時候 去找個人說說話吧","is_continuation":false},{"time":135.94,"jp_plain":"誰かと話そう","jp_ruby":"誰(だれ)かと話(はな)そう","cn":"打不起精神的那個時候 去找個人說說話吧","is_continuation":true},{"time":140.74,"jp_plain":"人は思うよりも","jp_ruby":"人(ひと)は思(おも)うよりも","cn":"人並不像想像中 一個人孤零零的","is_continuation":false},{"time":145.04,"jp_plain":"一人ぼっちじゃないんだ","jp_ruby":"一人(ひとり)ぼっちじゃないんだ","cn":"人並不像想像中 一個人孤零零的","is_continuation":true},{"time":149.57999999999998,"jp_plain":"すぐそばのやさしさに","jp_ruby":"すぐそばのやさしさに","cn":"只是沒有發現 那近在身邊的溫柔","is_continuation":false},{"time":153.74,"jp_plain":"気づかずにいるだけ","jp_ruby":"気(き)づかずにいるだけ","cn":"只是沒有發現 那近在身邊的溫柔","is_continuation":true},{"time":157.72,"jp_plain":"人生は紙飛行機","jp_ruby":"人生(じんせい)は紙飛行機(かみひこうき)","cn":"人生就像紙飛機 載著希望往前飛","is_continuation":true},{"time":162.07,"jp_plain":"愛を乗せて飛んでいるよ","jp_ruby":"愛(あい)を乗(の)せて飛(と)んでいるよ","cn":"人生就像紙飛機 承載著愛往前飛","is_continuation":false},{"time":167.32,"jp_plain":"自信持って広げる羽根を","jp_ruby":"自信(じしん)持(も)って広(ひろ)げる羽根(はね)を","cn":"大家都抬頭仰望著 帶著自信展開的羽翼","is_continuation":false},{"time":172.12,"jp_plain":"みんなが見上げる","jp_ruby":"みんなが見上(みあ)げる","cn":"大家都抬頭仰望著 帶著自信展開的羽翼","is_continuation":true},{"time":175.94,"jp_plain":"折り方を知らなくても","jp_ruby":"折(お)り方(かた)を知(し)らなくても","cn":"就算是不知道折法 不知不覺中也變得能飛起來","is_continuation":false},{"time":180.16,"jp_plain":"いつのまにか飛ばせるようになる","jp_ruby":"いつのまにか飛(と)ばせるようになる","cn":"就算是不知道折法 不知不覺中也變得能飛起來","is_continuation":true},{"time":185.57,"jp_plain":"それが希望 推進力だ","jp_ruby":"それが希望(きぼう) 推進力(すいしんりょく)だ","cn":"那就是希望 就是推進力 啊啊 好好享受吧 在365日中","is_continuation":false},{"time":190.49,"jp_plain":"楽しくやろう 365日","jp_ruby":"楽(たの)しくやろう 365日(にち)","cn":"那就是希望 就是推進力 啊啊 好好享受吧 在365日中","is_continuation":true},{"time":216.57999999999998,"jp_plain":"人生は紙飛行機","jp_ruby":"人生(じんせい)は紙飛行機(かみひこうき)","cn":"人生就像紙飛機 載著希望往前飛","is_continuation":true},{"time":220.82,"jp_plain":"願い乗せて飛んで行くよ","jp_ruby":"願(ねが)い乗(の)せて飛(と)んで行(ゆ)くよ","cn":"人生就像紙飛機 載著希望往前飛","is_continuation":true},{"time":226.12,"jp_plain":"風の中を力の限り","jp_ruby":"風(かぜ)の中(なか)を力(ちから)の限(かぎ)り","cn":"在風中竭盡全力 只是為了往前進","is_continuation":true},{"time":230.98,"jp_plain":"ただ進むだけ","jp_ruby":"ただ進(すす)むだけ","cn":"在風中竭盡全力 只是為了往前進","is_continuation":true},{"time":234.68,"jp_plain":"その距離を競うより","jp_ruby":"その距離(きょり)を競(きそ)うより","cn":"比起競爭飛的多遠 以怎樣的方式飛 飛到哪裡","is_continuation":true},{"time":238.9,"jp_plain":"どう飛んだか どこを飛んだのか","jp_ruby":"どう飛(と)んだか どこを飛(と)んだのか","cn":"比起競爭飛的多遠 以怎樣的方式飛 飛到哪裡","is_continuation":true},{"time":244.2,"jp_plain":"それが一番 大切なんだ","jp_ruby":"それが一番(いちばん) 大切(たいせつ)なんだ","cn":"那些才是最重要的 那麼就 隨心所向吧 在365日中","is_continuation":true},{"time":249.06,"jp_plain":"さあ 心のままに 365日","jp_ruby":"さあ 心(こころ)のままに 365日(にち)","cn":"那些才是最重要的 那麼就 隨心所向吧 在365日中","is_continuation":true},{"time":261.13,"jp_plain":"飛んで行け！ 飛んでみよう！","jp_ruby":"飛(と)んで行(ゆ)け！ 飛(と)んでみよう！","cn":"","is_continuation":false},{"time":265.66,"jp_plain":"飛んで行け！ 飛んでみよう！","jp_ruby":"飛(と)んで行(ゆ)け！ 飛(と)んでみよう！","cn":"","is_continuation":false},{"time":270.02,"jp_plain":"飛んで行け！ 飛んでみよう！","jp_ruby":"飛(と)んで行(ゆ)け！ 飛(と)んでみよう！","cn":"","is_continuation":false}]
+};
+
+const SONG_4_DATA = {
+  title: "恋するフォーチュンクッキー",
+  artist: "AKB48",
+  duration: 269.02,
+  lines: [{"time":24.04,"jp_plain":"あなたのことが好きなのに","jp_ruby":"あなたのことが好(す)きなのに","cn":"明明我是這麼喜歡你 但你卻對我完全沒興趣","is_continuation":false},{"time":28,"jp_plain":"私にまるで興味ない","jp_ruby":"私(わたし)にまるで興味(きょうみ)ない","cn":"明明我是這麼喜歡你 但你卻對我完全沒興趣","is_continuation":true},{"time":31.9,"jp_plain":"何度目かの失恋の準備","jp_ruby":"何度目(なんどめ)かの失恋(しつれん)の準備(じゅんび)","cn":"又要準備迎接N次的失戀","is_continuation":false},{"time":37.72,"jp_plain":"Yeah! Yeah! Yeah!","jp_ruby":"Yeah! Yeah! Yeah!","cn":"","is_continuation":false},{"time":39.72,"jp_plain":"まわりを見れば大勢の","jp_ruby":"まわりを見(み)れば大勢(おおぜい)の","cn":"環顧四周發現 有好多可愛的女孩在","is_continuation":false},{"time":43.73,"jp_plain":"可愛いコたちがいるんだもん","jp_ruby":"可愛(かわい)いコたちがいるんだもん","cn":"環顧四周發現 有好多可愛的女孩在","is_continuation":true},{"time":47.69,"jp_plain":"地味な花は気づいてくれない","jp_ruby":"地味(じみ)な花(はな)は気(き)づいてくれない","cn":"你一定不會留意這個平凡的我吧","is_continuation":false},{"time":53.58,"jp_plain":"Yeah! Yeah! Yeah!","jp_ruby":"Yeah! Yeah! Yeah!","cn":"","is_continuation":true},{"time":56.27,"jp_plain":"カフェテリア流れるMusic","jp_ruby":"カフェテリア流(なが)れるMusic","cn":"咖啡店裡播放著音樂 呆呆地聽著","is_continuation":false},{"time":60.25,"jp_plain":"ぼんやり聴いていたら","jp_ruby":"ぼんやり聴(き)いていたら","cn":"咖啡店裡播放著音樂 呆呆地聽著","is_continuation":true},{"time":64,"jp_plain":"知らぬ間にリズムに合わせ","jp_ruby":"知(し)らぬ間(ま)にリズムに合(あ)わせ","cn":"不知不覺間跟上了節奏 從趾尖開始動起來","is_continuation":false},{"time":67.73,"jp_plain":"つま先から動き出す","jp_ruby":"つま先(さき)から動(うご)き出(だ)す","cn":"不知不覺間跟上了節奏 從趾尖開始動起來","is_continuation":true},{"time":71.24,"jp_plain":"止められない今の気持ち","jp_ruby":"止(と)められない今(いま)の気持(きも)ち","cn":"這份心情無法抑止","is_continuation":false},{"time":75.36,"jp_plain":"Come on, come on, come on, come on, baby","jp_ruby":"Come on, come on, come on, come on, baby","cn":"","is_continuation":false},{"time":77.89,"jp_plain":"占ってよ","jp_ruby":"占(うらな)ってよ","cn":"來占卜吧","is_continuation":false},{"time":79.88,"jp_plain":"恋するフォーチュンクッキー！","jp_ruby":"恋(こい)するフォーチュンクッキー！","cn":"","is_continuation":false},{"time":83.7,"jp_plain":"未来は そんな悪くないよ","jp_ruby":"未来(みらい)は そんな悪(わる)くないよ","cn":"未來 並沒有那麼壞","is_continuation":false},{"time":88.28999999999999,"jp_plain":"Hey-hey-hey!","jp_ruby":"Hey-hey-hey!","cn":"","is_continuation":false},{"time":90.16,"jp_plain":"ツキを呼ぶには 笑顔を見せること","jp_ruby":"ツキを呼(よ)ぶには 笑顔(えがお)を見(み)せること","cn":"想呼喚幸運的話 需要展露笑容","is_continuation":false},{"time":95.64,"jp_plain":"ハートのフォーチュンクッキー","jp_ruby":"ハートのフォーチュンクッキー","cn":"心上的幸運餅乾","is_continuation":false},{"time":99.59,"jp_plain":"運勢 今日よりもよくしよう","jp_ruby":"運勢(うんせい) 今日(きょう)よりもよくしよう","cn":"希望今天的運氣會好一點","is_continuation":false},{"time":103.99000000000001,"jp_plain":"Hey-hey-hey! Hey-hey-hey!","jp_ruby":"Hey-hey-hey! Hey-hey-hey!","cn":"","is_continuation":false},{"time":108.83,"jp_plain":"人生捨てたもんじゃないよね","jp_ruby":"人生(じんせい)捨(す)てたもんじゃないよね","cn":"人生也沒有那麼糟糕吧","is_continuation":false},{"time":112.5,"jp_plain":"あっと驚く奇跡が起きる","jp_ruby":"あっと驚(おどろ)く奇跡(きせき)が起(お)きる","cn":"可能在不經意間就會發生驚訝的奇蹟","is_continuation":false},{"time":116.56,"jp_plain":"あなたとどこかで愛し合える予感","jp_ruby":"あなたとどこかで愛(あい)し合(あ)える予感(よかん)","cn":"也許會和你在某處相愛的預感","is_continuation":false},{"time":128.39,"jp_plain":"あなたにちゃんと告りたい","jp_ruby":"あなたにちゃんと告(こく)りたい","cn":"好想將自己的心事告訴你 但是就是對自己沒有信心","is_continuation":false},{"time":132.28,"jp_plain":"だけど自分に自信ない","jp_ruby":"だけど自分(じぶん)に自信(じしん)ない","cn":"好想將自己的心事告訴你 但是就是對自己沒有信心","is_continuation":true},{"time":136.19,"jp_plain":"リアクションは想像つくから","jp_ruby":"リアクションは想像(そうぞう)つくから","cn":"因為我已經想像到你的反應","is_continuation":false},{"time":142.14,"jp_plain":"Yeah! Yeah! Yeah!","jp_ruby":"Yeah! Yeah! Yeah!","cn":"","is_continuation":true},{"time":144.7,"jp_plain":"性格いいコがいいなんて","jp_ruby":"性格(せいかく)いいコがいいなんて","cn":"喜歡的是性格好的女孩子 男孩們的嘴巴總是這樣說","is_continuation":false},{"time":148.72,"jp_plain":"男の子は言うけど","jp_ruby":"男(おとこ)の子(こ)は言(ゆ)うけど","cn":"喜歡的是性格好的女孩子 男孩們的嘴巴總是這樣說","is_continuation":true},{"time":152.69,"jp_plain":"ルックスがアドヴァンテージ","jp_ruby":"ルックスがアドヴァンテージ","cn":"到頭來 樣貌才是最優先的","is_continuation":false},{"time":156.31,"jp_plain":"いつだって可愛いコが","jp_ruby":"いつだって可愛(かわい)いコが","cn":"任何時候 可愛的孩子 都會成為人氣投票的第一位","is_continuation":false},{"time":159.72,"jp_plain":"人気投票一位になる","jp_ruby":"人気(にんき)投票(とうひょう)一位(いちい)になる","cn":"任何時候 可愛的孩子 都會成為人氣投票的第一位","is_continuation":true},{"time":163.9,"jp_plain":"Please, please, please, oh, baby","jp_ruby":"Please, please, please, oh, baby","cn":"","is_continuation":false},{"time":166.32999999999998,"jp_plain":"私も見て","jp_ruby":"私(わたし)も見(み)て","cn":"請看看我吧","is_continuation":false},{"time":168.35,"jp_plain":"恋するフォーチュンクッキー！","jp_ruby":"恋(こい)するフォーチュンクッキー！","cn":"","is_continuation":false},{"time":172.3,"jp_plain":"その殻 さあ壊してみよう","jp_ruby":"その殻(から) さあ壊(こわ)してみよう","cn":"這個外殼 快打破看看吧","is_continuation":false},{"time":176.72,"jp_plain":"Hey-hey-hey!","jp_ruby":"Hey-hey-hey!","cn":"","is_continuation":false},{"time":178.72,"jp_plain":"先の展開 神様も知らない","jp_ruby":"先(さき)の展開(てんかい) 神様(かみさま)も知(し)らない","cn":"之後的發展 連上天也不知曉","is_continuation":false},{"time":184.05,"jp_plain":"涙のフォーチュンクッキー","jp_ruby":"涙(なみだ)のフォーチュンクッキー","cn":"流淚的幸運餅乾","is_continuation":false},{"time":187.92,"jp_plain":"そんなにネガティブにならずに","jp_ruby":"そんなにネガティブにならずに","cn":"","is_continuation":false},{"time":192.56,"jp_plain":"Hey-hey-hey! Hey-hey-hey!","jp_ruby":"Hey-hey-hey! Hey-hey-hey!","cn":"","is_continuation":false},{"time":197.4,"jp_plain":"世界は愛で溢れているよ","jp_ruby":"世界(せかい)は愛(あい)で溢(あふ)れているよ","cn":"世界到處都是充滿著愛的","is_continuation":false},{"time":201.09,"jp_plain":"悲しい出来事忘れさせる","jp_ruby":"悲(かな)しい出来事(できごと)忘(わす)れさせる","cn":"讓人悲傷的事就忘記吧","is_continuation":false},{"time":204.95,"jp_plain":"明日は明日の風が吹くと思う","jp_ruby":"明日(あした)は明日(あした)の風(かぜ)が吹(ふ)くと思(おも)う","cn":"明天自會吹明天的風","is_continuation":false},{"time":222.98,"jp_plain":"Come on, come on, come on, come on, baby","jp_ruby":"Come on, come on, come on, come on, baby","cn":"","is_continuation":false},{"time":225.49,"jp_plain":"占ってよ","jp_ruby":"占(うらな)ってよ","cn":"來占卜吧","is_continuation":true},{"time":227.35,"jp_plain":"恋するフォーチュンクッキー！","jp_ruby":"恋(こい)するフォーチュンクッキー！","cn":"","is_continuation":false},{"time":231.34,"jp_plain":"未来は そんな悪くないよ","jp_ruby":"未来(みらい)は そんな悪(わる)くないよ","cn":"未來 並沒有那麼壞","is_continuation":true},{"time":235.74,"jp_plain":"Hey-hey-hey!","jp_ruby":"Hey-hey-hey!","cn":"","is_continuation":false},{"time":237.74,"jp_plain":"ツキを呼ぶには 笑顔を見せること","jp_ruby":"ツキを呼(よ)ぶには 笑顔(えがお)を見(み)せること","cn":"想呼喚幸運的話 需要展露笑容","is_continuation":true},{"time":243.14,"jp_plain":"ハートのフォーチュンクッキー","jp_ruby":"ハートのフォーチュンクッキー","cn":"心上的幸運餅乾","is_continuation":true},{"time":247.18,"jp_plain":"運勢 今日よりもよくしよう","jp_ruby":"運勢(うんせい) 今日(きょう)よりもよくしよう","cn":"希望今天的運氣會好一點","is_continuation":true},{"time":251.44,"jp_plain":"Hey-hey-hey! Hey-hey-hey!","jp_ruby":"Hey-hey-hey! Hey-hey-hey!","cn":"","is_continuation":false},{"time":256.41,"jp_plain":"人生捨てたもんじゃないよね","jp_ruby":"人生(じんせい)捨(す)てたもんじゃないよね","cn":"人生也沒有那麼糟糕吧","is_continuation":true},{"time":260.17,"jp_plain":"あっと驚く奇跡が起きる","jp_ruby":"あっと驚(おどろ)く奇跡(きせき)が起(お)きる","cn":"可能在不經意間就會發生驚訝的奇蹟","is_continuation":true},{"time":264.02,"jp_plain":"あなたとどこかで愛し合える予感","jp_ruby":"あなたとどこかで愛(あい)し合(あ)える予感(よかん)","cn":"也許會和你在某處相愛的預感","is_continuation":true}]
+};
+
+const ANDIMHOME_DATA = {
+  title: "And I'm home",
+  artist: "美樹さやか(CV: 喜多村英梨)、佐倉杏子(CV: 野中藍)",
+  duration: 160.59,
+  lines: [{"time":16.33,"jp_plain":"錆びついた心、","jp_ruby":"錆(さ)びついた心(こころ)、","cn":"滿佈鏽痕之心、在無聲世界裡、注視著什麼？","is_continuation":false},{"time":19.3,"jp_plain":"音もない世界、何を見てるの？","jp_ruby":"音(おと)もない世界(せかい)、何(なに)を見(み)てるの？","cn":"滿佈鏽痕之心、在無聲世界裡、注視著什麼？","is_continuation":true},{"time":24.52,"jp_plain":"またねを言える顔を探すよ","jp_ruby":"またねを言(い)える顔(かお)を探(さが)すよ","cn":"只是不斷重覆 尋找能道「再見」的臉龐罷了","is_continuation":false},{"time":29.13,"jp_plain":"それを繰り返すだけ","jp_ruby":"それを繰(く)り返(かえ)すだけ","cn":"只是不斷重覆 尋找能道「再見」的臉龐罷了","is_continuation":true},{"time":31.85,"jp_plain":"気付けばそこには","jp_ruby":"気付(きづ)けばそこには","cn":"回過神發現 有道獨自哭泣的背影","is_continuation":false},{"time":34.58,"jp_plain":"ひとりきりで泣く後ろ姿","jp_ruby":"ひとりきりで泣(な)く後(うし)ろ姿(すがた)","cn":"回過神發現 有道獨自哭泣的背影","is_continuation":true},{"time":38.88,"jp_plain":"辛いような、","jp_ruby":"辛(つら)いような、","cn":"痛苦、寂寞之地","is_continuation":false},{"time":40.48,"jp_plain":"寂しいような、場所","jp_ruby":"寂(さび)しいような、場所(ばしょ)","cn":"痛苦、寂寞之地","is_continuation":true},{"time":43.44,"jp_plain":"手を繋いでいたいんだ","jp_ruby":"手(て)を繋(つな)いでいたいんだ","cn":"想牽起妳的手","is_continuation":false},{"time":47.67,"jp_plain":"何度目の気持ちだろう","jp_ruby":"何度目(なんどめ)の気持(きも)ちだろう","cn":"這種感受是第幾次了呢","is_continuation":false},{"time":51.35,"jp_plain":"ここにある温もりは","jp_ruby":"ここにある温(ぬく)もりは","cn":"此處的溫暖","is_continuation":false},{"time":54.94,"jp_plain":"間違いでも構わない、傍にいること","jp_ruby":"間違(まちが)いでも構(かま)わない、傍(そば)にいること","cn":"即使是誤會也無所謂","is_continuation":false},{"time":62.82,"jp_plain":"涙の音、ため息の色","jp_ruby":"涙(なみだ)の音(おと)、ため息(いき)の色(いろ)","cn":"淚水的聲響、嘆息的色彩","is_continuation":false},{"time":66.84,"jp_plain":"今、確かめる現在地","jp_ruby":"今(いま)、確(たし)かめる現在地(げんざいち)","cn":"現在、確認妳就在身邊","is_continuation":false},{"time":71.47,"jp_plain":"冗談みたいな毎日","jp_ruby":"冗談(じょうだん)みたいな毎日(まいにち)","cn":"戲言般的每一天","is_continuation":false},{"time":75.39,"jp_plain":"見たい、見たい、未来","jp_ruby":"見(み)たい、見(み)たい、未来(みらい)","cn":"我想看見、想看見、這種未來","is_continuation":false},{"time":82.3,"jp_plain":"強がりの声も掠れたな、 と","jp_ruby":"強(つよ)がりの声(こえ)も掠(かす)れたな、 と","cn":"「逞強的聲音也沙啞了」說著、墜入夢鄉","is_continuation":false},{"time":86.8,"jp_plain":"夢に落ちるの","jp_ruby":"夢(ゆめ)に落(お)ちるの","cn":"「逞強的聲音也沙啞了」說著、墜入夢鄉","is_continuation":true},{"time":89.69,"jp_plain":"抱えた膝、","jp_ruby":"抱(かか)えた膝(ひざ)、","cn":"緊抱雙膝、彷彿一落下視線","is_continuation":false},{"time":92.59,"jp_plain":"目を落とすと","jp_ruby":"目(め)を落(お)とすと","cn":"緊抱雙膝、彷彿一落下視線","is_continuation":true},{"time":93.03,"jp_plain":"すぐに崩れてしまいそうで","jp_ruby":"すぐに崩(くず)れてしまいそうで","cn":"就會立刻崩壞","is_continuation":false},{"time":96.74000000000001,"jp_plain":"このまま、このまま","jp_ruby":"このまま、このまま","cn":"就這樣、就這樣","is_continuation":false},{"time":99.99000000000001,"jp_plain":"ふたりきり駆け込む遠い出口、","jp_ruby":"ふたりきり駆(か)け込(こ)む遠(どお)い出口(でぐち)、","cn":"兩人一同奔向遠方的出口","is_continuation":false},{"time":104.47,"jp_plain":"まだ、期待しているの。","jp_ruby":"まだ、期待(きたい)しているの。","cn":"還懷抱著期望呢","is_continuation":false},{"time":107.75999999999999,"jp_plain":"さあ","jp_ruby":"さあ","cn":"來吧 讓我們相視而笑","is_continuation":false},{"time":108.68,"jp_plain":"笑って見つめ合うんだ","jp_ruby":"笑(わら)って見(み)つめ合(あ)うんだ","cn":"來吧 讓我們相視而笑","is_continuation":true},{"time":112.97999999999999,"jp_plain":"単純で無邪気な顔","jp_ruby":"単純(たんじゅん)で無邪気(むじゃき)な顔(かお)","cn":"單純無邪的表情下","is_continuation":false},{"time":116.57,"jp_plain":"くしゃくしゃの思い抱いて","jp_ruby":"くしゃくしゃの思(おも)い抱(だ)いて","cn":"懷抱著糾結的思緒","is_continuation":false},{"time":120.24,"jp_plain":"迷い込んだ場所さえ優しすぎて","jp_ruby":"迷(まよ)い込(こ)んだ場所(ばしょ)さえ優(やさ)しすぎて","cn":"卻連迷惘都太溫柔","is_continuation":false},{"time":128.26,"jp_plain":"何度でも名前を呼ぶよ","jp_ruby":"何度(なんど)でも名前(なまえ)を呼(よ)ぶよ","cn":"無論幾次 我都會呼喚妳的名","is_continuation":false},{"time":132.01,"jp_plain":"不確かな未来でも","jp_ruby":"不確(ふたし)かな未来(みらい)でも","cn":"即使在無法確知的未來","is_continuation":false},{"time":135.66,"jp_plain":"離せないもの、思うだけ心が痛いよ","jp_ruby":"離(はな)せないもの、思(おも)うだけ心(こころ)が痛(いた)いよ","cn":"也不分離、因為光是思念就會心痛呀","is_continuation":false},{"time":143.6,"jp_plain":"ここにいるよ","jp_ruby":"ここにいるよ","cn":"在這裡 在這裡","is_continuation":false},{"time":145.28,"jp_plain":"ここにいるよ","jp_ruby":"ここにいるよ","cn":"在這裡 在這裡","is_continuation":true},{"time":147.4,"jp_plain":"帰る場所はここだよ","jp_ruby":"帰(かえ)る場所(ばしょ)はここだよ","cn":"歸宿就是這裡哦？","is_continuation":false},{"time":152.89,"jp_plain":"いつだって変わらない","jp_ruby":"いつだって変(か)わらない","cn":"遺留下 永恆不變的思念","is_continuation":false},{"time":155.59,"jp_plain":"思いを残すの","jp_ruby":"思(おも)いを残(のこ)すの","cn":"遺留下 永恆不變的思念","is_continuation":true}]
+};
+
+const BLUESYMPHONY_DATA = {
+  title: "Blue Symphony",
+  artist: "如月千早（CV: 今井麻美）、北沢志保（CV: 雨宮天）、田中琴葉（CV: 種田梨沙）、所恵美（CV: 藤井ゆきよ）",
+  duration: 5,
+  lines: [{"time":0,"jp_plain":"青に染まる 音の行方 輝きだす歌が聴こえる","jp_ruby":"青(あお)に染(そ)まる 音(おと)の行方(ゆくえ) 輝(かがや)きだす歌(うた)が聴(き)こえる","cn":"拂染上蒼藍 在聲音的去處 聽到那開始閃耀的歌聲嗎?","is_continuation":false},{"time":0,"jp_plain":"どこまでも続く 五線譜の軌跡","jp_ruby":"どこまでも続(つづ)く 五線譜(ごせんふ)の軌跡(きせき)","cn":"無論哪裡也延續著 五線譜的軌跡","is_continuation":false},{"time":0,"jp_plain":"breathtaking... 息をのんだ 空の美しさに","jp_ruby":"breathtaking... 息(いき)をのんだ 空(そら)の美(うつく)しさに","cn":"","is_continuation":false},{"time":0,"jp_plain":"戸惑う心が透き通ってく","jp_ruby":"戸惑(とまど)う心(こころ)が透(す)き通(とお)ってく","cn":"躊躇的心豁然變得開朗","is_continuation":false},{"time":0,"jp_plain":"symphony かさなりあう 今がその時だよ","jp_ruby":"symphony かさなりあう 今(いま)がその時(とき)だよ","cn":"交響樂重重積疊 此刻正是時機","is_continuation":false},{"time":0,"jp_plain":"さあ、顔をあげなくちゃダメさ","jp_ruby":"さあ、顔(かお)をあげなくちゃダメさ","cn":"來吧，不抬起臉來可不行哦","is_continuation":false},{"time":0,"jp_plain":"この声でどこまで飛ぼうか 果てしない夢","jp_ruby":"この声(こえ)でどこまで飛(と)ぼうか 果(は)てしない夢(ゆめ)","cn":"這道聲音到底能傳達到多遠?在這無盡的願望之下","is_continuation":false},{"time":0,"jp_plain":"信じる翼 チカラをください","jp_ruby":"信(しん)じる翼(つばさ) チカラをください","cn":"我所信任的羽翼 請賜於我力量","is_continuation":false},{"time":0,"jp_plain":"高 く高 く 祈 る鼓動  羽 ばたいて！わたし達 の歌","jp_ruby":"高(たか) く高(たか) く 祈(いの) る鼓動(こどう)  羽(は) ばたいて！わたし達(たち) の歌(うた)","cn":"","is_continuation":false},{"time":0,"jp_plain":"確かな旋律が 雲を突き抜けていくの","jp_ruby":"確(たし)かな旋律(せんりつ)が 雲(くも)を突(つ)き抜(ぬ)けていくの","cn":"純正的旋律 突破雲霄穿越遠去","is_continuation":false},{"time":0,"jp_plain":"青に染まる 音の行方 輝きだす歌が聴こえる","jp_ruby":"青(あお)に染(そ)まる 音(おと)の行方(ゆくえ) 輝(かがや)きだす歌(うた)が聴(き)こえる","cn":"拂染上蒼藍 在聲音的去處 聽到那開始閃耀的歌聲嗎?","is_continuation":true},{"time":0,"jp_plain":"耳に触れたのは アザヤカな風のエコー","jp_ruby":"耳(みみ)に触(ふ)れたのは アザヤカな風(かぜ)のエコー","cn":"撫觸著雙耳的 是清靈的風之和奏","is_continuation":false},{"time":0,"jp_plain":"あなたの空へと響かせて Spread our wings","jp_ruby":"あなたの空(そら)へと響(ひび)かせて Spread our wings","cn":"朝向你所在的天空響奏 開展我們的羽翼","is_continuation":false},{"time":0,"jp_plain":"breath for us 感じるたび 胸が熱くなって","jp_ruby":"breath for us 感(かん)じるたび 胸(むね)が熱(あつ)くなって","cn":"我們的呼息 每當感受 胸口就沸熱起來","is_continuation":false},{"time":0,"jp_plain":"知らない自分になった気がした","jp_ruby":"知(し)らない自分(じぶん)になった気(き)がした","cn":"意識到成為了不曾知曉的自己","is_continuation":false},{"time":0,"jp_plain":"だけど、気づいたから ちゃんと、わかったから","jp_ruby":"だけど、気(き)づいたから ちゃんと、わかったから","cn":"但正因為意識到 內心裡清楚理解","is_continuation":false},{"time":0,"jp_plain":"そうだ... これは魔法なんかじゃない","jp_ruby":"そうだ... これは魔法(まほう)なんかじゃない","cn":"","is_continuation":false},{"time":0,"jp_plain":"あなたから貰った全部を 可能性にしよう","jp_ruby":"あなたから貰(もら)った全部(ぜんぶ)を 可能性(かのうせい)にしよう","cn":"將你所授予的全部 盡用這些可能性","is_continuation":false},{"time":0,"jp_plain":"負けない翼 証明するの","jp_ruby":"負(ま)けない翼(つばさ) 証明(しょうめい)するの","cn":"此為不敗之羽翼 我會將其證明","is_continuation":false},{"time":0,"jp_plain":"遠く遠く 響き渡れ 強さと儚さの狭間で","jp_ruby":"遠(とお)く遠(とお)く 響(ひび)き渡(わた)れ 強(つよ)さと儚(はかな)さの狭間(はざま)で","cn":"遼遠迢遙的 和奏響徹強大和脆弱的狹縫","is_continuation":false},{"time":0,"jp_plain":"自由な旋律が わたし達の今日と呼べる","jp_ruby":"自由(じゆう)な旋律(せんりつ)が わたし達(たち)の今日(きょう)と呼(よ)べる","cn":"自由的旋律 是我們今天所呼喚的","is_continuation":false},{"time":0,"jp_plain":"叫ぶように 撫でるように 羽ばたきだす歌が聴こえる","jp_ruby":"叫(さけ)ぶように 撫(な)でるように 羽(は)ばたきだす歌(うた)が聴(き)こえる","cn":"如呼喊那樣 如撫碰那樣 聽到那展翅高翔的歌聲嗎?","is_continuation":false},{"time":0,"jp_plain":"クリアな心で 共鳴しあう世界","jp_ruby":"クリアな心(こころ)で 共鳴(きょうめい)しあう世界(せかい)","cn":"與清透內心所共鳴的世界","is_continuation":false},{"time":0,"jp_plain":"どこまでも続く 五線譜の軌跡","jp_ruby":"どこまでも続(つづ)く 五線譜(ごせんふ)の軌跡(きせき)","cn":"無論哪裡也延續著 五線譜的軌跡","is_continuation":true},{"time":0,"jp_plain":"高 く高 く 祈 る鼓動  羽 ばたいて！わたし達 の歌","jp_ruby":"高(たか) く高(たか) く 祈(いの) る鼓動(こどう)  羽(は) ばたいて！わたし達(たち) の歌(うた)","cn":"","is_continuation":false},{"time":0,"jp_plain":"確かな旋律が 雲を突き抜けていくの","jp_ruby":"確(たし)かな旋律(せんりつ)が 雲(くも)を突(つ)き抜(ぬ)けていくの","cn":"純正的旋律 突破雲霄穿越遠去","is_continuation":true},{"time":0,"jp_plain":"青に染まる 音の行方 輝きだす歌が聴こえる","jp_ruby":"青(あお)に染(そ)まる 音(おと)の行方(ゆくえ) 輝(かがや)きだす歌(うた)が聴(き)こえる","cn":"拂染上蒼藍 在聲音的去處 聽到那開始閃耀的歌聲嗎?","is_continuation":true},{"time":0,"jp_plain":"耳に触れたのは アザヤカな風のエコー","jp_ruby":"耳(みみ)に触(ふ)れたのは アザヤカな風(かぜ)のエコー","cn":"撫觸著雙耳的 是清靈的風之和奏","is_continuation":true},{"time":0,"jp_plain":"あなたの空へと響かせて Spread our wings","jp_ruby":"あなたの空(そら)へと響(ひび)かせて Spread our wings","cn":"朝向你所在的天空響奏 開展我們的羽翼","is_continuation":true}]
+};
+
+const SONG_5_DATA = {
+  title: "風になる",
+  artist: "つじあやの",
+  duration: 220.34,
+  lines: [{"time":17.56,"jp_plain":"忘れていた目を閉じて 取り戻せ 恋のうた","jp_ruby":"忘(わす)れていた目(め)を閉(と)じて 取(と)り戻(もど)せ 恋(こい)のうた","cn":"閉上遺忘的雙眼 取回那首戀愛之歌","is_continuation":false},{"time":27.42,"jp_plain":"青空に隠れている 手を伸ばしてもう一度","jp_ruby":"青空(あおぞら)に隠(かく)れている 手(て)を伸(の)ばしてもう一度(いちど)","cn":"隱藏在藍天之中 再一次伸出雙手","is_continuation":false},{"time":34.23,"jp_plain":"忘れないで すぐそばに僕がいる いつの日も","jp_ruby":"忘(わす)れないで すぐそばに僕(ぼく)がいる いつの日(ひ)も","cn":"不要忘記 無論何時我都會在你身邊","is_continuation":false},{"time":41.75,"jp_plain":"星空を眺めている 一人きりの夜明けも","jp_ruby":"星空(ほしぞら)を眺(なが)めている 一人(ひとり)きりの夜明(よあ)けも","cn":"凝望著星空 即使在孤獨一人的黎明","is_continuation":false},{"time":48.5,"jp_plain":"たった一つの心 悲しみに暮れないで","jp_ruby":"たった一(ひと)つの心(こころ) 悲(かな)しみに暮(く)れないで","cn":"僅有的一顆心 別讓它沉浸在悲傷裡","is_continuation":false},{"time":55.91,"jp_plain":"君のためいきなんて 春風に変えてやる","jp_ruby":"君(きみ)のためいきなんて 春風(はるかぜ)に変(か)えてやる","cn":"我會將你的嘆息 化作春風","is_continuation":false},{"time":63.04,"jp_plain":"陽のあたる坂道を 自転車で駆けのぼる","jp_ruby":"陽(ひ)のあたる坂道(さかみち)を 自転車(じてんしゃ)で駆(か)けのぼる","cn":"騎著自行車 奔上灑滿陽光的坡道","is_continuation":false},{"time":70.1,"jp_plain":"君と失くした想い出乗せて行くよ","jp_ruby":"君(きみ)と失(な)くした想(おも)い出(で)乗(の)せて行(ゆ)くよ","cn":"載著與你逝去的往日回憶前行","is_continuation":false},{"time":77.64,"jp_plain":"ラララララ 口ずさむ くちびるを染めて行く","jp_ruby":"ラララララ 口(くち)ずさむ くちびるを染(そ)めて行(ゆ)く","cn":"啦啦啦啦啦 輕聲哼唱 嘴唇漸漸染上了色彩","is_continuation":false},{"time":85.02,"jp_plain":"君と見つけたしあわせ花のように","jp_ruby":"君(きみ)と見(み)つけたしあわせ花(はな)のように","cn":"如同與你一同發現的幸福之花","is_continuation":false},{"time":94.07,"jp_plain":"忘れていた窓開けて 走り出せ恋のうた","jp_ruby":"忘(わす)れていた窓(まど)開(あ)けて 走(はし)り出(だ)せ恋(こい)のうた","cn":"打開遺忘的窗戶 奔跑吧 戀歌","is_continuation":false},{"time":100.41,"jp_plain":"青空に託している 手をかざしてもう一度","jp_ruby":"青空(あおぞら)に託(たく)している 手(て)をかざしてもう一度(いちど)","cn":"寄託於藍天之中 再次將手高舉","is_continuation":false},{"time":107.63,"jp_plain":"忘れないよ すぐそばに君がいる いつの日も","jp_ruby":"忘(わす)れないよ すぐそばに君(きみ)がいる いつの日(ひ)も","cn":"不會忘記 你一直都在我身邊 無論何時","is_continuation":false},{"time":114.92,"jp_plain":"星空に輝いてる 涙揺れる明日も","jp_ruby":"星空(ほしぞら)に輝(かがや)いてる 涙(なみだ)揺(ゆ)れる明日(あした)も","cn":"在星空中閃耀著 淚光搖曳的明天也是","is_continuation":false},{"time":121.83,"jp_plain":"たった一つの言葉 この胸に抱きしめて","jp_ruby":"たった一(ひと)つの言葉(ことば) この胸(むね)に抱(だ)きしめて","cn":"僅有的一句話 緊緊擁抱在懷中","is_continuation":false},{"time":128.91,"jp_plain":"君のため僕は今 春風に吹かれてる","jp_ruby":"君(きみ)のため僕(ぼく)は今(いま) 春風(はるかぜ)に吹(ふ)かれてる","cn":"為了你 我現在正被春風吹拂著","is_continuation":false},{"time":135.94,"jp_plain":"陽のあたる坂道を 自転車で駆けのぼる","jp_ruby":"陽(ひ)のあたる坂道(さかみち)を 自転車(じてんしゃ)で駆(か)けのぼる","cn":"騎著自行車 奔上灑滿陽光的坡道","is_continuation":true},{"time":143.49,"jp_plain":"君と誓った約束乗せて行くよ","jp_ruby":"君(きみ)と誓(ちか)った約束(やくそく)乗(の)せて行(ゆ)くよ","cn":"載著與你許下的承諾前行","is_continuation":false},{"time":150.1,"jp_plain":"ラララララ 口ずさむ くちびるを染めて行く","jp_ruby":"ラララララ 口(くち)ずさむ くちびるを染(そ)めて行(ゆ)く","cn":"啦啦啦啦啦 輕聲哼唱 嘴唇漸漸染上了色彩","is_continuation":true},{"time":157.88,"jp_plain":"君と出会えたしあわせ祈るように","jp_ruby":"君(きみ)と出会(であ)えたしあわせ祈(いの)るように","cn":"如同祈禱著與你相遇的幸福","is_continuation":false},{"time":164.88,"jp_plain":"陽のあたる坂道を 自転車で駆けのぼる","jp_ruby":"陽(ひ)のあたる坂道(さかみち)を 自転車(じてんしゃ)で駆(か)けのぼる","cn":"騎著自行車 奔上灑滿陽光的坡道","is_continuation":true},{"time":193.55,"jp_plain":"君と誓った約束乗せて行くよ","jp_ruby":"君(きみ)と誓(ちか)った約束(やくそく)乗(の)せて行(ゆ)くよ","cn":"載著與你許下的承諾前行","is_continuation":true},{"time":200.14,"jp_plain":"ラララララ 口ずさむ くちびるを染めて行く","jp_ruby":"ラララララ 口(くち)ずさむ くちびるを染(そ)めて行(ゆ)く","cn":"啦啦啦啦啦 輕聲哼唱 嘴唇漸漸染上了色彩","is_continuation":true},{"time":208.29,"jp_plain":"君と出会えたしあわせ祈るように","jp_ruby":"君(きみ)と出会(であ)えたしあわせ祈(いの)るように","cn":"如同祈禱著與你相遇的幸福","is_continuation":true},{"time":215.34,"jp_plain":"君と出会えたしあわせ祈るように","jp_ruby":"君(きみ)と出会(であ)えたしあわせ祈(いの)るように","cn":"如同祈禱著與你相遇的幸福","is_continuation":true}]
+};
+
+const GODKNOWS_DATA = {
+  title: "God knows...",
+  artist: "涼宮ハルヒ (CV.平野 綾)",
+  duration: 243.82999999999998,
+  lines: [{"time":27.81,"jp_plain":"渇いた心で駆け抜ける","jp_ruby":"渇(かわ)いた心(こころ)で駆(か)け抜(ぬ)ける","cn":"懷抱乾渴的心奔跑著","is_continuation":false},{"time":33.73,"jp_plain":"ごめんね何もできなくて","jp_ruby":"ごめんね何(なに)もできなくて","cn":"對不起唷 什麼也都無法完成","is_continuation":false},{"time":40.21,"jp_plain":"痛みを分かち合うことさえ","jp_ruby":"痛(いた)みを分(わ)かち合(あ)うことさえ","cn":"連分享痛苦這種事情","is_continuation":false},{"time":46.57,"jp_plain":"あなたは許してくれない","jp_ruby":"あなたは許(ゆる)してくれない","cn":"你都不允許","is_continuation":false},{"time":52.39,"jp_plain":"無垢に生きるため振り向かず","jp_ruby":"無垢(むく)に生(い)きるため振(ふ)り向(む)かず","cn":"為了活在純潔世界，絕不回望","is_continuation":false},{"time":59.49,"jp_plain":"背中向けて 去ってしまう","jp_ruby":"背中(せなか)向(む)けて 去(さ)ってしまう","cn":"在荒涼的鐵道上互相背對著離去","is_continuation":false},{"time":62.29,"jp_plain":"On the lonely rail","jp_ruby":"On the lonely rail","cn":"","is_continuation":false},{"time":65.02,"jp_plain":"私ついていくよ","jp_ruby":"私(わたし)ついていくよ","cn":"我緊追著你","is_continuation":false},{"time":67.34,"jp_plain":"どんな辛い世界の闇の中でさえ","jp_ruby":"どんな辛(つら)い世界(せかい)の闇(やみ)の中(なか)でさえ","cn":"即使在如此艱辛的黑暗世界中","is_continuation":false},{"time":72.49,"jp_plain":"きっとあなたは輝いて","jp_ruby":"きっとあなたは輝(かがや)いて","cn":"你都能閃耀光輝","is_continuation":false},{"time":77.45,"jp_plain":"超える未来の果て","jp_ruby":"超(こ)える未来(みらい)の果(は)て","cn":"直到未來的那天","is_continuation":false},{"time":79.95,"jp_plain":"弱さ故に魂こわされぬように","jp_ruby":"弱(よわ)さ故(ゆえ)に魂(たましい)こわされぬように","cn":"為了軟弱不使心靈崩潰","is_continuation":false},{"time":85.1,"jp_plain":"my way 重なるよ","jp_ruby":"my way 重(かさ)なるよ","cn":"踏上相同的路途","is_continuation":false},{"time":88.59,"jp_plain":"いまふたりに God bless...","jp_ruby":"いまふたりに God bless...","cn":"","is_continuation":false},{"time":120.42,"jp_plain":"届けて熱くなる想いは","jp_ruby":"届(とど)けて熱(あつ)くなる想(おも)いは","cn":"傳達這熱切的思念","is_continuation":false},{"time":126.58,"jp_plain":"現実溶かしてさまよう","jp_ruby":"現実(げんじつ)溶(と)かしてさまよう","cn":"現實融化徬徨","is_continuation":false},{"time":132.96,"jp_plain":"会いたい気持ちに理由はない","jp_ruby":"会(あ)いたい気持(きも)ちに理由(りゆう)はない","cn":"想見你的心情無可言喻","is_continuation":false},{"time":139.43,"jp_plain":"あなたへあふれだす lovin' you","jp_ruby":"あなたへあふれだす lovin' you","cn":"","is_continuation":false},{"time":145.31,"jp_plain":"せめて美しい夢だけを","jp_ruby":"せめて美(うつく)しい夢(ゆめ)だけを","cn":"至少只有美麗的夢","is_continuation":false},{"time":152.12,"jp_plain":"描きながら 追いかけよう","jp_ruby":"描(えが)きながら 追(お)いかけよう","cn":"一邊描繪 一邊追趕著","is_continuation":false},{"time":155.19,"jp_plain":"For your lonely heart","jp_ruby":"For your lonely heart","cn":"","is_continuation":false},{"time":157.68,"jp_plain":"やめて嘘はあなたらしくないよ","jp_ruby":"やめて嘘(うそ)はあなたらしくないよ","cn":"別再說不像妳會說的謊言","is_continuation":false},{"time":161.65,"jp_plain":"目を見てこれからのことを話そう","jp_ruby":"目(め)を見(み)てこれからのことを話(はな)そう","cn":"彼此注視著討論今後的事情","is_continuation":false},{"time":166.64,"jp_plain":"私覚悟してる","jp_ruby":"私(わたし)覚悟(かくご)してる","cn":"我做好了覺悟","is_continuation":false},{"time":170.41,"jp_plain":"暗い未来だって","jp_ruby":"暗(くら)い未来(みらい)だって","cn":"就算是黯淡的未來","is_continuation":false},{"time":172.95,"jp_plain":"強くなって運命変えられるかもね","jp_ruby":"強(つよ)くなって運命(うんめい)変(か)えられるかもね","cn":"強烈到也許會改變命運","is_continuation":false},{"time":177.9,"jp_plain":"my wish かなえたいのに","jp_ruby":"my wish かなえたいのに","cn":"雖然希望願望會實現","is_continuation":false},{"time":182.98,"jp_plain":"すべては God knows...","jp_ruby":"すべては God knows...","cn":"","is_continuation":false},{"time":187.56,"jp_plain":"あなたがいて 私がいて","jp_ruby":"あなたがいて 私(わたし)がいて","cn":"有妳之後 有我之後","is_continuation":false},{"time":192.98,"jp_plain":"ほかの人は消えてしまった","jp_ruby":"ほかの人(ひと)は消(き)えてしまった","cn":"等到其他人消失之後","is_continuation":false},{"time":198.94,"jp_plain":"淡い夢の美しさを描きながら","jp_ruby":"淡(あわ)い夢(ゆめ)の美(うつく)しさを描(えが)きながら","cn":"一邊描繪著些許美麗的夢","is_continuation":false},{"time":208.78,"jp_plain":"傷跡なぞる","jp_ruby":"傷跡(きずあと)なぞる","cn":"撫平傷痕","is_continuation":false},{"time":213.42000000000002,"jp_plain":"だから私ついていくよ","jp_ruby":"だから私(わたし)ついていくよ","cn":"所以 我緊追著妳","is_continuation":false},{"time":217.75,"jp_plain":"どんな辛い世界の闇の中でさえ","jp_ruby":"どんな辛(つら)い世界(せかい)の闇(やみ)の中(なか)でさえ","cn":"即使在如此艱辛的黑暗世界中","is_continuation":true},{"time":222.76,"jp_plain":"きっとあなたは輝いて","jp_ruby":"きっとあなたは輝(かがや)いて","cn":"你都能閃耀光輝","is_continuation":true},{"time":227.91,"jp_plain":"超える未来の果て","jp_ruby":"超(こ)える未来(みらい)の果(は)て","cn":"直到未來的那天","is_continuation":true},{"time":230.45,"jp_plain":"弱さ故に魂こわされぬように","jp_ruby":"弱(よわ)さ故(ゆえ)に魂(たましい)こわされぬように","cn":"為了軟弱不使心靈崩潰","is_continuation":true},{"time":235.65,"jp_plain":"my way 重なるよ","jp_ruby":"my way 重(かさ)なるよ","cn":"踏上相同的路途","is_continuation":true},{"time":238.82999999999998,"jp_plain":"いまふたりに God bless...","jp_ruby":"いまふたりに God bless...","cn":"","is_continuation":false}]
+};
+
+const SONG_6_DATA = {
+  title: "それが声優!",
+  artist: "Earphones",
+  duration: 258.45,
+  lines: [{"time":6.01,"jp_plain":"「Hi! Hi! 道なき道を Go! Go! どこまでも」","jp_ruby":"「Hi! Hi! 道(みち)なき道(みち)を Go! Go! どこまでも」","cn":"「Hi! Hi! 前方未知的道路上 Go!Go! 不管到何處」","is_continuation":false},{"time":12.22,"jp_plain":"手が届くのか誰にも分からない 自分次第 だからこそ 決めました","jp_ruby":"手(て)が届(とど)くのか誰(だれ)にも分(わ)からない 自分(じぶん)次第(しだい) だからこそ 決(き)めました","cn":"不知是誰能伸出援手 下次自己 一定能夠 做出選擇","is_continuation":false},{"time":25.35,"jp_plain":"はーい!勉強と仕事どっちも大切です","jp_ruby":"はーい!勉強(べんきょう)と仕事(しごと)どっちも大切(たいせつ)です","cn":"是! 念書和工作都會重視","is_continuation":false},{"time":28.97,"jp_plain":"演技は大好き でも実は","jp_ruby":"演技(えんぎ)は大好(だいす)き でも実(じつ)は","cn":"喜歡演戲 但實際上","is_continuation":false},{"time":31.94,"jp_plain":"人前に立つのはちょっと苦手 私の個性ってなんですか?","jp_ruby":"人前(ひとまえ)に立(た)つのはちょっと苦手(にがて) 私(わたし)の個性(こせい)ってなんですか?","cn":"在別人面前展現有點害怕 對於我的個性有什麼看法?","is_continuation":false},{"time":38.21,"jp_plain":"だけど 度胸は人一倍","jp_ruby":"だけど 度胸(どきょう)は人一倍(ひといちばい)","cn":"只是 勇氣有多一倍","is_continuation":false},{"time":40.88,"jp_plain":"ホントはしっかり者 でもそれは内緒なの かわいくとぼけさせて","jp_ruby":"ホントはしっかり者(もの) でもそれは内緒(ないしょ)なの かわいくとぼけさせて","cn":"是個真正有把握的人 但這要保密 展現可愛又傻呼呼一面","is_continuation":false},{"time":50.26,"jp_plain":"私は声優","jp_ruby":"私(わたし)は声優(せいゆう)","cn":"我是位聲優","is_continuation":false},{"time":55.89,"jp_plain":"行こう 未来はこの手でつかむんだ","jp_ruby":"行(い)こう 未来(みらい)はこの手(て)でつかむんだ","cn":"出發吧 這雙手上掌握未來","is_continuation":false},{"time":59.35,"jp_plain":"行こう 自己責任で決めるんだ","jp_ruby":"行(い)こう 自己(じこ)責任(せきにん)で決(き)めるんだ","cn":"出發吧 負責自己選擇的決定","is_continuation":false},{"time":62.42,"jp_plain":"どんな試練やってきても 自分をいつも信じて","jp_ruby":"どんな試練(しれん)やってきても 自分(じぶん)をいつも信(しん)じて","cn":"不論什麼試煉都去嘗試 一直相信著自己","is_continuation":false},{"time":68.16,"jp_plain":"目指せ 世間の荒波なんのその","jp_ruby":"目指(めざ)せ 世間(せけん)の荒波(あらなみ)なんのその","cn":"朝向吧 不論遇到世間有著什麼曲折","is_continuation":false},{"time":71.78,"jp_plain":"目指せ さすらいの人生ギャンブラー","jp_ruby":"目指(めざ)せ さすらいの人生(じんせい)ギャンブラー","cn":"朝向吧 隨波逐流的人生浪人","is_continuation":false},{"time":75.02,"jp_plain":"喉だけはおだいじに","jp_ruby":"喉(のど)だけはおだいじに","cn":"僅有喉嚨是最重要的","is_continuation":false},{"time":78,"jp_plain":"すもももももももものうち すもももももももものうち","jp_ruby":"すもももももももものうち すもももももももものうち","cn":"那個微笑甜美的我 那個微笑甜美的我","is_continuation":false},{"time":81.2,"jp_plain":"笑え 叫べ 歌え それが声優! いざススメ","jp_ruby":"笑(わら)え 叫(さけ)べ 歌(うた)え それが声優(せいゆう)! いざススメ","cn":"微笑吧 大喊吧 歌唱吧 那就是聲優! 向前邁進吧","is_continuation":false},{"time":87.8,"jp_plain":"「Hi! Hi! あすはどっちだ! ? Go! Go! わかりません」","jp_ruby":"「Hi! Hi! あすはどっちだ! ? Go! Go! わかりません」","cn":"","is_continuation":false},{"time":93.7,"jp_plain":"茨の道だとしても 逃げないで進みたい 紆余曲折 どんとこい","jp_ruby":"茨(いばら)の道(みち)だとしても 逃(に)げないで進(すす)みたい 紆余曲折(うよきょくせつ) どんとこい","cn":"不管多艱苦的路 決不逃避繼續往前 不論多少曲折的事 都放馬過來","is_continuation":false},{"time":106.74000000000001,"jp_plain":"はーい!前のめりです 常にいちご・いちごで","jp_ruby":"はーい!前(まえ)のめりです 常(つね)にいちご・いちごで","cn":"是!前向衝刺 總是甜甜蜜蜜 在這當中","is_continuation":false},{"time":110.61,"jp_plain":"そうよ私はおひめさま","jp_ruby":"そうよ私(わたし)はおひめさま","cn":"我就是公主","is_continuation":false},{"time":113.55,"jp_plain":"ピンクのフリルに包まれて かわいい笑顔で勝負です","jp_ruby":"ピンクのフリルに包(つつ)まれて かわいい笑顔(えがお)で勝負(しょうぶ)です","cn":"包覆在這甜美的蛋糕 用這份可愛地笑容決勝負","is_continuation":false},{"time":119.53999999999999,"jp_plain":"でもね ホントは頑張り屋さん","jp_ruby":"でもね ホントは頑張(がんば)り屋(や)さん","cn":"但是呢 真的是一位努力家","is_continuation":false},{"time":122.24,"jp_plain":"キャリアは10年です だけどまだ15歳 お仕事がんばります","jp_ruby":"キャリアは10年(ねん)です だけどまだ15歳(さい) お仕事(しごと)がんばります","cn":"歷經10年 但仍還是15歲 努力地工作","is_continuation":false},{"time":131.71,"jp_plain":"私は声優","jp_ruby":"私(わたし)は声優(せいゆう)","cn":"我是位聲優","is_continuation":true},{"time":137.21,"jp_plain":"泣くな 何度オーディションに落ちても","jp_ruby":"泣(な)くな 何度(なんど)オーディションに落(お)ちても","cn":"別哭呢 不論面試幾次都失敗","is_continuation":false},{"time":140.87,"jp_plain":"泣くな バイトばかりの生活も","jp_ruby":"泣(な)くな バイトばかりの生活(せいかつ)も","cn":"別哭吧 在這每日工作的生活中","is_continuation":false},{"time":143.87,"jp_plain":"予想つかない明日なら 楽しむしかないサバイバル","jp_ruby":"予想(よそう)つかない明日(あした)なら 楽(たの)しむしかないサバイバル","cn":"即使無法預期的明天的話 也只好帶著微笑的生活下去","is_continuation":false},{"time":149.85,"jp_plain":"引くな ボーナス? それ食べ物ですか?","jp_ruby":"引(ひ)くな ボーナス? それ食(た)べ物(もの)ですか?","cn":"振作吧 獎狀? 這能吃嗎?","is_continuation":false},{"time":153.11,"jp_plain":"引くな フリーダム 自営のマイノリティー","jp_ruby":"引(ひ)くな フリーダム 自営(じえい)のマイノリティー","cn":"振作吧 自由吧 自己是稀有的存在","is_continuation":false},{"time":156.54,"jp_plain":"領収書くださいな","jp_ruby":"領収書(りょうしゅうしょ)くださいな","cn":"請給我領取證書","is_continuation":false},{"time":159.3,"jp_plain":"新人歌手新春シャンソンショー 新人歌手新春シャンソンショー","jp_ruby":"新人(しんじん)歌手(かしゅ)新春(しんしゅん)シャンソンショー 新人(しんじん)歌手(かしゅ)新春(しんしゅん)シャンソンショー","cn":"新人歌手的新春舞台 新人歌手的新春舞台","is_continuation":false},{"time":162.71,"jp_plain":"笑え 叫べ 歌え それが声優! いざススメ","jp_ruby":"笑(わら)え 叫(さけ)べ 歌(うた)え それが声優(せいゆう)! いざススメ","cn":"微笑吧 大喊吧 歌唱吧 那就是聲優! 向前邁進吧","is_continuation":true},{"time":170.93,"jp_plain":"「Hi! Hi! I・YA・HON・ZU! 」","jp_ruby":"「Hi! Hi! I・YA・HON・ZU! 」","cn":"","is_continuation":false},{"time":181.57,"jp_plain":"人生は甘くない 夢だけじゃ生きていけないよ","jp_ruby":"人生(じんせい)は甘(あま)くない 夢(ゆめ)だけじゃ生(い)きていけないよ","cn":"人生並不是美好 只抱有著夢想是活不下去的","is_continuation":false},{"time":190.92,"jp_plain":"だけどどんなに無謀な賭けでも やっぱり大好き","jp_ruby":"だけどどんなに無謀(むぼう)な賭(か)けでも やっぱり大好(だいす)き","cn":"不過不論毫無計畫性的也賭下去 這樣的我也不賴","is_continuation":false},{"time":203.06,"jp_plain":"さあ準備です 台本 のどあめ アクセント辞典","jp_ruby":"さあ準備(じゅんび)です 台本(だいほん) のどあめ アクセント辞典(じてん)","cn":"已經準備好了 劇本 輕咳喉嚨 照著口音念","is_continuation":false},{"time":211.8,"jp_plain":"向かいましょう スタジオへ!","jp_ruby":"向(む)かいましょう スタジオへ!","cn":"前往走向工作室去吧!","is_continuation":false},{"time":224.79,"jp_plain":"行こう 未来はこの手でつかむんだ","jp_ruby":"行(い)こう 未来(みらい)はこの手(て)でつかむんだ","cn":"出發吧 這雙手上掌握未來","is_continuation":true},{"time":228.51,"jp_plain":"行こう 自己責任で決めるんだ","jp_ruby":"行(い)こう 自己(じこ)責任(せきにん)で決(き)めるんだ","cn":"出發吧 負責自己選擇的決定","is_continuation":true},{"time":231.64,"jp_plain":"どんな試練やってきても 自分をいつも信じて","jp_ruby":"どんな試練(しれん)やってきても 自分(じぶん)をいつも信(しん)じて","cn":"不論什麼試煉都去嘗試 一直相信著自己","is_continuation":true},{"time":237.55,"jp_plain":"めざせ 世間の荒波なんのその","jp_ruby":"めざせ 世間(せけん)の荒波(あらなみ)なんのその","cn":"朝向吧 不論遇到世間有著什麼曲折","is_continuation":false},{"time":240.86,"jp_plain":"めざせ さすらいの人生ギャンブラー","jp_ruby":"めざせ さすらいの人生(じんせい)ギャンブラー","cn":"朝向吧 隨波逐流的人生浪人","is_continuation":false},{"time":244.15,"jp_plain":"喉だけはおだいじに","jp_ruby":"喉(のど)だけはおだいじに","cn":"僅有喉嚨是最重要的","is_continuation":true},{"time":247.1,"jp_plain":"庭には二羽鶏がいる 庭には二羽鶏がいる","jp_ruby":"庭(にわ)には二羽(にわ)鶏(にわとり)がいる 庭(にわ)には二羽(にわ)鶏(にわとり)がいる","cn":"有兩隻雞在庭院中 有兩隻雞在庭院中","is_continuation":false},{"time":250.24,"jp_plain":"隣の竹やぶ竹立てかけた 隣の竹やぶ竹立てかけた","jp_ruby":"隣(となり)の竹(たけ)やぶ竹(たけ)立(た)てかけた 隣(となり)の竹(たけ)やぶ竹(たけ)立(た)てかけた","cn":"靠在竹林邊休息著  靠在竹林邊休息著","is_continuation":false},{"time":253.45,"jp_plain":"笑え 叫べ 歌え それが声優! いざススメ","jp_ruby":"笑(わら)え 叫(さけ)べ 歌(うた)え それが声優(せいゆう)! いざススメ","cn":"微笑吧 大喊吧 歌唱吧 那就是聲優! 向前邁進吧","is_continuation":true}]
+};
+
+const THEREISAREAS_DATA = {
+  title: "THERE IS A REASON",
+  artist: "Konomi Suzuki",
+  duration: 263.51,
+  lines: [{"time":15.03,"jp_plain":"どこから話せばいいんだろう","jp_ruby":"どこから話(はな)せばいいんだろう","cn":"該從哪裡說起才好呢","is_continuation":false},{"time":19.09,"jp_plain":"待ちくたびれても","jp_ruby":"待(ま)ちくたびれても","cn":"即使等到疲憊不堪","is_continuation":false},{"time":22.39,"jp_plain":"終わりだなんて言わせないから","jp_ruby":"終(お)わりだなんて言(い)わせないから","cn":"也絕不會讓你說出結束這種話","is_continuation":false},{"time":29.39,"jp_plain":"書きなぐった無意識の衝動をつれて","jp_ruby":"書(か)きなぐった無意識(むいしき)の衝動(しょうどう)をつれて","cn":"帶著隨手寫下的無意識衝動","is_continuation":false},{"time":35.36,"jp_plain":"何もかも壊したら","jp_ruby":"何(なに)もかも壊(こわ)したら","cn":"如果將一切都破壞 就從不可能開始吧","is_continuation":false},{"time":37.76,"jp_plain":"不可能を始めればいいんだ","jp_ruby":"不可能(ふかのう)を始(はじ)めればいいんだ","cn":"如果將一切都破壞 就從不可能開始吧","is_continuation":true},{"time":44.53,"jp_plain":"There's a reason that we came across in this world","jp_ruby":"There's a reason that we came across in this world","cn":"我們在這個世界相遇是有原因的","is_continuation":false},{"time":55.24,"jp_plain":"There's a reason that we caught the magnetic wave","jp_ruby":"There's a reason that we caught the magnetic wave","cn":"我們捕捉到磁場波動是有原因的","is_continuation":false},{"time":61.34,"jp_plain":"傷つけ合う世界はどこへ","jp_ruby":"傷(きず)つけ合(あ)う世界(せかい)はどこへ","cn":"互相傷害的世界要往哪裡去","is_continuation":false},{"time":68.02,"jp_plain":"So 愛のために泣けるのは","jp_ruby":"So 愛(あい)のために泣(な)けるのは","cn":"所以 能為愛而哭泣 是因為你在那裡","is_continuation":false},{"time":72.17,"jp_plain":"君がそこにいるから","jp_ruby":"君(きみ)がそこにいるから","cn":"所以 能為愛而哭泣 是因為你在那裡","is_continuation":true},{"time":76.28,"jp_plain":"君だけを呼び続けるから","jp_ruby":"君(きみ)だけを呼(よ)び続(つづ)けるから","cn":"因為我會一直呼喚著你","is_continuation":false},{"time":82.8,"jp_plain":"愛のために歌うのは","jp_ruby":"愛(あい)のために歌(うた)うのは","cn":"為了愛而歌唱 然後一起活下去","is_continuation":false},{"time":86.44,"jp_plain":"そして共に生き抜く事","jp_ruby":"そして共(とも)に生(い)き抜(ぬ)く事(こと)","cn":"為了愛而歌唱 然後一起活下去","is_continuation":true},{"time":91.7,"jp_plain":"ずっと 君と","jp_ruby":"ずっと 君(きみ)と","cn":"永遠與你","is_continuation":false},{"time":101.07,"jp_plain":"青色した空と波ひとつない鏡のような","jp_ruby":"青色(あおいろ)した空(そら)と波(なみ)ひとつない鏡(かがみ)のような","cn":"望著藍色的天空和如鏡面般沒有一絲波瀾的大海","is_continuation":false},{"time":112.86,"jp_plain":"海を見てた","jp_ruby":"海(うみ)を見(み)てた","cn":"望著藍色的天空和如鏡面般沒有一絲波瀾的大海","is_continuation":true},{"time":115.07,"jp_plain":"どんな場所にいたって","jp_ruby":"どんな場所(ばしょ)にいたって","cn":"無論身在何處 無論變成什麼樣子","is_continuation":false},{"time":117.07,"jp_plain":"どんな形になって","jp_ruby":"どんな形(かたち)になって","cn":"無論身在何處 無論變成什麼樣子","is_continuation":true},{"time":118.63,"jp_plain":"どんな時代にいたって","jp_ruby":"どんな時代(じだい)にいたって","cn":"無論身處哪個時代 我都會找到你","is_continuation":false},{"time":120.2,"jp_plain":"見つけ出す","jp_ruby":"見(み)つけ出(だ)す","cn":"無論身處哪個時代 我都會找到你","is_continuation":true},{"time":121.33,"jp_plain":"じゃあ やりますか？","jp_ruby":"じゃあ やりますか？","cn":"","is_continuation":false},{"time":123.2,"jp_plain":"宙吊りにした運命に逆らって","jp_ruby":"宙吊(ちゅうづ)りにした運命(さだめ)に逆(さか)らって","cn":"那麼，開始吧? 反抗那懸而未決的命運","is_continuation":false},{"time":130.52,"jp_plain":"There's a reason that we came across in this world","jp_ruby":"There's a reason that we came across in this world","cn":"我們在這個世界相遇是有原因的","is_continuation":true},{"time":141.23,"jp_plain":"There's a reason that we caught the magnetic wave","jp_ruby":"There's a reason that we caught the magnetic wave","cn":"我們捕捉到磁場波動是有原因的","is_continuation":true},{"time":147.34,"jp_plain":"引き寄せ会う 二人はどこへ","jp_ruby":"引(ひ)き寄(よ)せ会(あ)う 二人(ふたり)はどこへ","cn":"互相吸引的兩人要往哪裡去","is_continuation":false},{"time":154.14,"jp_plain":"So 愛のために進むのは","jp_ruby":"So 愛(あい)のために進(すす)むのは","cn":"所以 為愛而前進 是因為和你在這裡","is_continuation":false},{"time":158.11,"jp_plain":"君とここにいるから","jp_ruby":"君(きみ)とここにいるから","cn":"所以 為愛而前進 是因為和你在這裡","is_continuation":true},{"time":162.36,"jp_plain":"僕だけが君を守るから","jp_ruby":"僕(ぼく)だけが君(きみ)を守(まも)るから","cn":"因為只有我會守護你","is_continuation":false},{"time":168.88,"jp_plain":"愛のために願うのは","jp_ruby":"愛(あい)のために願(ねが)うのは","cn":"為愛而祈願 然後不傷害任何人","is_continuation":false},{"time":172.46,"jp_plain":"そして誰も傷つけずに","jp_ruby":"そして誰(だれ)も傷(きず)つけずに","cn":"為愛而祈願 然後不傷害任何人","is_continuation":true},{"time":177.79,"jp_plain":"ずっと となりで","jp_ruby":"ずっと となりで","cn":"","is_continuation":false},{"time":197.77,"jp_plain":"僕らは超えてゆく","jp_ruby":"僕(ぼく)らは超(こ)えてゆく","cn":"我們將超越所有的憎恨","is_continuation":false},{"time":200.95,"jp_plain":"すべての憎しみを","jp_ruby":"すべての憎(にく)しみを","cn":"我們將超越所有的憎恨","is_continuation":true},{"time":204.98,"jp_plain":"ニセモノの正義など棄ててしまえ","jp_ruby":"ニセモノの正義(せいぎ)など棄(す)ててしまえ","cn":"把那些虛假的正義都拋棄吧","is_continuation":false},{"time":214.84,"jp_plain":"So 愛のために泣けるのは","jp_ruby":"So 愛(あい)のために泣(な)けるのは","cn":"所以 能為愛而哭泣 是因為你在那裡","is_continuation":true},{"time":219.12,"jp_plain":"君がそこにいるから","jp_ruby":"君(きみ)がそこにいるから","cn":"所以 能為愛而哭泣 是因為你在那裡","is_continuation":true},{"time":222.82,"jp_plain":"We will always be together","jp_ruby":"We will always be together","cn":"我們將永遠在一起","is_continuation":false},{"time":233.68,"jp_plain":"愛の","jp_ruby":"愛(あい)の","cn":"所以 能為愛而哭泣 是因為你在那裡","is_continuation":true},{"time":235.37,"jp_plain":"愛のために進むのは","jp_ruby":"愛(あい)のために進(すす)むのは","cn":"所以 為愛而前進 是因為和你在這裡","is_continuation":true},{"time":238.64,"jp_plain":"君とここにいるから","jp_ruby":"君(きみ)とここにいるから","cn":"所以 為愛而前進 是因為和你在這裡","is_continuation":true},{"time":242.96,"jp_plain":"僕だけが君を守るから","jp_ruby":"僕(ぼく)だけが君(きみ)を守(まも)るから","cn":"因為只有我會守護你","is_continuation":true},{"time":249.55,"jp_plain":"愛のために願うのは","jp_ruby":"愛(あい)のために願(ねが)うのは","cn":"為愛而祈願 然後不傷害任何人","is_continuation":true},{"time":253.04,"jp_plain":"そして共に生き抜く事","jp_ruby":"そして共(とも)に生(い)き抜(ぬ)く事(こと)","cn":"為了愛而歌唱 然後一起活下去","is_continuation":true},{"time":258.51,"jp_plain":"ずっと We'll always be together","jp_ruby":"ずっと We'll always be together","cn":"永遠 我們將永遠在一起","is_continuation":false}]
+};
+
+const PERSONAL_DATA = {
+  title: "Personal",
+  artist: "上戸彩",
+  duration: 242.64,
+  lines: [{"time":11.09,"jp_plain":"ねぇ こんな事続けていても","jp_ruby":"ねぇ こんな事(こと)続(つづ)けていても","cn":"即使繼續著這種事情","is_continuation":false},{"time":16.38,"jp_plain":"幸せは見つかるのかな?","jp_ruby":"幸(しあわ)せは見(み)つかるのかな?","cn":"就可以找的到幸福嗎?","is_continuation":false},{"time":21.6,"jp_plain":"足りないもの数えてみても","jp_ruby":"足(た)りないもの数(かぞ)えてみても","cn":"即使數著不夠的東西","is_continuation":false},{"time":26.63,"jp_plain":"キリがないのわかってるよ","jp_ruby":"キリがないのわかってるよ","cn":"也知道是永無止盡的","is_continuation":false},{"time":31.91,"jp_plain":"シナリオ通りなんて","jp_ruby":"シナリオ通(どお)りなんて","cn":"像劇本一樣","is_continuation":false},{"time":37.11,"jp_plain":"上手くいくわけないから","jp_ruby":"上手(うま)くいくわけないから","cn":"順心的事是不可能的","is_continuation":false},{"time":41.98,"jp_plain":"時には全部 投げ出したくなる","jp_ruby":"時(とき)には全部(ぜんぶ) 投(な)げ出(だ)したくなる","cn":"有時候想要　把全部都拋開","is_continuation":false},{"time":47.41,"jp_plain":"そんな日があってもいいよね","jp_ruby":"そんな日(ひ)があってもいいよね","cn":"有這樣的日子也不錯吧","is_continuation":false},{"time":55.45,"jp_plain":"人は皆 臆病だから 夢を見るのかな?","jp_ruby":"人(ひと)は皆(みんな) 臆病(おくびょう)だから 夢(ゆめ)を見(み)るのかな?","cn":"人們都是懦弱的 所以才會作夢嗎?","is_continuation":false},{"time":65.85,"jp_plain":"人は皆 孤独だから 愛を探すのかな?","jp_ruby":"人(ひと)は皆(みんな) 孤独(こどく)だから 愛(あい)を探(さが)すのかな?","cn":"人們都是孤獨的 所以才會尋找愛嗎?","is_continuation":false},{"time":76.05,"jp_plain":"きっと違う場所で君も","jp_ruby":"きっと違(ちが)う場所(ばしょ)で君(きみ)も","cn":"你一定也在不同的地方","is_continuation":false},{"time":81.05,"jp_plain":"同じ月を見てるよね","jp_ruby":"同(おな)じ月(つき)を見(み)てるよね","cn":"看著同樣的月亮吧...","is_continuation":false},{"time":97.18,"jp_plain":"家路を急ぐ 流れる人込み","jp_ruby":"家路(いえじ)を急(いそ)ぐ 流(なが)れる人込(ひとご)み","cn":"在歸心似箭　川流的人群中","is_continuation":false},{"time":102.43,"jp_plain":"何処かで寄り道なんかして","jp_ruby":"何処(どこ)かで寄(よ)り道(みち)なんかして","cn":"哪裡才是我該走的路","is_continuation":false},{"time":107.53,"jp_plain":"なんてことない場所だっていいから","jp_ruby":"なんてことない場所(ばしょ)だっていいから","cn":"即使沒有這樣的地方也無妨","is_continuation":false},{"time":112.84,"jp_plain":"もう少し話してたいよ","jp_ruby":"もう少(すこ)し話(はな)してたいよ","cn":"想再跟你多說點話","is_continuation":false},{"time":117.89,"jp_plain":"楽しすぎる時ほど","jp_ruby":"楽(たの)しすぎる時(とき)ほど","cn":"快樂的時間","is_continuation":false},{"time":123.24,"jp_plain":"早く過ぎていくもの","jp_ruby":"早(はや)く過(す)ぎていくもの","cn":"總是過得很快","is_continuation":false},{"time":128.01,"jp_plain":"夜が近づく 静かな公園","jp_ruby":"夜(よる)が近(ちか)づく 静(しず)かな公園(こうえん)","cn":"接近夜晚　安靜的公園中","is_continuation":false},{"time":133.52,"jp_plain":"今日のぬくもり探してる","jp_ruby":"今日(きょう)のぬくもり探(さが)してる","cn":"找尋著今天的溫暖","is_continuation":false},{"time":141.54,"jp_plain":"何気ない言葉だって 大切にしたい","jp_ruby":"何気(なにげ)ない言葉(ことば)だって 大切(たいせつ)にしたい","cn":"即使是不經意說出的話 也想珍惜著","is_continuation":false},{"time":151.99,"jp_plain":"何気ない痛みだって ずっと守りたい","jp_ruby":"何気(なにげ)ない痛(いた)みだって ずっと守(まも)りたい","cn":"即使是不經意的疼痛 也想一直守護著","is_continuation":false},{"time":162.07999999999998,"jp_plain":"いつかきっとかけがえない","jp_ruby":"いつかきっとかけがえない","cn":"總有一天會變成","is_continuation":false},{"time":167.35,"jp_plain":"ものに変わる その日まで","jp_ruby":"ものに変(か)わる その日(ひ)まで","cn":"不可或缺的東西　到那天為止...","is_continuation":false},{"time":191.19,"jp_plain":"めぐりゆく季節の中","jp_ruby":"めぐりゆく季節(きせつ)の中(なか)","cn":"不斷流逝的季節中","is_continuation":false},{"time":196.14,"jp_plain":"淋しさに触れて","jp_ruby":"淋(さび)しさに触(ふ)れて","cn":"觸摸著寂寞","is_continuation":false},{"time":201.48,"jp_plain":"僕達は いつか本当の","jp_ruby":"僕達(ぼくたち)は いつか本当(ほんとう)の","cn":"我們　有一天一定會","is_continuation":false},{"time":206.77,"jp_plain":"愛しさ知るのだろう","jp_ruby":"愛(いと)しさ知(し)るのだろう","cn":"知道真正的愛吧...","is_continuation":false},{"time":211.85,"jp_plain":"人は皆 臆病だから 夢を見るのかな?","jp_ruby":"人(ひと)は皆(みんな) 臆病(おくびょう)だから 夢(ゆめ)を見(み)るのかな?","cn":"人們都是懦弱的 所以才會作夢嗎?","is_continuation":true},{"time":222.23,"jp_plain":"人は皆 孤独だから 愛を探すのかな?","jp_ruby":"人(ひと)は皆(みんな) 孤独(こどく)だから 愛(あい)を探(さが)すのかな?","cn":"人們都是孤獨的 所以才會尋找愛嗎?","is_continuation":true},{"time":232.35,"jp_plain":"きっと違う場所で君も","jp_ruby":"きっと違(ちが)う場所(ばしょ)で君(きみ)も","cn":"你一定也在不同的地方","is_continuation":true},{"time":237.64,"jp_plain":"同じ月を見てるよね","jp_ruby":"同(おな)じ月(つき)を見(み)てるよね","cn":"看著同樣的月亮吧...","is_continuation":true}]
+};
+
+const SONG_7_DATA = {
+  title: "光るなら",
+  artist: "Goose house",
+  duration: 230.68,
+  lines: [{"time":18.17,"jp_plain":"雨上がりの虹も","jp_ruby":"雨上(あめあ)がりの虹(にじ)も","cn":"雨後的彩虹 或是凜然綻放的花朵 都染上色彩溢散而出","is_continuation":false},{"time":21.16,"jp_plain":"凛と咲いた花も","jp_ruby":"凛(りん)と咲(さ)いた花(はな)も","cn":"雨後的彩虹 或是凜然綻放的花朵 都染上色彩溢散而出","is_continuation":true},{"time":24.25,"jp_plain":"色づき溢れ出す","jp_ruby":"色(いろ)づき溢(あふ)れ出(だ)す","cn":"雨後的彩虹 或是凜然綻放的花朵 都染上色彩溢散而出","is_continuation":true},{"time":30.23,"jp_plain":"茜色の空 仰ぐ君に","jp_ruby":"茜色(あかねいろ)の空(そら) 仰(あお)ぐ君(きみ)に","cn":"仰望茜色天空的你 那天 我墜入了愛河","is_continuation":false},{"time":35.75,"jp_plain":"あの日 恋に落ちた","jp_ruby":"あの日(ひ) 恋(こい)に落(お)ちた","cn":"仰望茜色天空的你 那天 我墜入了愛河","is_continuation":true},{"time":41.84,"jp_plain":"瞬間のドラマチック","jp_ruby":"瞬間(しゅんかん)のドラマチック","cn":"瞬間的戲劇性","is_continuation":false},{"time":44.6,"jp_plain":"フィルムの中の一コマも","jp_ruby":"フィルムの中(なか)の一(ひと)コマも","cn":"膠卷中的每一格都不會消逝的喔 因為已銘刻於心","is_continuation":false},{"time":47.86,"jp_plain":"消えないよ 心に","jp_ruby":"消(き)えないよ 心(こころ)に","cn":"膠卷中的每一格都不會消逝的喔 因為已銘刻於心","is_continuation":true},{"time":52.77,"jp_plain":"刻むから","jp_ruby":"刻(きざ)むから","cn":"膠卷中的每一格都不會消逝的喔 因為已銘刻於心","is_continuation":true},{"time":56.51,"jp_plain":"君だよ 君なんだよ","jp_ruby":"君(きみ)だよ 君(きみ)なんだよ","cn":"是你喔 就是你啊 教會了我","is_continuation":false},{"time":59.58,"jp_plain":"教えてくれた","jp_ruby":"教(おし)えてくれた","cn":"是你喔 就是你啊 教會了我","is_continuation":true},{"time":62.35,"jp_plain":"暗闇も光るなら","jp_ruby":"暗闇(くらやみ)も光(ひか)るなら","cn":"如果黑暗也能發光 便會成為星空","is_continuation":false},{"time":65.31,"jp_plain":"星空になる","jp_ruby":"星空(ほしぞら)になる","cn":"如果黑暗也能發光 便會成為星空","is_continuation":true},{"time":68.53,"jp_plain":"悲しみを笑顔に","jp_ruby":"悲(かな)しみを笑顔(えがお)に","cn":"將悲傷化作笑容 別再隱藏了","is_continuation":false},{"time":71.32,"jp_plain":"もう隠さないで","jp_ruby":"もう隠(かく)さないで","cn":"將悲傷化作笑容 別再隱藏了","is_continuation":true},{"time":74.57,"jp_plain":"煌めくどんな星も","jp_ruby":"煌(きら)めくどんな星(ほし)も","cn":"任何一顆閃爍的星 都會照耀著你","is_continuation":false},{"time":77.59,"jp_plain":"君を照らすから","jp_ruby":"君(きみ)を照(て)らすから","cn":"任何一顆閃爍的星 都會照耀著你","is_continuation":true},{"time":82.59,"jp_plain":"眠りも忘れて","jp_ruby":"眠(ねむ)りも忘(わす)れて","cn":"忘卻睡眠迎來的朝陽 格外刺眼","is_continuation":false},{"time":85.69,"jp_plain":"迎えた朝日が","jp_ruby":"迎(むか)えた朝日(あさひ)が","cn":"忘卻睡眠迎來的朝陽 格外刺眼","is_continuation":true},{"time":88.82,"jp_plain":"やたらと突き刺さる","jp_ruby":"やたらと突(つ)き刺(さ)さる","cn":"忘卻睡眠迎來的朝陽 格外刺眼","is_continuation":true},{"time":94.63,"jp_plain":"低気圧運ぶ 頭痛だって","jp_ruby":"低気圧(ていきあつ)運(はこ)ぶ 頭痛(ずつう)だって","cn":"連低氣壓帶來的頭痛 只要見到你 都會忘卻","is_continuation":false},{"time":100.18,"jp_plain":"忘れる 君に会えば","jp_ruby":"忘(わす)れる 君(きみ)に会(あ)えば","cn":"連低氣壓帶來的頭痛 只要見到你 都會忘卻","is_continuation":true},{"time":106.15,"jp_plain":"静寂はロマンティック","jp_ruby":"静寂(せいじゃく)はロマンティック","cn":"寂靜是浪漫的","is_continuation":false},{"time":109.24000000000001,"jp_plain":"紅茶に溶けたシュガーのように","jp_ruby":"紅茶(こうちゃ)に溶(と)けたシュガーのように","cn":"如同溶入紅茶的糖 你的聲音 遍布全身","is_continuation":false},{"time":112.4,"jp_plain":"全身に巡るよ 君の声","jp_ruby":"全身(ぜんしん)に巡(めぐ)るよ 君(きみ)の声(こえ)","cn":"如同溶入紅茶的糖 你的聲音 遍布全身","is_continuation":true},{"time":120.99,"jp_plain":"君だよ 君なんだよ","jp_ruby":"君(きみ)だよ 君(きみ)なんだよ","cn":"是你喔 就是你啊 教會了我","is_continuation":true},{"time":123.92,"jp_plain":"笑顔をくれた","jp_ruby":"笑顔(えがお)をくれた","cn":"是你喔 就是你啊 給了我笑容","is_continuation":false},{"time":127.18,"jp_plain":"涙も光るなら","jp_ruby":"涙(なみだ)も光(ひか)るなら","cn":"如果淚水也能發光 便會成為流星","is_continuation":false},{"time":129.85,"jp_plain":"流星になる","jp_ruby":"流星(りゅうせい)になる","cn":"如果淚水也能發光 便會成為流星","is_continuation":true},{"time":132.92,"jp_plain":"傷付いたその手を","jp_ruby":"傷付(きずつ)いたその手(て)を","cn":"別再放開那受傷的手","is_continuation":false},{"time":135.91,"jp_plain":"もう離さないで","jp_ruby":"もう離(はな)さないで","cn":"別再放開那受傷的手","is_continuation":true},{"time":138.93,"jp_plain":"願いを込めた空に","jp_ruby":"願(ねが)いを込(こ)めた空(そら)に","cn":"因為仰望著許願的天空 明天就會到來","is_continuation":false},{"time":141.9,"jp_plain":"明日が来るから","jp_ruby":"明日(あした)が来(く)るから","cn":"因為仰望著許願的天空 明天就會到來","is_continuation":true},{"time":146.98,"jp_plain":"導いてくれた 光は 君だよ","jp_ruby":"導(みちび)いてくれた 光(ひかり)は 君(きみ)だよ","cn":"引導著我的那道光 就是你啊 受你感染的我也跟著奔跑起來了","is_continuation":false},{"time":152.25,"jp_plain":"つられて僕も 走り出した","jp_ruby":"つられて僕(ぼく)も 走(はし)り出(だ)した","cn":"引導著我的那道光 就是你啊 受你感染的我也跟著奔跑起來了","is_continuation":true},{"time":157.64,"jp_plain":"知らぬ間に クロスし始めた","jp_ruby":"知(し)らぬ間(ま)に クロスし始(はじ)めた","cn":"不知不覺間 我們開始交錯 看吧 就是現在 若能在這裡閃耀","is_continuation":false},{"time":163.61,"jp_plain":"ほら 今だ ここで 光るなら","jp_ruby":"ほら 今(いま)だ ここで 光(ひか)るなら","cn":"不知不覺間 我們開始交錯 看吧 就是現在 若能在這裡閃耀","is_continuation":true},{"time":170.85,"jp_plain":"君だよ 君なんだよ","jp_ruby":"君(きみ)だよ 君(きみ)なんだよ","cn":"是你喔 就是你啊 教會了我","is_continuation":true},{"time":173.6,"jp_plain":"教えてくれた","jp_ruby":"教(おし)えてくれた","cn":"是你喔 就是你啊 教會了我","is_continuation":true},{"time":176.57999999999998,"jp_plain":"暗闇は終わるから","jp_ruby":"暗闇(くらやみ)は終(お)わるから","cn":"是你喔 就是你啊 告訴了我 黑暗終將會結束","is_continuation":false},{"time":182.56,"jp_plain":"君だよ 君なんだよ","jp_ruby":"君(きみ)だよ 君(きみ)なんだよ","cn":"是你喔 就是你啊 教會了我","is_continuation":true},{"time":185.58,"jp_plain":"教えてくれた","jp_ruby":"教(おし)えてくれた","cn":"是你喔 就是你啊 教會了我","is_continuation":true},{"time":188.54,"jp_plain":"暗闇も光るなら","jp_ruby":"暗闇(くらやみ)も光(ひか)るなら","cn":"如果黑暗也能發光 便會成為星空","is_continuation":true},{"time":191.58,"jp_plain":"星空になる","jp_ruby":"星空(ほしぞら)になる","cn":"如果黑暗也能發光 便會成為星空","is_continuation":true},{"time":194.42,"jp_plain":"悲しみを笑顔に","jp_ruby":"悲(かな)しみを笑顔(えがお)に","cn":"將悲傷化作笑容 別再隱藏了","is_continuation":true},{"time":197.45,"jp_plain":"もう隠さないで","jp_ruby":"もう隠(かく)さないで","cn":"將悲傷化作笑容 別再隱藏了","is_continuation":true},{"time":200.56,"jp_plain":"煌めくどんな星も","jp_ruby":"煌(きら)めくどんな星(ほし)も","cn":"任何一顆閃爍的星 都會照耀著你","is_continuation":true},{"time":203.41,"jp_plain":"君を照らすから","jp_ruby":"君(きみ)を照(て)らすから","cn":"任何一顆閃爍的星 都會照耀著你","is_continuation":true},{"time":208.05,"jp_plain":"答えはいつでも 偶然？ 必然？","jp_ruby":"答(こた)えはいつでも 偶然(ぐうぜん)？ 必然(ひつぜん)？","cn":"","is_continuation":false},{"time":213.35,"jp_plain":"いつか選んだ道こそ 運命になる","jp_ruby":"いつか選(えら)んだ道(みち)こそ 運命(うんめい)になる","cn":"曾經選擇的那條路 終將成為命運","is_continuation":false},{"time":220.13,"jp_plain":"握りしめたその希望も不安も","jp_ruby":"握(にぎ)りしめたその希望(きぼう)も不安(ふあん)も","cn":"緊緊握住的那份希望與不安","is_continuation":false},{"time":225.68,"jp_plain":"きっと二人を動かす 光になるから","jp_ruby":"きっと二人(ふたり)を動(うご)かす 光(ひかり)になるから","cn":"一定會成為推動兩人的光芒","is_continuation":false}]
+};
+
+const COLORS_DATA = {
+  title: "COLORS",
+  artist: "FLOW",
+  duration: 204.09,
+  lines: [{"time":8.95,"jp_plain":"自分を 世界さえも 変えてしまえそうな","jp_ruby":"自分(じぶん)を 世界(せかい)さえも 変(か)えてしまえそうな","cn":"彷彿能將自己 甚至整個世界都改變的","is_continuation":false},{"time":16.13,"jp_plain":"瞬間は 何時も直ぐ傍に","jp_ruby":"瞬間(しゅんかん)は 何時(いつ)も直(す)ぐ傍(そば)に","cn":"瞬間 總是在身邊…","is_continuation":false},{"time":23.93,"jp_plain":"隠せぬ苛立ちと 立ち尽くす自分を 見つめ","jp_ruby":"隠(かく)せぬ苛立(いらだ)ちと 立(た)ち尽(つ)くす自分(じぶん)を 見(み)つめ","cn":"凝視著無法隱藏的焦躁和佇立不前的自己","is_continuation":false},{"time":37.48,"jp_plain":"迷いながら 悩みながら","jp_ruby":"迷(まよ)いながら 悩(なや)みながら","cn":"迷惘也好 煩惱也罷 後悔也行 只要下定決心就好","is_continuation":false},{"time":41.05,"jp_plain":"悔やみながら 決めればいいさ","jp_ruby":"悔(く)やみながら 決(き)めればいいさ","cn":"迷惘也好 煩惱也罷 後悔也行 只要下定決心就好","is_continuation":true},{"time":44.45,"jp_plain":"君がくれた 言葉ひとつ 戸惑いは消え去り","jp_ruby":"君(きみ)がくれた 言葉(ことば)ひとつ 戸惑(とまど)いは消(き)え去(さ)り","cn":"因為你給的一句話 所有的困惑都煙消雲散","is_continuation":false},{"time":51.97,"jp_plain":"からっぽだった 僕の部屋に 光が射した","jp_ruby":"からっぽだった 僕(ぼく)の部屋(へや)に 光(ひかり)が射(さ)した","cn":"在我空無一物的房間裡 灑進了一道光芒","is_continuation":false},{"time":58.22,"jp_plain":"見上げた大空が 青く澄み切って行く","jp_ruby":"見上(みあ)げた大空(おおぞら)が 青(あお)く澄(す)み切(き)って行(ゆ)く","cn":"抬頭仰望的天空 逐漸變得清澈湛藍","is_continuation":false},{"time":65.61,"jp_plain":"閉ざした 窓を 開く事を決めた","jp_ruby":"閉(と)ざした 窓(まど)を 開(ひら)く事(こと)を決(き)めた","cn":"我決定要敞開那扇緊閉的窗","is_continuation":false},{"time":72.22,"jp_plain":"自分を 世界さえも 変えてしまえそうな","jp_ruby":"自分(じぶん)を 世界(せかい)さえも 変(か)えてしまえそうな","cn":"彷彿能將自己 甚至整個世界都改變的","is_continuation":true},{"time":79.74,"jp_plain":"瞬間は いつも直ぐそばに…","jp_ruby":"瞬間(しゅんかん)は いつも直(す)ぐそばに…","cn":"瞬間 總是在身邊…","is_continuation":false},{"time":87.26,"jp_plain":"満たせぬ日常に 在るはずの答えを 探して","jp_ruby":"満(み)たせぬ日常(にちじょう)に 在(あ)るはずの答(こた)えを 探(さが)して","cn":"在無法滿足的日常中 尋找著理應存在的答案","is_continuation":false},{"time":129.22,"jp_plain":"朝陽に独り 柔らかな声に 振り向けば","jp_ruby":"朝陽(あさひ)に独(ひと)り 柔(やわ)らかな声(こえ)に 振(ふ)り向(む)けば","cn":"清晨的陽光中 我獨自一人 聽到柔和的聲音而回首","is_continuation":false},{"time":135.72,"jp_plain":"眩い陽射しの中 ふと君が微笑む","jp_ruby":"眩(まばゆ)い陽射(ひざ)しの中(なか) ふと君(きみ)が微笑(ほほえ)む","cn":"在耀眼的陽光中 你不經意地微笑了","is_continuation":false},{"time":143.13,"jp_plain":"閉ざした 窓が 開きそうになる","jp_ruby":"閉(と)ざした 窓(まど)が 開(ひら)きそうになる","cn":"那扇緊閉的窗 彷彿即將被敞開","is_continuation":false},{"time":149.61,"jp_plain":"自分を 世界さえも 変えてしまえそうな","jp_ruby":"自分(じぶん)を 世界(せかい)さえも 変(か)えてしまえそうな","cn":"彷彿能將自己 甚至整個世界都改變的","is_continuation":true},{"time":157.57,"jp_plain":"存在は 僕の目の前に…","jp_ruby":"存在(そんざい)は 僕(ぼく)の目(め)の前(まえ)に…","cn":"存在 就在我的眼前…","is_continuation":false},{"time":163.82,"jp_plain":"見上げた大空が 青く澄み切って行く","jp_ruby":"見上(みあ)げた大空(おおぞら)が 青(あお)く澄(す)み切(き)って行(ゆ)く","cn":"抬頭仰望的天空 逐漸變得清澈湛藍","is_continuation":true},{"time":171.32999999999998,"jp_plain":"閉ざした 窓を 開く事を決めた","jp_ruby":"閉(と)ざした 窓(まど)を 開(ひら)く事(こと)を決(き)めた","cn":"我決定要敞開那扇緊閉的窗","is_continuation":true},{"time":177.93,"jp_plain":"自分を 世界さえも 変えてしまえそうな","jp_ruby":"自分(じぶん)を 世界(せかい)さえも 変(か)えてしまえそうな","cn":"彷彿能將自己 甚至整個世界都改變的","is_continuation":true},{"time":185.48,"jp_plain":"瞬間を 感じる 今ここに…","jp_ruby":"瞬間(しゅんかん)を 感(かん)じる 今(いま)ここに…","cn":"瞬間 此刻在此地感受到…","is_continuation":false},{"time":192.55,"jp_plain":"光へと 両手を伸ばして…","jp_ruby":"光(ひかり)へと 両手(りょうて)を伸(の)ばして…","cn":"向著光芒 伸出雙手…","is_continuation":false},{"time":199.09,"jp_plain":"心を吹き抜ける 空の色 香る風","jp_ruby":"心(こころ)を吹(ふ)き抜(ぬ)ける 空(そら)の色(いろ) 香(かお)る風(かぜ)","cn":"吹過心中的 是天空的顏色 飄香的風","is_continuation":false}]
+};
+
+const SONG_8_DATA = {
+  title: "僕らの戦場",
+  artist: "ワルキューレ",
+  duration: 244.27,
+  lines: [{"time":39.61,"jp_plain":"たとえば 途切れた空が見えたなら","jp_ruby":"たとえば 途切(とぎ)れた空(そら)が見(み)えたなら","cn":"假如能看見被中斷的天空的話","is_continuation":false},{"time":45.59,"jp_plain":"震える 僕の声が聞こえるのなら","jp_ruby":"震(ふる)える 僕(ぼく)の声(こえ)が聞(き)こえるのなら","cn":"如果能聽見我顫抖不已的聲音的話","is_continuation":false},{"time":51.6,"jp_plain":"バラバラに砕けるほど 舞い上がれ","jp_ruby":"バラバラに砕(くだ)けるほど 舞(ま)い上(あ)がれ","cn":"即使粉身碎骨也要不斷飛舞","is_continuation":false},{"time":57.73,"jp_plain":"引き裂かれた記憶の 果敢なきツバサ","jp_ruby":"引(ひ)き裂(さ)かれた記憶(きおく)の 果敢(はて)なきツバサ","cn":"","is_continuation":false},{"time":63.87,"jp_plain":"あの日 語り合ったこと","jp_ruby":"あの日(ひ) 語(かた)り合(あ)ったこと","cn":"是否記得那天 我們所交談的一切","is_continuation":false},{"time":66.9,"jp_plain":"いつも 笑い合えたこと","jp_ruby":"いつも 笑(わら)い合(あ)えたこと","cn":"並總是 歡笑不絕","is_continuation":false},{"time":69.97,"jp_plain":"よみがえる日まで 立ち上がるだけ","jp_ruby":"よみがえる日(ひ)まで 立(た)ち上(あ)がるだけ","cn":"只需奮力而起 等待覺醒之日到來","is_continuation":false},{"time":77.01,"jp_plain":"壊して","jp_ruby":"壊(こわ)して","cn":"破壞吧 並更加 更加地感受我的存在","is_continuation":false},{"time":78.72,"jp_plain":"もっと もっと 僕を感じて","jp_ruby":"もっと もっと 僕(ぼく)を感(かん)じて","cn":"破壞吧 並更加 更加地感受我的存在","is_continuation":true},{"time":81.67,"jp_plain":"そこに そこに 君は 居ますか","jp_ruby":"そこに そこに 君(きみ)は 居(い)ますか","cn":"你是否 是否就在那處","is_continuation":false},{"time":84.67,"jp_plain":"戦場に咲く 命よ","jp_ruby":"戦場(せんじょう)に咲(さ)く 命(いのち)よ","cn":"於戰場綻放的生命之花 燃燒吧 燃燒吧","is_continuation":false},{"time":88.17,"jp_plain":"燃えろ 燃えろ","jp_ruby":"燃(も)えろ 燃(も)えろ","cn":"於戰場綻放的生命之花 燃燒吧 燃燒吧","is_continuation":true},{"time":89.67,"jp_plain":"殺して","jp_ruby":"殺(ころ)して","cn":"與其就此枯朽 不如 不如將我毀滅","is_continuation":false},{"time":90.88,"jp_plain":"いっそ いっそ 朽ち果てるなら","jp_ruby":"いっそ いっそ 朽(く)ち果(は)てるなら","cn":"與其就此枯朽 不如 不如將我毀滅","is_continuation":true},{"time":93.8,"jp_plain":"たぎれ たぎれ 破滅の果てに","jp_ruby":"たぎれ たぎれ 破滅(はめつ)の果(は)てに","cn":"讓內心更加 更加沸騰 直至滅亡的盡頭","is_continuation":false},{"time":96.77000000000001,"jp_plain":"奇跡を呼び覚ませ","jp_ruby":"奇跡(きせき)を呼(よ)び覚(さ)ませ","cn":"將奇蹟喚醒 飛向被閉鎖的天空","is_continuation":false},{"time":101.09,"jp_plain":"閉ざされた空へ","jp_ruby":"閉(と)ざされた空(そら)へ","cn":"將奇蹟喚醒 飛向被閉鎖的天空","is_continuation":true},{"time":107.96000000000001,"jp_plain":"飛び交う 無数の感覚のなかで","jp_ruby":"飛(と)び交(か)う 無数(むすう)の感覚(かんかく)のなかで","cn":"在無數交錯的感覺之中","is_continuation":false},{"time":113.94,"jp_plain":"本当の 自分さえも失くしてしまう","jp_ruby":"本当(ほんとう)の 自分(じぶん)さえも失(な)くしてしまう","cn":"似乎連真正的自己都會消失無蹤","is_continuation":false},{"time":119.99000000000001,"jp_plain":"見えない 不安の 集中砲火に","jp_ruby":"見(み)えない 不安(ふあん)の 集中(しゅうちゅう)砲火(ほうか)に","cn":"面對來自無法目視的不安的集中砲火","is_continuation":false},{"time":126.08,"jp_plain":"勝ち残るのは 弱さ 認める 強さ","jp_ruby":"勝(か)ち残(のこ)るのは 弱(よわ)さ 認(みと)める 強(つよ)さ","cn":"最後留下的 便是認清自己軟弱的強悍","is_continuation":false},{"time":132.21,"jp_plain":"もしも 僕じゃなかったら","jp_ruby":"もしも 僕(ぼく)じゃなかったら","cn":"如果說 和你相遇的不是我","is_continuation":false},{"time":135.3,"jp_plain":"もしも 君じゃなかったら","jp_ruby":"もしも 君(きみ)じゃなかったら","cn":"如果說 和我相遇的不是你","is_continuation":false},{"time":138.32,"jp_plain":"こんな気持ちさえ","jp_ruby":"こんな気持(きも)ちさえ","cn":"應該連這份心情 也無從知曉了吧","is_continuation":false},{"time":140.75,"jp_plain":"知らずにいたね","jp_ruby":"知(し)らずにいたね","cn":"應該連這份心情 也無從知曉了吧","is_continuation":true},{"time":145.34,"jp_plain":"切り裂け","jp_ruby":"切(き)り裂(さ)け","cn":"劈裂一切 朝正義的黑暗更加 更加邁進","is_continuation":false},{"time":146.98,"jp_plain":"もっと もっと 正義の闇へ","jp_ruby":"もっと もっと 正義(せいぎ)の闇(やみ)へ","cn":"劈裂一切 朝正義的黑暗更加 更加邁進","is_continuation":true},{"time":149.94,"jp_plain":"はしれ はしれ 灰に なるまで","jp_ruby":"はしれ はしれ 灰(はい)に なるまで","cn":"奔馳吧 奔馳吧 直到化為灰燼","is_continuation":false},{"time":153.01,"jp_plain":"理屈を捨てて","jp_ruby":"理屈(りくつ)を捨(す)てて","cn":"以捨棄藉口的心靈 怒吼吧 怒吼吧","is_continuation":false},{"time":155.59,"jp_plain":"心で 吠えろ 吠えろ","jp_ruby":"心(こころ)で 吠(ほ)えろ 吠(ほ)えろ","cn":"以捨棄藉口的心靈 怒吼吧 怒吼吧","is_continuation":true},{"time":158,"jp_plain":"断ち切れ","jp_ruby":"断(た)ち切(き)れ","cn":"斬斷一切 直至 直至誕生的銀河","is_continuation":false},{"time":159.16,"jp_plain":"やがて やがて 生まれる銀河に","jp_ruby":"やがて やがて 生(う)まれる銀河(ほし)に","cn":"","is_continuation":false},{"time":162.2,"jp_plain":"君が 君が 居てくれるなら","jp_ruby":"君(きみ)が 君(きみ)が 居(い)てくれるなら","cn":"只要你 能在我身邊的話","is_continuation":false},{"time":165.18,"jp_plain":"僕らのかがやきは","jp_ruby":"僕(ぼく)らのかがやきは","cn":"我倆散發的光輝 將會所向無敵","is_continuation":false},{"time":169.4,"jp_plain":"無敵にもなれる","jp_ruby":"無敵(むてき)にもなれる","cn":"我倆散發的光輝 將會所向無敵","is_continuation":true},{"time":183.97,"jp_plain":"右に ならえと","jp_ruby":"右(みぎ)に ならえと","cn":"不論是誰 都只聽從發號施令過活","is_continuation":false},{"time":187.05,"jp_plain":"誰もが 今日を生きてる","jp_ruby":"誰(だれ)もが 今日(きょう)を生(い)きてる","cn":"不論是誰 都只聽從發號施令過活","is_continuation":true},{"time":191.26,"jp_plain":"もどかしさに","jp_ruby":"もどかしさに","cn":"令人焦躁不已 也無任何理由與目的","is_continuation":false},{"time":193.25,"jp_plain":"理由もないまま","jp_ruby":"理由(りゆう)もないまま","cn":"令人焦躁不已 也無任何理由與目的","is_continuation":true},{"time":196.29,"jp_plain":"死んだ みたいに","jp_ruby":"死(し)んだ みたいに","cn":"比起行屍走肉般度日","is_continuation":false},{"time":199.16,"jp_plain":"生きていくよりも","jp_ruby":"生(い)きていくよりも","cn":"比起行屍走肉般度日","is_continuation":true},{"time":202.15,"jp_plain":"赤い血を流し 牙を剥け","jp_ruby":"赤(あか)い血(ち)を流(なが)し 牙(きば)を剥(む)け","cn":"不如流下赤紅鮮血 露出獠牙","is_continuation":false},{"time":205.4,"jp_plain":"それが 僕が 君が","jp_ruby":"それが 僕(ぼく)が 君(きみ)が","cn":"那便是你和我 存活於此的證明","is_continuation":false},{"time":207.74,"jp_plain":"生きてる 証明","jp_ruby":"生(い)きてる 証明","cn":"那便是你和我 存活於此的證明","is_continuation":true},{"time":215.19,"jp_plain":"壊して","jp_ruby":"壊(こわ)して","cn":"破壞吧 並更加 更加地感受我的存在","is_continuation":true},{"time":216.85,"jp_plain":"もっと もっと 僕を感じて","jp_ruby":"もっと もっと 僕(ぼく)を感(かん)じて","cn":"破壞吧 並更加 更加地感受我的存在","is_continuation":true},{"time":219.9,"jp_plain":"そこに そこに 君は 居ますか","jp_ruby":"そこに そこに 君(きみ)は 居(い)ますか","cn":"你是否 是否就在那處","is_continuation":true},{"time":222.88,"jp_plain":"戦場に咲く 命よ","jp_ruby":"戦場(せんじょう)に咲(さ)く 命(いのち)よ","cn":"於戰場綻放的生命之花 燃燒吧 燃燒吧","is_continuation":true},{"time":226.39,"jp_plain":"燃えろ 燃えろ","jp_ruby":"燃(も)えろ 燃(も)えろ","cn":"於戰場綻放的生命之花 燃燒吧 燃燒吧","is_continuation":true},{"time":227.88,"jp_plain":"殺して","jp_ruby":"殺(ころ)して","cn":"與其就此枯朽 不如 不如將我毀滅","is_continuation":true},{"time":229.07,"jp_plain":"いっそ いっそ 朽ち果てるなら","jp_ruby":"いっそ いっそ 朽(く)ち果(は)てるなら","cn":"與其就此枯朽 不如 不如將我毀滅","is_continuation":true},{"time":231.98,"jp_plain":"たぎれ たぎれ 破滅の果てに","jp_ruby":"たぎれ たぎれ 破滅(はめつ)の果(は)てに","cn":"讓內心更加 更加沸騰 直至滅亡的盡頭","is_continuation":true},{"time":235.03,"jp_plain":"奇跡を呼び覚ませ","jp_ruby":"奇跡(きせき)を呼(よ)び覚(さ)ませ","cn":"將奇蹟喚醒 飛向被閉鎖的天空","is_continuation":true},{"time":239.27,"jp_plain":"閉ざされた空へ","jp_ruby":"閉(と)ざされた空(そら)へ","cn":"將奇蹟喚醒 飛向被閉鎖的天空","is_continuation":true}]
+};
+
+function adjustFont(key, delta) {
+  const limit = FONT_LIMITS[key];
+  let v = state.settings[key] + delta;
+  if (v < limit.min) v = limit.min;
+  if (v > limit.max) v = limit.max;
+  state.settings[key] = v;
+  applyFontSize();
 }
 
-setupSlider('sizeMain', 'sizeMainValue', 'sizeMain', 'px');
-setupSlider('sizeRuby', 'sizeRubyValue', 'sizeRuby', '%');
-setupSlider('sizeCn', 'sizeCnValue', 'sizeCn', 'px');
+$('sizeMainMinus').addEventListener('click', () => adjustFont('sizeMain', -FONT_LIMITS.sizeMain.step));
+$('sizeMainPlus').addEventListener('click', () => adjustFont('sizeMain', FONT_LIMITS.sizeMain.step));
+$('sizeRubyMinus').addEventListener('click', () => adjustFont('sizeRuby', -FONT_LIMITS.sizeRuby.step));
+$('sizeRubyPlus').addEventListener('click', () => adjustFont('sizeRuby', FONT_LIMITS.sizeRuby.step));
 
 /* ============================================================
    檔案載入
@@ -1501,11 +2163,39 @@ setupSlider('sizeCn', 'sizeCnValue', 'sizeCn', 'px');
 const SONGS_LIBRARY = [
   YAKIMOCHI_DATA,
   SHUKUFUKU_DATA,
+  IKUOKU_KOUNEN_DATA,
+  KAIBUTSU_DATA,
+  YUSHA_DATA,
+  STORM_DATA,
+  HOUKIGUMO_DATA,
+  COMPLEX_IMAGE_DATA,
+  HIMAWARI_DATA,
+  MARIGOLD_DATA,
+
+  SONG_DATA,
+  SONG_1_DATA,
+  SONG_2_DATA,
+  SONG_3_DATA,
+  365_DATA,
+  SONG_4_DATA,
+  ANDIMHOME_DATA,
+  BLUESYMPHONY_DATA,
+  SONG_5_DATA,
+  GODKNOWS_DATA,
+  SONG_6_DATA,
+  THEREISAREAS_DATA,
+  PERSONAL_DATA,
+  SONG_7_DATA,
+  COLORS_DATA,
+  SONG_8_DATA,
 ];
 
 // localStorage keys
 const LS_SORT_KEY = 'karaoke_sort_preference';
 const LS_PLAYS_KEY = 'karaoke_play_counts';
+const LS_DELETED_KEY = 'karaoke_deleted_songs';     // 已刪除歌曲 (用 songKey 標記)
+const LS_CONFIRM_BACK_KEY = 'karaoke_confirm_back'; // 返回歌單是否要確認 ('on' / 'off')
+const LS_TIME_OVERRIDE_KEY = 'karaoke_time_overrides'; // 修正過時間軸的歌(每首儲存 lines)
 
 // 取得排序偏好
 function getSortPreference() {
@@ -1542,6 +2232,106 @@ function incrementPlayCount(songKey) {
   } catch (e) {}
 }
 
+// 重設單首歌的播放次數
+function resetPlayCount(songKey) {
+  const counts = getPlayCounts();
+  delete counts[songKey];
+  try {
+    localStorage.setItem(LS_PLAYS_KEY, JSON.stringify(counts));
+  } catch (e) {}
+}
+
+// 重設所有歌的播放次數
+function resetAllPlayCounts() {
+  try {
+    localStorage.removeItem(LS_PLAYS_KEY);
+  } catch (e) {}
+}
+
+// 已刪除歌曲清單
+function getDeletedSongs() {
+  try {
+    const raw = localStorage.getItem(LS_DELETED_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function addDeletedSong(songKey) {
+  const deleted = getDeletedSongs();
+  if (!deleted.includes(songKey)) {
+    deleted.push(songKey);
+    try {
+      localStorage.setItem(LS_DELETED_KEY, JSON.stringify(deleted));
+    } catch (e) {}
+  }
+}
+
+function restoreAllDeleted() {
+  try {
+    localStorage.removeItem(LS_DELETED_KEY);
+  } catch (e) {}
+}
+
+// 返回歌單是否要確認(預設 off,不問)
+function getConfirmBack() {
+  try {
+    const v = localStorage.getItem(LS_CONFIRM_BACK_KEY);
+    return v === null ? 'off' : v;
+  } catch (e) {
+    return 'off';
+  }
+}
+
+function setConfirmBack(value) {
+  try {
+    localStorage.setItem(LS_CONFIRM_BACK_KEY, value);
+  } catch (e) {}
+}
+
+// 時間軸修正版本(每首歌可儲存自己的 lines)
+function getAllTimeOverrides() {
+  try {
+    const raw = localStorage.getItem(LS_TIME_OVERRIDE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch (e) {
+    return {};
+  }
+}
+
+function getSongTimeOverride(songKey) {
+  const all = getAllTimeOverrides();
+  return all[songKey] || null;
+}
+
+// 把 offset 套用到歌的 lines 上,儲存修正版
+function saveTimeOverride(songKey, originalLines, offset) {
+  const adjusted = originalLines.map(line => ({
+    ...line,
+    time: Math.round((line.time + offset) * 100) / 100,  // 取兩位小數
+  }));
+  const all = getAllTimeOverrides();
+  all[songKey] = adjusted;
+  try {
+    localStorage.setItem(LS_TIME_OVERRIDE_KEY, JSON.stringify(all));
+  } catch (e) {
+    console.error('儲存時間軸修正版失敗', e);
+  }
+}
+
+function clearTimeOverride(songKey) {
+  const all = getAllTimeOverrides();
+  delete all[songKey];
+  try {
+    if (Object.keys(all).length === 0) {
+      localStorage.removeItem(LS_TIME_OVERRIDE_KEY);
+    } else {
+      localStorage.setItem(LS_TIME_OVERRIDE_KEY, JSON.stringify(all));
+    }
+  } catch (e) {}
+}
+
 // 唯一識別歌曲(用 title + artist)
 function getSongKey(song) {
   return (song.title || '') + '|' + (song.artist || '');
@@ -1551,11 +2341,15 @@ function getSongKey(song) {
 function renderSongList() {
   const sort = getSortPreference();
   const counts = getPlayCounts();
+  const deleted = getDeletedSongs();
   const grid = $('songGrid');
   grid.innerHTML = '';
 
+  // 過濾掉已刪除的歌
+  const visible = SONGS_LIBRARY.filter(s => !deleted.includes(getSongKey(s)));
+
   // 排序
-  const sorted = [...SONGS_LIBRARY].sort((a, b) => {
+  const sorted = [...visible].sort((a, b) => {
     if (sort === 'plays') {
       const ca = counts[getSongKey(a)] || 0;
       const cb = counts[getSongKey(b)] || 0;
@@ -1574,6 +2368,7 @@ function renderSongList() {
 
     const card = document.createElement('button');
     card.className = 'song-card';
+    card.dataset.songKey = key;
     card.innerHTML = `
       <div class="song-card-title">${escapeHtml(song.title || '未命名')}</div>
       <div class="song-card-artist">${escapeHtml(song.artist || '—')}</div>
@@ -1584,10 +2379,42 @@ function renderSongList() {
         </span>
       </div>
     `;
-    card.addEventListener('click', () => {
+
+    // 一般點擊 → 播放
+    card.addEventListener('click', e => {
+      if (card.dataset.longPress === '1') {
+        // 長按觸發過,忽略這次 click
+        card.dataset.longPress = '';
+        return;
+      }
       incrementPlayCount(key);
       loadSong(song);
     });
+
+    // 長按 → 出選單(刪除 / 重設次數)
+    let pressTimer = null;
+    const startPress = () => {
+      pressTimer = setTimeout(() => {
+        card.dataset.longPress = '1';
+        showSongMenu(song, card);
+      }, 600);
+    };
+    const cancelPress = () => {
+      if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
+    };
+    card.addEventListener('touchstart', startPress, { passive: true });
+    card.addEventListener('touchend', cancelPress);
+    card.addEventListener('touchmove', cancelPress);
+    card.addEventListener('mousedown', startPress);
+    card.addEventListener('mouseup', cancelPress);
+    card.addEventListener('mouseleave', cancelPress);
+    // 桌面右鍵也能呼叫
+    card.addEventListener('contextmenu', e => {
+      e.preventDefault();
+      card.dataset.longPress = '1';
+      showSongMenu(song, card);
+    });
+
     grid.appendChild(card);
   });
 
@@ -1595,6 +2422,80 @@ function renderSongList() {
   document.querySelectorAll('[data-sort]').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.sort === sort);
   });
+
+  // 顯示已刪除歌曲數量(如果有的話)
+  updateDeletedHint();
+}
+
+// 顯示歌曲操作選單(長按出現)
+function showSongMenu(song, card) {
+  const key = getSongKey(song);
+  const counts = getPlayCounts();
+  const playCount = counts[key] || 0;
+  const hasTimeOverride = getSongTimeOverride(key) !== null;
+
+  const menu = document.createElement('div');
+  menu.className = 'song-menu-overlay';
+  menu.innerHTML = `
+    <div class="song-menu">
+      <div class="song-menu-title">${escapeHtml(song.title)}</div>
+      <div class="song-menu-subtitle">${escapeHtml(song.artist || '—')}</div>
+      <button class="song-menu-btn" data-action="reset-count" ${playCount === 0 ? 'disabled' : ''}>
+        🔄 重設這首的播放次數${playCount > 0 ? ` (目前 ${playCount})` : ''}
+      </button>
+      ${hasTimeOverride ? `
+      <button class="song-menu-btn" data-action="clear-override">
+        ⏱️ 還原原始時間軸 (已修正)
+      </button>` : ''}
+      <button class="song-menu-btn danger" data-action="delete">🗑️ 刪除這首歌</button>
+      <button class="song-menu-btn cancel" data-action="cancel">取消</button>
+    </div>
+  `;
+
+  menu.addEventListener('click', e => {
+    const action = e.target.dataset.action;
+    if (action === 'cancel' || e.target === menu) {
+      menu.remove();
+      return;
+    }
+    if (action === 'reset-count') {
+      if (confirm(`重設「${song.title}」的播放次數?`)) {
+        resetPlayCount(key);
+        renderSongList();
+      }
+      menu.remove();
+      return;
+    }
+    if (action === 'clear-override') {
+      if (confirm(`還原「${song.title}」的原始時間軸?\n(已儲存的時間調整會被刪除)`)) {
+        clearTimeOverride(key);
+      }
+      menu.remove();
+      return;
+    }
+    if (action === 'delete') {
+      if (confirm(`確定要刪除「${song.title}」?\n(可在設定面板裡復原所有已刪除的歌)`)) {
+        addDeletedSong(key);
+        renderSongList();
+      }
+      menu.remove();
+      return;
+    }
+  });
+
+  document.body.appendChild(menu);
+}
+
+function updateDeletedHint() {
+  const deleted = getDeletedSongs();
+  const hint = $('deletedHint');
+  if (!hint) return;
+  if (deleted.length > 0) {
+    hint.textContent = `已刪除 ${deleted.length} 首`;
+    hint.style.display = 'inline';
+  } else {
+    hint.style.display = 'none';
+  }
 }
 
 function escapeHtml(s) {
