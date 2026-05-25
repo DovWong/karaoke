@@ -111,6 +111,8 @@
     height: 100dvh;
     display: flex;
     flex-direction: column;
+    box-sizing: border-box;  /* 讓 padding 計入 height,避免內容被擠出去 */
+    overflow: hidden;
   }
 
   /* ==========================================
@@ -348,6 +350,7 @@
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     z-index: 10;
+    flex-shrink: 0;  /* 標頭也不能被擠壓 */
   }
 
   .song-title {
@@ -525,6 +528,7 @@
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-top: 1px solid var(--border);
+    flex-shrink: 0;  /* 不能被擠壓:控制列必須完整顯示 */
   }
 
   .progress-row {
@@ -1130,6 +1134,43 @@
   /* ==========================================
      橫向手機
      ========================================== */
+  /* iPad 直向 / 較窄螢幕:第 3 排控制換行,避免擠到看不完 */
+  @media (orientation: portrait), (max-width: 800px) {
+    .font-adjust-row {
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .font-adjust-group {
+      gap: 4px;
+    }
+  }
+
+  /* 直向小螢幕(iPad mini 直向 / 手機):進一步緊湊 */
+  @media (orientation: portrait) and (max-width: 850px) {
+    .controls {
+      padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+    }
+    .progress-row {
+      margin-bottom: 8px;
+    }
+    .control-row {
+      gap: 8px;
+    }
+    .ctrl-secondary {
+      width: 36px;
+      height: 36px;
+      font-size: 12px;
+    }
+    .ctrl-primary {
+      width: 50px;
+      height: 50px;
+      font-size: 20px;
+    }
+    .seek-label {
+      font-size: 9px;
+    }
+  }
+
   @media (orientation: landscape) and (max-height: 500px) {
     .lyrics-container {
       padding: 30vh 24px;
