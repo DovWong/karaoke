@@ -430,12 +430,12 @@
 
   /* 下一句(預告) — 比一般亮,但比當前句暗 */
   .line.next {
-    opacity: 0.6;
+    opacity: 0.85;
     transform: scale(0.97);
   }
 
   .line.next .line-jp {
-    color: rgba(255, 255, 255, 0.85);
+    color: rgba(255, 255, 255, 0.92);
   }
 
   .line.next .line-cn {
@@ -591,59 +591,35 @@
   }
 
   .control-row {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    align-items: center;
-    gap: 16px;
-  }
-
-  /* 左區:字體調整(靠左對齊) */
-  .control-row > .ctrl-left {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-
-  /* 中區:播放控制(置中) */
-  .control-row > .ctrl-center {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-  }
-
-  /* 右區:時間微調(靠右對齊) */
-  .control-row > .ctrl-right {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
+    justify-content: space-around;
     gap: 6px;
+    flex-wrap: wrap;
   }
 
   .font-adjust-group {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
     flex-shrink: 0;
   }
 
   .font-adjust-label {
-    font-size: 12px;
+    font-size: 10px;
     color: var(--text-dim);
     letter-spacing: 1px;
-    margin-right: 4px;
+    margin-right: 2px;
   }
 
   .font-adjust-btn {
-    width: 38px;
-    height: 38px;
+    width: 26px;
+    height: 26px;
     border-radius: 50%;
     background: var(--bg-glass);
     border: 1px solid var(--border);
     color: var(--text);
-    font-size: 16px;
+    font-size: 13px;
     line-height: 1;
     cursor: pointer;
     transition: all 0.15s;
@@ -666,19 +642,17 @@
 
   .offset-btn {
     width: auto;
-    padding: 0 12px;
-    font-size: 12px;
-    min-width: 52px;
-    height: 38px;
+    padding: 0 7px;
+    font-size: 10px;
+    min-width: 36px;
   }
 
   .offset-group .offset-value {
-    font-size: 13px;
+    font-size: 11px;
     color: var(--text);
-    min-width: 42px;
+    min-width: 36px;
     text-align: center;
     font-family: 'SF Mono', 'Monaco', monospace;
-    font-weight: 500;
   }
 
   .offset-group .offset-value.adjusted {
@@ -706,15 +680,15 @@
   }
 
   .ctrl-secondary {
-    width: 46px;
-    height: 46px;
-    font-size: 14px;
+    width: 38px;
+    height: 38px;
+    font-size: 13px;
   }
 
   .ctrl-primary {
-    width: 60px;
-    height: 60px;
-    font-size: 24px;
+    width: 54px;
+    height: 54px;
+    font-size: 22px;
     background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple));
     border: none;
     box-shadow: 0 4px 24px rgba(255, 62, 127, 0.4);
@@ -1154,59 +1128,39 @@
   /* ==========================================
      橫向手機
      ========================================== */
-  /* iPad 直向 / 較窄螢幕:控制列稍微緊湊 */
+  /* iPad 直向 / 較窄螢幕:控制列緊湊化 */
   @media (orientation: portrait) and (max-width: 850px) {
     .controls {
-      padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+      padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
     }
     .progress-row {
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
     .control-row {
-      gap: 10px;
+      gap: 4px;
     }
     .ctrl-secondary {
-      width: 42px;
-      height: 42px;
-      font-size: 13px;
-    }
-    .ctrl-primary {
-      width: 54px;
-      height: 54px;
-      font-size: 22px;
-    }
-    .font-adjust-btn {
       width: 34px;
       height: 34px;
-      font-size: 14px;
+      font-size: 11px;
+    }
+    .ctrl-primary {
+      width: 46px;
+      height: 46px;
+      font-size: 18px;
+    }
+    .font-adjust-btn {
+      width: 24px;
+      height: 24px;
+      font-size: 12px;
     }
     .offset-btn {
-      min-width: 46px;
-      font-size: 11px;
-      padding: 0 9px;
-      height: 34px;
+      min-width: 32px;
+      font-size: 9px;
+      padding: 0 5px;
     }
     .font-adjust-label {
-      font-size: 11px;
-      letter-spacing: 0.5px;
-    }
-    .offset-group .offset-value {
-      font-size: 12px;
-      min-width: 38px;
-    }
-    .ctrl-left {
-      gap: 8px;
-    }
-  }
-
-  /* 手機:可能會擠到,允許換行 */
-  @media (max-width: 600px) {
-    .control-row {
-      grid-template-columns: 1fr;
-      gap: 8px;
-    }
-    .ctrl-left, .ctrl-right {
-      justify-content: center;
+      display: none;  /* 直向小螢幕隱藏標籤 */
     }
   }
 
@@ -1286,35 +1240,28 @@
     </div>
 
     <div class="control-row">
-      <!-- 左區:字體調整 -->
-      <div class="ctrl-left">
-        <div class="font-adjust-group">
-          <span class="font-adjust-label">日文</span>
-          <button class="font-adjust-btn" id="sizeMainMinus">−</button>
-          <button class="font-adjust-btn" id="sizeMainPlus">+</button>
-        </div>
-        <div class="font-adjust-group">
-          <span class="font-adjust-label">假名</span>
-          <button class="font-adjust-btn" id="sizeRubyMinus">−</button>
-          <button class="font-adjust-btn" id="sizeRubyPlus">+</button>
-        </div>
+      <!-- 左側:字體調整 -->
+      <div class="font-adjust-group">
+        <span class="font-adjust-label">日文</span>
+        <button class="font-adjust-btn" id="sizeMainMinus">−</button>
+        <button class="font-adjust-btn" id="sizeMainPlus">+</button>
+      </div>
+      <div class="font-adjust-group">
+        <span class="font-adjust-label">假名</span>
+        <button class="font-adjust-btn" id="sizeRubyMinus">−</button>
+        <button class="font-adjust-btn" id="sizeRubyPlus">+</button>
       </div>
 
-      <!-- 中區:播放控制 -->
-      <div class="ctrl-center">
-        <button class="ctrl-btn ctrl-secondary" id="back5">−5</button>
-        <button class="ctrl-btn ctrl-primary" id="playPauseBtn">▶</button>
-        <button class="ctrl-btn ctrl-secondary" id="fwd5">+5</button>
-      </div>
+      <!-- 中間:播放控制 -->
+      <button class="ctrl-btn ctrl-secondary" id="back5">−5</button>
+      <button class="ctrl-btn ctrl-primary" id="playPauseBtn">▶</button>
+      <button class="ctrl-btn ctrl-secondary" id="fwd5">+5</button>
 
-      <!-- 右區:時間微調 -->
-      <div class="ctrl-right">
-        <div class="font-adjust-group offset-group">
-          <span class="font-adjust-label">時間</span>
-          <button class="font-adjust-btn offset-btn" id="offsetMinus">−0.5</button>
-          <div class="offset-value" id="offsetValue">0.0s</div>
-          <button class="font-adjust-btn offset-btn" id="offsetPlus">+0.5</button>
-        </div>
+      <!-- 右側:時間微調 -->
+      <div class="font-adjust-group offset-group">
+        <button class="font-adjust-btn offset-btn" id="offsetMinus">−0.5</button>
+        <div class="offset-value" id="offsetValue">0.0s</div>
+        <button class="font-adjust-btn offset-btn" id="offsetPlus">+0.5</button>
       </div>
     </div>
   </div>
@@ -1626,6 +1573,10 @@ function loadSong(song) {
   renderLyrics();
   updateTotalTime();
   resetPlayer();
+
+  // 把歌詞捲到最頂 - 因為 lyrics-container 上方有 padding,
+  // scrollTop=0 剛好讓第一句出現在畫面中間偏上,使用者能看到開頭幾句準備
+  lyricsContainer.scrollTop = 0;
 
   startScreen.classList.add('hidden');
   songHeader.style.display = 'block';
@@ -2506,6 +2457,9 @@ function showSongMenu(song, card) {
     <div class="song-menu">
       <div class="song-menu-title">${escapeHtml(song.title)}</div>
       <div class="song-menu-subtitle">${escapeHtml(song.artist || '—')}</div>
+      <button class="song-menu-btn" data-action="export">
+        📥 匯出 JSON${hasTimeOverride ? ' (含時間修正)' : ''}
+      </button>
       <button class="song-menu-btn" data-action="reset-count" ${playCount === 0 ? 'disabled' : ''}>
         🔄 重設這首的播放次數${playCount > 0 ? ` (目前 ${playCount})` : ''}
       </button>
@@ -2521,6 +2475,11 @@ function showSongMenu(song, card) {
   menu.addEventListener('click', e => {
     const action = e.target.dataset.action;
     if (action === 'cancel' || e.target === menu) {
+      menu.remove();
+      return;
+    }
+    if (action === 'export') {
+      exportSongJson(song);
       menu.remove();
       return;
     }
@@ -2550,6 +2509,36 @@ function showSongMenu(song, card) {
   });
 
   document.body.appendChild(menu);
+}
+
+// 匯出歌曲 JSON(若有時間修正版,使用修正版的 lines)
+function exportSongJson(song) {
+  const key = getSongKey(song);
+  const override = getSongTimeOverride(key);
+
+  // 用修正版的 lines (如果存在),否則用原版
+  const exportData = {
+    title: song.title,
+    artist: song.artist || '',
+    duration: song.duration || 0,
+    lines: override || song.lines,
+  };
+
+  const jsonStr = JSON.stringify(exportData, null, 2);
+  const blob = new Blob([jsonStr], { type: 'application/json;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+
+  // 產生安全的檔名(移除/取代問題字元)
+  const safeTitle = song.title.replace(/[<>:"/\\|?*]/g, '_');
+  const filename = `${safeTitle}.json`;
+
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 function updateDeletedHint() {

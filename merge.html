@@ -177,6 +177,25 @@ body::before {
   margin-left: auto;
 }
 
+.load-existing-btn {
+  margin-left: auto;
+  padding: 6px 12px;
+  font-size: 12px;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-mid);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.load-existing-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(255, 62, 127, 0.06);
+}
+
 /* ========== Form / Inputs ========== */
 .form-grid {
   display: grid;
@@ -762,6 +781,8 @@ details.help-details[open] summary {
     <div class="step-header">
       <span class="step-num">0</span>
       <span class="step-title">歌曲基本資訊</span>
+      <label for="loadJsonInput" class="load-existing-btn">📥 載入現有 JSON 修改</label>
+      <input type="file" id="loadJsonInput" accept=".json" style="display:none;">
     </div>
     <div class="form-grid">
       <div class="field">
@@ -1944,6 +1965,55 @@ function mergeData(marumaru, lrc) {
 /* ========================================================
    合併按鈕邏輯
    ======================================================== */
+/* ========================================================
+   載入現有 JSON 修改(C 方案)
+   ========================================================
+   讀回 karaoke.html 匯出的 JSON,直接進入預覽編輯模式
+   ======================================================== */
+$('loadJsonInput').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const data = JSON.parse(ev.target.result);
+
+      // 驗證基本結構
+      if (!data.title || !Array.isArray(data.lines)) {
+        showToast('JSON 格式不正確(需要 title 和 lines)', 'error');
+        return;
+      }
+
+      // 填入基本資訊
+      $('songTitle').value = data.title || '';
+      $('songArtist').value = data.artist || '';
+      state.songTitle = data.title || '';
+      state.songArtist = data.artist || '';
+
+      // 把 lines 轉成 mergedData 格式(內部結構相容)
+      state.mergedData = data.lines.map(line => ({
+        time: line.time,
+        jp_plain: line.jp_plain || stripRuby(line.jp_ruby || ''),
+        jp_ruby: line.jp_ruby || line.jp_plain || '',
+        cn: line.cn || '',
+        is_continuation: line.is_continuation || false,
+      }));
+
+      // 直接渲染預覽(跳過 Step 1, 2 的合併)
+      renderPreview();
+      $('previewSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      showToast(`已載入「${data.title}」共 ${data.lines.length} 句,可在下方預覽區編輯`, 'ok');
+    } catch (err) {
+      showToast('讀取失敗:' + err.message, 'error');
+    }
+  };
+  reader.readAsText(file, 'UTF-8');
+
+  // reset input value 讓下次能載同一個檔
+  e.target.value = '';
+});
+
 $('mergeBtn').addEventListener('click', () => {
   // 收集當前狀態
   state.songTitle = $('songTitle').value.trim();
